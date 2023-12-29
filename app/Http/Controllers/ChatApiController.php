@@ -18,7 +18,7 @@ class ChatApiController extends Controller
 	{
 		$prompt = $request->input('prompt');
 
-		$yourApiKey = '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';
+		$yourApiKey = env('OPEN_AI_KEY');
 
 		$client = OpenAI::factory()
 			->withApiKey($yourApiKey)
