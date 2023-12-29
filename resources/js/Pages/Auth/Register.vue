@@ -7,6 +7,8 @@ import TextInput from '@/Components/TextInput.vue';
 import DomainInput from '@/Components/DomainInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
+defineProps({ host: String })
+
 const form = useForm({
 	name: '',
 	email: '',
@@ -20,6 +22,8 @@ const submit = () => {
 		onFinish: () => form.reset('password', 'password_confirmation'),
 	});
 };
+
+
 </script>
 
 <template>
@@ -29,6 +33,9 @@ const submit = () => {
 
 		<form @submit.prevent="submit">
 			<div>
+
+				{{host[0]}}
+HELLO?
 				<InputLabel for="name" value="Name" />
 
 				<TextInput
@@ -62,10 +69,11 @@ const submit = () => {
 
 				<DomainInput
 				id="domain"
-				type="text"
 				class="mt-1 block w-full"
 				v-model="form.domain"
+				data-hello="wefwef"
 				required
+				:host="host[0]"
 				autocomplete="username" />
 
 				<InputError class="mt-2" :message="form.errors.domain" />

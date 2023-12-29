@@ -5,9 +5,17 @@
  */
 
 import axios from 'axios';
+
 window.axios = axios;
 
+// axios.defaults.withCredentials = true;
+// axios.defaults.withXSRFToken = true;
+// Get the CSRF token from the meta tag and set it as a default Axios header
+// let token = document.head.querySelector('meta[name="csrf-token"]');
+
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.withXSRFToken = true
+// window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

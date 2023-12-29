@@ -22,7 +22,9 @@ class RegisteredUserController extends Controller
 	 */
 	public function create(): Response
 	{
-		return Inertia::render('Auth/Register');
+		return Inertia::render('Auth/Register', [
+			'host' => config('tenancy.central_domains')
+		]);
 	}
 
 	/**
@@ -43,13 +45,6 @@ class RegisteredUserController extends Controller
 			'password' => ['required', 'confirmed', Rules\Password::defaults()],
 		]);
 
-		// central db users - should tenants have these?
-		$user = User::create([
-			'name' => $request->name,
-			'email' => $request->email,
-			'password' => Hash::make($request->password),
-		]);
-
 		// create the tenant:
 		$tenant = \App\Models\Tenant::create([
 			'id' => $request->domain
@@ -58,9 +53,20 @@ class RegisteredUserController extends Controller
 			'domain' => $request->domain . '.' . config('tenancy.central_domains')[0]
 		]);
 
-		event(new Registered($user));
+		$tenant->run(function () use($request) {
+			$user = User::create([
+				'name' => $request->name,
+				'email' => $request->email,
+				'password' => Hash::make($request->password),
+			]);
+			event(new Registered($user));
 
-		Auth::login($user);
+			Auth::login($user);
+		});
+
+		// This is a new user 
+
+		
 
 		return redirect(RouteServiceProvider::HOME);
 	}
