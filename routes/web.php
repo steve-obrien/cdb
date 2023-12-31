@@ -35,9 +35,14 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
 	Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-	Route::get('/chat', [ChatController::class, 'chat'])->name('chat');
 
-	Route::match(['get', 'post'], 'v1/chat/', [ChatApiController::class, 'chat'])->name('api.chat');
+	Route::get('/chat', [ChatController::class, 'chat'])->name('chat');
+	Route::get('/chat/{id}', [ChatController::class, 'chatSession'])->name('chat.session');
+
+	Route::delete('/chat/{id}', [ChatApiController::class, 'chatSessionDelete'])->name('api.chatSessionDelete');
+	Route::match(['get', 'post'], 'v1/chat/', [ChatApiController::class, 'chat'])->name('api.chat'); // to deprecate
+	Route::match(['post'], 'v1/chat-start/', [ChatApiController::class, 'chatStart'])->name('api.chatStart');
+	Route::match(['get', 'post'], 'v1/chat-stream/{id}', [ChatApiController::class, 'chatStream'])->name('api.chatStream');
 });
 
 Route::middleware('auth')->group(function () {

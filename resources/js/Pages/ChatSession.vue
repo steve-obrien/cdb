@@ -1,10 +1,9 @@
 <template>
-	<Head title="Chat" />
+	<Head title="Dashboard" />
 
 	<ChatLayout :sessions="sessions">
-
 		<div class="grow flex relative">
-			<div ref="chatWindow" class="absolute inset-0 overflow-y-scroll">
+			<div ref="chatWindow" class="absolute inset-0 overflow-y-scroll" @scroll="handleScroll">
 				<div class="px-4 py-8 flex flex-col flex-1 text-base mx-auto gap-5 @md:max-w-3xl @lg:max-w-[40rem] @xl:max-w-[48rem] group final-completion">
 					<div v-if="messages.length == 0">
 						<div class="flex">
@@ -15,7 +14,7 @@
 							</div>
 						</div>
 					</div>
-					<div v-else v-for="message in messages">
+					<div v-else v-for="(message, index) in messages">
 						<ChatMessage :message="message"></ChatMessage>
 					</div>
 				</div>
@@ -24,35 +23,41 @@
 		<div class="px-4">
 			<PromptForm @send="send" v-model:prompt="prompt"></PromptForm>
 			<div class="text-center">
-				<code class="text-xs">tokens: {{ tokens }}</code>
+				<code class="text-xs">tokens: {{ total.tokens }} / cost: {{ total.cost }} - scroll: {{isScrollBottom}}</code>
 			</div>
 		</div>
 
 	</ChatLayout>
 </template>
-<script >
+
+<script lang="ts">
 import ChatLayout from '@/Layouts/ChatLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, nextTick } from 'vue';
+// import 'highlight.js/styles/vs.css';
 import { Link } from '@inertiajs/vue3';
 import PromptForm from './Chat/PromptForm.vue';
 import ChatMessage from './Chat/ChatMessage.vue';
+import { walkTokens } from 'marked';
+
 
 export default defineComponent({
 	props: {
 		user: Object,
 		chats: Array,
 		sessions: Array,
+		// The ID of the current selected chat session
+		sessionId: { required: true, type: String }
 	},
-	components: { ChatLayout, Head, Link, PromptForm, ChatMessage },
+	components: { Head, Link, ChatLayout, PromptForm, ChatMessage },
 	data() {
 		return {
 			prompt: '',
-			sessionId: undefined,
 			data: [],
-			// object containing from: 'me'|'ai', "content":"..."
-			messages: [
-			],
+			messages: [], // the conversation data
+			charsPerToken: 4, // Constant to estimate characters per token
+			tokenCostPerThousand: 0.01,
+			isScrollBottom: true
 		}
 	},
 	mounted() {
@@ -64,27 +69,71 @@ export default defineComponent({
 				state: 'finished'
 			})
 		})
+		nextTick(() => {
+			this.$refs.chatWindow.scrollTo(0, this.$refs.chatWindow.scrollHeight);
+		})
+		window.chat = this
+
+		// auto response
 	},
 	computed: {
 		tokens() {
 			let tokens = 0
 			this.messages.forEach(message => {
-				tokens += message.content.length / 4
+				tokens += message.content.length / this.charsPerToken
 			})
 			return Math.round(tokens);
+		},
+		cost() {
+			let cost = (this.tokens / 1000) * 0.01;
+			return cost.toFixed(4)
+		},
+		linkChat() {
+			return route('chat')
+		},
+		// Calculate the cost for each message and return an array of the costs
+		messageCosts() {
+			let cumulativeContent = '';
+			return this.messages.map((message) => {
+				// Add current message content to the cumulative content
+				cumulativeContent += message.content;
+				let length =  cumulativeContent.length
+				// Calculate tokens based on the cumulative content length so far
+				//return cumulativeContent.length;
+				if (message.role == 'assistant') {
+					// dont include previous messages in cost
+					length = message.content.length
+				}
+				const tokens = length  / this.charsPerToken
+				const cost = (tokens / 1000) * this.tokenCostPerThousand
+				const mesageTokens = message.content.length / this.charsPerToken
+				const messageLength = message.content.length
+				return { role: message.role, length,messageLength, tokens, cost, mesageTokens,  }
+			});
+		},
+		// Calculate the total cost for the conversation
+
+		total() {
+			const totalChars = this.messageCosts.reduce((accumulator, cost) => accumulator + cost.length, 0);
+			const tokens = totalChars / this.charsPerToken
+			const cost =  (tokens / 1000) * this.tokenCostPerThousand
+			return { tokens, cost: cost.toFixed(4) }
 		}
 	},
 	methods: {
-		sessionLink(id) {
+		linkSession(id) {
 			return route('chat.session', id)
 		},
-		formatMessage(message) {
-			// Set options for marked
-			return marked.parse(message);
+
+		handleScroll() {
+			console.log('USER SCROLL')
+			let chatWindow = this.$refs.chatWindow;
+			this.isScrollBottom = chatWindow.scrollTop + chatWindow.clientHeight >= chatWindow.scrollHeight - 40;
 		},
+
 		scrollToBottom() {
 			let chatWindow = this.$refs.chatWindow;
-			const isUserAtBottom = chatWindow.scrollTop + chatWindow.clientHeight >= chatWindow.scrollHeight - 20; // 20 is a small threshold
+			const isUserAtBottom = chatWindow.scrollTop + chatWindow.clientHeight >= chatWindow.scrollHeight - 40;
 
 			if (isUserAtBottom) {
 				// Scroll to bottom
@@ -103,20 +152,22 @@ export default defineComponent({
 			})
 			if (response.status != 200) alert('error!');
 
-			const sessionId = response.data.sessionId
+			// could mis match?
+			console.log(response.data, 'response.data');
+			if (response.data.sessionId !== this.sessionId) {
+				alert('session ids do not match!?')
+			}
 
 			const chat = response.data.chat
-			this.messages.push(chat);
-
+			this.messages.push(chat)
+			nextTick(() => {
+				this.$refs.chatWindow.scrollTo(0, this.$refs.chatWindow.scrollHeight);
+			})
 			this.prompt = ''
 
-			this.streamResponse(sessionId, () => {
-				// redirect to the new conversation stream
-				window.location.href = route('chat.session', sessionId)
-			})
-
+			this.streamResponse(this.sessionId)
 		},
-		streamResponse(sessionId, onFinish) {
+		streamResponse(sessionId) {
 			try {
 
 				let message = { role: 'assistant', content: '', state: 'loading' }
@@ -137,7 +188,6 @@ export default defineComponent({
 				eventSource.addEventListener("stop", (event) => {
 					eventSource.close();
 					this.messages[index].state = 'finished'
-					onFinish();
 				});
 
 				eventSource.addEventListener("error", (err) => {
@@ -146,7 +196,7 @@ export default defineComponent({
 				});
 
 			} catch (error) {
-				console.error('There was a problem with the fetch operation:', error);
+				console.error('There was a problem with the streaming operation:', error);
 			}
 		}
 	}

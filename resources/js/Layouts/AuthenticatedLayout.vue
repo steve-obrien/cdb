@@ -1,12 +1,4 @@
 <template>
-	<!--
-    This example requires updating your template:
-
-    ```
-    <html class="h-full bg-white">
-    <body class="h-full">
-    ```
-  -->
 	<div class="h-full">
 		<TransitionRoot as="template" :show="sidebarOpen">
 			<Dialog as="div" class="relative z-50 lg:hidden" @close="sidebarOpen = false">
@@ -55,7 +47,6 @@
 		<!-- Static sidebar for desktop -->
 		<div class="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:block lg:w-20 lg:overflow-y-auto lg:bg-gray-900 lg:pb-4">
 			<div class="flex h-16 shrink-0 items-center justify-center text-white">
-				<!-- <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company" /> -->
 				<svg class="h-5" width="22" height="25" viewBox="0 0 22 25" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<path d="M5.45769 24.2342V9.5455L16.9231 24.2342H20.7335V20.4352L4.7756 0H0V24.2342H5.45769Z" fill="currentColor" />
 					<path d="M16 5.42352L21.4235 5.42352V2.90871e-05L16 2.90871e-05V5.42352Z" fill="currentColor" />
@@ -75,7 +66,7 @@
 		</div>
 
 		<div class="lg:pl-20 h-full flex flex-col">
-			<div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+			<div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm">
 				<button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" @click="sidebarOpen = true">
 					<span class="sr-only">Open sidebar</span>
 					<Bars3Icon class="h-6 w-6" aria-hidden="true" />
@@ -146,16 +137,17 @@ import {
 	HomeIcon,
 	UsersIcon,
 	XMarkIcon,
+	CircleStackIcon
 } from '@heroicons/vue/24/outline'
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 
 const navigation = [
-	{ name: 'Dashboard', href: route('dashboard'), icon: HomeIcon, current: true },
+	{ name: 'Dashboard', href: route('dashboard'), icon: HomeIcon, current: route().current('dashboard')  },
+	{ name: 'Projects', href: route('chat'), icon: FolderIcon, current: route().current('chat*') },
 	{ name: 'Team', href: '#', icon: UsersIcon, current: false },
-	{ name: 'Projects', href: route('chat'), icon: FolderIcon, current: false },
+	{ name: 'Database', href: '#', icon: CircleStackIcon, current: false },
 	{ name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
 	{ name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false },
-	{ name: 'Reports', href: '#', icon: ChartPieIcon, current: false },
 ]
 const userNavigation = [
 	{ name: 'Your profile', href: route('profile.edit') },

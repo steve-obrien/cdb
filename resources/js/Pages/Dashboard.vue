@@ -17,7 +17,7 @@ defineProps({
 			<h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
 		</template>
 
-		<div class="">
+		<div class="p-4 md:p-8">
 			<div class="sm:flex sm:items-center">
 				<div class="sm:flex-auto">
 					<h1 class="text-base font-semibold leading-6 text-gray-900">Users</h1>
