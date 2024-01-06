@@ -54,11 +54,9 @@ class ChatApiController extends Controller
 				return response()->json(['error' => 'Chat session not found'], 404);
 			}
 		}
-		
 
 		/** @var ChatSession $chatSession */
 		$chat = $chatSession->addUserChat($prompt);
-
 
 		return response()->json([
 			'sessionId' => $chatSession->id,
@@ -68,22 +66,8 @@ class ChatApiController extends Controller
 
 	public function chatStream(string $id)
 	{
-		// we could just get the session id and the latest chats....
-
 		/** @var ChatSession $chatSession */
 		$chatSession = ChatSession::findOrFail($id);
-		$chats = $chatSession->chats()
-			->select('role', 'name', 'content')
-			->orderBy('created_at', 'asc')
-			->get();
-
-		// Transform the collection to remove 'name' attribute if it's null
-		$chats->transform(function ($item) {
-			if (is_null($item->name)) unset($item->name);
-			return $item;
-		});
-
-		$messages = $chats->toArray();
 
 		$yourApiKey = env('OPEN_AI_KEY');
 		$client = OpenAI::factory()
@@ -93,7 +77,7 @@ class ChatApiController extends Controller
 
 		$stream = $client->chat()->createStreamed([
 			'model' => 'gpt-4-1106-preview',
-			'messages' => $messages
+			'messages' => $chatSession->getChatsToOpenAiFormat()
 		]);
 
 		$chunks = [];
@@ -102,6 +86,7 @@ class ChatApiController extends Controller
 		$response->setCallback(function () use ($stream, $chunks, $content, $chatSession) {
 
 			try {
+				// Create the chat model
 				/** @var Chat $chat */
 				$chat = $chatSession->chats()->create([
 					'user_id' => auth()->user()->id,
@@ -213,37 +198,5 @@ class ChatApiController extends Controller
 		$response->headers->set('X-Accel-Buffering', 'no');
 		$response->headers->set('Cach-Control', 'no-cache');
 		$response->send();
-	}
-
-	/**
-	 * Store a newly created resource in storage.
-	 */
-	public function store(Request $request)
-	{
-		//
-	}
-
-	/**
-	 * Display the specified resource.
-	 */
-	public function show(string $id)
-	{
-		//
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 */
-	public function update(Request $request, string $id)
-	{
-		//
-	}
-
-	/**
-	 * Remove the specified resource from storage.
-	 */
-	public function destroy(string $id)
-	{
-		//
 	}
 }

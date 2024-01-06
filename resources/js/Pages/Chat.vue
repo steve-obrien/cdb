@@ -4,7 +4,7 @@
 	<ChatLayout :sessions="sessions">
 
 		<div class="grow flex relative">
-			<div ref="chatWindow" class="absolute inset-0 overflow-y-scroll">
+			<div ref="chatWindow" class="absolute inset-0 overflow-y-scroll" @scroll="handleScroll">
 				<div class="px-4 py-8 flex flex-col flex-1 text-base mx-auto gap-5 @md:max-w-3xl @lg:max-w-[40rem] @xl:max-w-[48rem] group final-completion">
 					<div v-if="messages.length == 0">
 						<div class="flex">
@@ -23,9 +23,6 @@
 		</div>
 		<div class="px-4">
 			<PromptForm @send="send" v-model:prompt="prompt"></PromptForm>
-			<div class="text-center">
-				<code class="text-xs">tokens: {{ tokens }}</code>
-			</div>
 		</div>
 
 	</ChatLayout>
@@ -53,6 +50,9 @@ export default defineComponent({
 			// object containing from: 'me'|'ai', "content":"..."
 			messages: [
 			],
+			charsPerToken: 4, // Constant to estimate characters per token
+			tokenCostPerThousand: 0.01,
+			isUserScrollBottom: true
 		}
 	},
 	mounted() {
@@ -65,32 +65,17 @@ export default defineComponent({
 			})
 		})
 	},
-	computed: {
-		tokens() {
-			let tokens = 0
-			this.messages.forEach(message => {
-				tokens += message.content.length / 4
-			})
-			return Math.round(tokens);
-		}
-	},
 	methods: {
-		sessionLink(id) {
-			return route('chat.session', id)
-		},
-		formatMessage(message) {
-			// Set options for marked
-			return marked.parse(message);
+		handleScroll() {
+			let chatWindow = this.$refs.chatWindow;
+			this.isUserScrollBottom = chatWindow.scrollTop + chatWindow.clientHeight >= chatWindow.scrollHeight - 40;
 		},
 		scrollToBottom() {
 			let chatWindow = this.$refs.chatWindow;
-			const isUserAtBottom = chatWindow.scrollTop + chatWindow.clientHeight >= chatWindow.scrollHeight - 20; // 20 is a small threshold
 
 			if (isUserAtBottom) {
 				// Scroll to bottom
 				chatWindow.scrollTo(0, chatWindow.scrollHeight);
-			} else {
-				// Otherwise, do nothing or handle the situation when the user is not at the bottom
 			}
 		},
 		send: async function (payload) {
@@ -114,7 +99,6 @@ export default defineComponent({
 				// redirect to the new conversation stream
 				window.location.href = route('chat.session', sessionId)
 			})
-
 		},
 		streamResponse(sessionId, onFinish) {
 			try {

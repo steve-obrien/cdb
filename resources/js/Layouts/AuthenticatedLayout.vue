@@ -145,9 +145,9 @@ const navigation = [
 	{ name: 'Dashboard', href: route('dashboard'), icon: HomeIcon, current: route().current('dashboard')  },
 	{ name: 'Projects', href: route('chat'), icon: FolderIcon, current: route().current('chat*') },
 	{ name: 'Team', href: '#', icon: UsersIcon, current: false },
-	{ name: 'Database', href: '#', icon: CircleStackIcon, current: false },
-	{ name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-	{ name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false },
+	// { name: 'Database', href: '#', icon: CircleStackIcon, current: false },
+	// { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
+	// { name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false },
 ]
 const userNavigation = [
 	{ name: 'Your profile', href: route('profile.edit') },

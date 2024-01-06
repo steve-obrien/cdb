@@ -23,7 +23,7 @@
 		<div class="px-4">
 			<PromptForm @send="send" v-model:prompt="prompt"></PromptForm>
 			<div class="text-center">
-				<code class="text-xs">tokens: {{ total.tokens }} / cost: {{ total.cost }} - scroll: {{isScrollBottom}}</code>
+				<code class="text-xs">tokens: {{ total.tokens }} / cost: {{ total.cost }} - scroll: {{isUserScrollBottom}}</code>
 			</div>
 		</div>
 
@@ -57,7 +57,7 @@ export default defineComponent({
 			messages: [], // the conversation data
 			charsPerToken: 4, // Constant to estimate characters per token
 			tokenCostPerThousand: 0.01,
-			isScrollBottom: true
+			isUserScrollBottom: true
 		}
 	},
 	mounted() {
@@ -73,24 +73,8 @@ export default defineComponent({
 			this.$refs.chatWindow.scrollTo(0, this.$refs.chatWindow.scrollHeight);
 		})
 		window.chat = this
-
-		// auto response
 	},
 	computed: {
-		tokens() {
-			let tokens = 0
-			this.messages.forEach(message => {
-				tokens += message.content.length / this.charsPerToken
-			})
-			return Math.round(tokens);
-		},
-		cost() {
-			let cost = (this.tokens / 1000) * 0.01;
-			return cost.toFixed(4)
-		},
-		linkChat() {
-			return route('chat')
-		},
 		// Calculate the cost for each message and return an array of the costs
 		messageCosts() {
 			let cumulativeContent = '';
@@ -112,7 +96,6 @@ export default defineComponent({
 			});
 		},
 		// Calculate the total cost for the conversation
-
 		total() {
 			const totalChars = this.messageCosts.reduce((accumulator, cost) => accumulator + cost.length, 0);
 			const tokens = totalChars / this.charsPerToken
@@ -121,25 +104,17 @@ export default defineComponent({
 		}
 	},
 	methods: {
-		linkSession(id) {
-			return route('chat.session', id)
-		},
-
 		handleScroll() {
 			console.log('USER SCROLL')
 			let chatWindow = this.$refs.chatWindow;
-			this.isScrollBottom = chatWindow.scrollTop + chatWindow.clientHeight >= chatWindow.scrollHeight - 40;
+			this.isUserScrollBottom = chatWindow.scrollTop + chatWindow.clientHeight >= chatWindow.scrollHeight - 40;
 		},
-
 		scrollToBottom() {
 			let chatWindow = this.$refs.chatWindow;
-			const isUserAtBottom = chatWindow.scrollTop + chatWindow.clientHeight >= chatWindow.scrollHeight - 40;
 
-			if (isUserAtBottom) {
+			if (this.isUserScrollBottom) {
 				// Scroll to bottom
 				chatWindow.scrollTo(0, chatWindow.scrollHeight);
-			} else {
-				// Otherwise, do nothing or handle the situation when the user is not at the bottom
 			}
 		},
 		send: async function (payload) {

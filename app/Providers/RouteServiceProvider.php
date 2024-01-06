@@ -33,8 +33,8 @@ class RouteServiceProvider extends ServiceProvider
 	{
 		foreach ($this->centralDomains() as $domain) {
 			Route::prefix('api')
-				->domain($domain)
 				->middleware('api')
+				->domain($domain)
 				->namespace($this->namespace)
 				->group(base_path('routes/api.php'));
 		}
@@ -48,7 +48,7 @@ class RouteServiceProvider extends ServiceProvider
 	protected function configureRateLimiting()
 	{
 		RateLimiter::for('api', function (Request $request) {
-			return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+			return Limit::perMinute(500)->by($request->user()?->id ?: $request->ip());
 		});
 	}
 

@@ -28,12 +28,12 @@ Route::get('/', function () {
 	]);
 });
 
-// Route::get('/dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware([App\Http\Middleware\Authenticate::class, 'verified'])->group(function () {
 	Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
 	Route::get('/chat', [ChatController::class, 'chat'])->name('chat');

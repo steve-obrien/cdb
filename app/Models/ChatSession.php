@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 /**
  * @property string $id - uuid
@@ -19,10 +20,10 @@ class ChatSession extends Model
 		'name', 'visibility', 'created_by', 'folder', 'prompt'
 	];
 
-	public function addSystemMessage($content='You are a helpful assistant'): Chat
+	public function addSystemMessage($content = 'You are a helpful assistant'): Chat
 	{
 		return $this->chats()->create([
-			'user_id' => auth()->user()->id, 
+			'user_id' => auth()->user()->id,
 			'content' => $content,
 			'chat_session_id' => $this->id,
 			'role' => 'system',
@@ -36,11 +37,11 @@ class ChatSession extends Model
 	public function addUserChat(string $content): Chat
 	{
 		return $this->chats()->create([
-			'user_id' => auth()->user()->id, 
+			'user_id' => auth()->user()->id,
 			'content' => $content,
 			'chat_session_id' => $this->id,
 			'role' => 'user',
-			'name' => auth()->user()->name, 
+			'name' => auth()->user()->name,
 		]);
 	}
 
@@ -55,6 +56,32 @@ class ChatSession extends Model
 	public function createdBy()
 	{
 		return $this->belongsTo(User::class, 'created_by');
+	}
+
+	/**
+	 * 
+	 */
+	public function getChatsToOpenAiFormat()
+	{
+		$chats = $this->chats()
+			->select('role', 'name', 'content')
+			->orderBy('created_at', 'asc')
+			->get();
+
+		// Transform the collection to remove 'name' attribute if it's null
+		$chats->transform(function ($item) {
+			// Open AI library will error if the name is in the format "Steve OBrien" as it does not allow spaces
+			// in the User message object name property
+			if (! Str::of($item->name)->isMatch('/^[a-zA-Z0-9_-]{1,64}$/')) {
+				// lets try and make a match
+				$item->name = str_replace(' ', '-', $item->name);
+			}
+			// It also gets upset with empty values
+			if (empty($item->name)) unset($item->name);
+			return $item;
+		});
+
+		return $chats->toArray();
 	}
 
 	protected $casts = [
