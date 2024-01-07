@@ -19,7 +19,7 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('chat.{sessionId}', function(User $user, $sessionId) {
-	return true;
+	return ['id' => $user->id, 'name' => $user->name];
 });
 
 

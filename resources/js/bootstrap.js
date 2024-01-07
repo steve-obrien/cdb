@@ -26,6 +26,7 @@ window.axios.defaults.withXSRFToken = true
 import Echo from 'laravel-echo';
 
 import Pusher from 'pusher-js';
+Pusher.logToConsole = false;
 window.Pusher = Pusher;
 
 window.Echo = new Echo({

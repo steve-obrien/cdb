@@ -61,7 +61,6 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/event', function (Request $request) {
 
-
 	// $validated = $request->validate([
 	//     'appId' => ['required', new AppId()],
 	//     'key' => 'required',
@@ -70,14 +69,13 @@ Route::get('/event', function (Request $request) {
 	//     'event' => 'required',
 	//     'data' => 'json',
 	// ]);
-
 	// dd(env('PUSHER_PORT'));
 	
 	$pusher = new Pusher(
-		'cdbkey',
-		'cdbsecret',
-		'cdb',
-		config('broadcasting.connections.pusher.options', [])
+		config('broadcasting.connections.pusher.key', []),
+		config('broadcasting.connections.pusher.secret', []),
+		config('broadcasting.connections.pusher.app_id', []),
+		config('broadcasting.connections.pusher.options', []),
 	);
 	$broadcaster = new PusherBroadcaster($pusher);
 
@@ -86,6 +84,7 @@ Route::get('/event', function (Request $request) {
 		'App\Events\ChatMessage',
 		json_decode('{"message": "hello"}', true)
 	);
+
 	return 'ok';
 });
 

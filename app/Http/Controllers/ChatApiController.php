@@ -59,6 +59,8 @@ class ChatApiController extends Controller
 		/** @var ChatSession $chatSession */
 		$chat = $chatSession->addUserChat($prompt);
 
+		event(new \App\Events\ChatMessage($sessionId, $chat));
+
 		return response()->json([
 			'sessionId' => $chatSession->id,
 			'chat' => $chat
@@ -70,7 +72,7 @@ class ChatApiController extends Controller
 		/** @var ChatSession $chatSession */
 		$chatSession = ChatSession::findOrFail($id);
 
-		$yourApiKey = env('OPEN_AI_KEY');
+		$yourApiKey = config('services.openai.key');
 		$client = OpenAI::factory()
 			->withApiKey($yourApiKey)
 			->withHttpClient($client = new \GuzzleHttp\Client([]))
@@ -103,6 +105,9 @@ class ChatApiController extends Controller
 					$chunks[] = $responseArray;
 					// lets update the database - this is probably a terrible idea
 					$chat->update(['content' => $content, 'chunks' => $chunks]);
+					event(new \App\Events\ChatMessage($chatSession->id, $chat));
+					// server is doing a lot of work
+
 					echo "event: message\n";
 					echo "data: " . json_encode($responseArray) . "\n\n";
 					flush();
@@ -133,7 +138,7 @@ class ChatApiController extends Controller
 	{
 		$prompt = $request->input('prompt');
 
-		$yourApiKey = env('OPEN_AI_KEY');
+		$yourApiKey = config('services.openai.key');
 
 		$client = OpenAI::factory()
 			->withApiKey($yourApiKey)

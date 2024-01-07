@@ -23,8 +23,9 @@
 		<div class="px-4">
 			<PromptForm @send="send" v-model:prompt="prompt"></PromptForm>
 			<div class="text-center">
-				<code class="text-xs">tokens: {{ total.tokens }} / cost: {{ total.cost }} - scroll: {{isUserScrollBottom}}</code>
+				<code class="text-xs">tokens: {{ total.tokens }} / cost: {{ total.cost }} - scroll: {{ isUserScrollBottom }}</code>
 			</div>
+			<button @click="test">TEST</button>
 		</div>
 
 	</ChatLayout>
@@ -39,7 +40,7 @@ import { Link } from '@inertiajs/vue3';
 import PromptForm from './Chat/PromptForm.vue';
 import ChatMessage from './Chat/ChatMessage.vue';
 import { walkTokens } from 'marked';
-
+import Echo from 'laravel-echo';
 
 export default defineComponent({
 	props: {
@@ -57,22 +58,88 @@ export default defineComponent({
 			messages: [], // the conversation data
 			charsPerToken: 4, // Constant to estimate characters per token
 			tokenCostPerThousand: 0.01,
-			isUserScrollBottom: true
+			isUserScrollBottom: true,
+			channel: null
 		}
 	},
 	mounted() {
 		window.chat = this;
-		this.chats.forEach((chat) => {
-			this.messages.push({
-				role: chat.role,
-				content: chat.content,
-				state: 'finished'
-			})
-		})
+		// this.chats.forEach((chat) => {
+		// 	this.messages.push({
+		// 		name: chat.name,
+		// 		user_id: chat.user_id,
+		// 		role: chat.role,
+		// 		content: chat.content,
+		// 		state: 'finished'
+		// 	})
+		// })
+		this.messages = this.chats; 
 		nextTick(() => {
 			this.$refs.chatWindow.scrollTo(0, this.$refs.chatWindow.scrollHeight);
 		})
 		window.chat = this
+
+		// set up sockets:
+		const chatChannel = window.Echo.join(`chat.${this.sessionId}`)
+			.here((users) => {
+				console.log(users, 'here');
+			})
+			.joining((user) => {
+				console.log(user.name);
+			})
+			.leaving((user) => {
+				console.log('LEAVING', user.name);
+			})
+			.error((error) => {
+				console.error(error);
+			});
+		
+		chatChannel.listen('ChatMessage', (e) => {
+
+			console.log(e);
+			// ignore if we are the same user:
+			if (e.message.user_id == this.$page.props.auth.user.id)
+				return
+
+			const chatIndex = this.messages.findIndex(chat => chat.id === e.message.id)
+			
+			if (chatIndex === -1) {
+				// check id exists - if it does not add it:
+				this.messages.push(e.message)
+			} else {
+				// if it does exist update the message
+				this.messages[chatIndex].content = e.message.content;
+			}
+			this.scrollToBottom()
+		})
+		
+
+		// chatChannel.listenForWhisper('typing', (e) => {
+		// 	console.log(e.name);
+		// });
+
+		// chatChannel.whisper('typing', {
+		// 	id: this.$page.props.auth.user.id,
+		// 	name: this.$page.props.auth.user.name
+		// });
+
+
+		// window.Echo.channel('chat').listen('ChatMessage', (e) => {
+		// 	console.log(e.message);
+		// });
+
+		// const channel2 = pusher.subscribe("presence-chat");
+		// channel2.bind("client-msg", (data, metadata) => {
+		// 	console.log(
+		// 		"I received",
+		// 		data,
+		// 		"from user",
+		// 		metadata.user_id,
+		// 		"with user info",
+		// 		channel2.members.get(metadata.user_id).info
+		// 	);
+		// });
+
 	},
 	computed: {
 		// Calculate the cost for each message and return an array of the costs
@@ -81,29 +148,34 @@ export default defineComponent({
 			return this.messages.map((message) => {
 				// Add current message content to the cumulative content
 				cumulativeContent += message.content;
-				let length =  cumulativeContent.length
+				let length = cumulativeContent.length
 				// Calculate tokens based on the cumulative content length so far
 				//return cumulativeContent.length;
 				if (message.role == 'assistant') {
 					// dont include previous messages in cost
 					length = message.content.length
 				}
-				const tokens = length  / this.charsPerToken
+				const tokens = length / this.charsPerToken
 				const cost = (tokens / 1000) * this.tokenCostPerThousand
 				const mesageTokens = message.content.length / this.charsPerToken
 				const messageLength = message.content.length
-				return { role: message.role, length,messageLength, tokens, cost, mesageTokens,  }
+				return { role: message.role, length, messageLength, tokens, cost, mesageTokens, }
 			});
 		},
 		// Calculate the total cost for the conversation
 		total() {
 			const totalChars = this.messageCosts.reduce((accumulator, cost) => accumulator + cost.length, 0);
 			const tokens = totalChars / this.charsPerToken
-			const cost =  (tokens / 1000) * this.tokenCostPerThousand
+			const cost = (tokens / 1000) * this.tokenCostPerThousand
 			return { tokens, cost: cost.toFixed(4) }
 		}
 	},
 	methods: {
+		test() {
+			this.channel.trigger("client-msg", {
+				your: "data",
+			});
+		},
 		handleScroll() {
 			console.log('USER SCROLL')
 			let chatWindow = this.$refs.chatWindow;
@@ -173,7 +245,8 @@ export default defineComponent({
 			} catch (error) {
 				console.error('There was a problem with the streaming operation:', error);
 			}
-		}
+		},
+
 	}
 })
 </script>
