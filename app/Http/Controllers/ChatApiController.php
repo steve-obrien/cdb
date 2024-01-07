@@ -7,6 +7,7 @@ use App\Models\Chat;
 use App\Models\ChatSession;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Broadcast;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ChatApiController extends Controller
@@ -79,6 +80,7 @@ class ChatApiController extends Controller
 			'model' => 'gpt-4-1106-preview',
 			'messages' => $chatSession->getChatsToOpenAiFormat()
 		]);
+
 
 		$chunks = [];
 		$content = '';

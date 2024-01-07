@@ -7,7 +7,9 @@ use App\Http\Controllers\ChatApiController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
+use Illuminate\Http\Request;
+use Illuminate\Broadcasting\Broadcasters\PusherBroadcaster;
+use Pusher\Pusher;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,7 +31,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+	return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
@@ -38,6 +40,8 @@ Route::middleware([App\Http\Middleware\Authenticate::class, 'verified'])->group(
 
 	Route::get('/chat', [ChatController::class, 'chat'])->name('chat');
 	Route::get('/chat/{id}', [ChatController::class, 'chatSession'])->name('chat.session');
+
+
 
 	Route::delete('/chat/{id}', [ChatApiController::class, 'chatSessionDelete'])->name('api.chatSessionDelete');
 	Route::match(['get', 'post'], 'v1/chat/', [ChatApiController::class, 'chat'])->name('api.chat'); // to deprecate
@@ -51,5 +55,39 @@ Route::middleware('auth')->group(function () {
 	Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 	Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+
+
+Route::get('/event', function (Request $request) {
+
+
+	// $validated = $request->validate([
+	//     'appId' => ['required', new AppId()],
+	//     'key' => 'required',
+	//     'secret' => 'required',
+	//     'channel' => 'required',
+	//     'event' => 'required',
+	//     'data' => 'json',
+	// ]);
+
+	// dd(env('PUSHER_PORT'));
+	
+	$pusher = new Pusher(
+		'cdbkey',
+		'cdbsecret',
+		'cdb',
+		config('broadcasting.connections.pusher.options', [])
+	);
+	$broadcaster = new PusherBroadcaster($pusher);
+
+	$broadcaster->broadcast(
+		['chat'],
+		'App\Events\ChatMessage',
+		json_decode('{"message": "hello"}', true)
+	);
+	return 'ok';
+});
+
 
 require __DIR__ . '/auth.php';

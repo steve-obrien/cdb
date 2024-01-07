@@ -1,5 +1,6 @@
 <?php
 
+use \App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -18,5 +19,13 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('chat.{sessionId}', function(User $user, $sessionId) {
+	return true;
+});
+
+
+/**
+ * public channel for all
+ */
+Broadcast::channel('chat', function() {
 	return true;
 });

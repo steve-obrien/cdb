@@ -23,7 +23,9 @@
         "@tailwindcss/container-queries": "^0.1.1",
         "@tailwindcss/typography": "^0.5.10",
         "highlight.js": "^11.9.0",
+        "laravel-echo": "^1.15.3",
         "marked": "^11.1.0",
-        "marked-highlight": "^2.1.0"
+        "marked-highlight": "^2.1.0",
+        "pusher-js": "^8.4.0-rc2"
     }
 }
