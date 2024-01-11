@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Broadcast;
 */
 
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+	return (int) $user->id === (int) $id;
 });
 
 Broadcast::channel('chat.{sessionId}', function(User $user, $sessionId) {
@@ -28,4 +28,17 @@ Broadcast::channel('chat.{sessionId}', function(User $user, $sessionId) {
  */
 Broadcast::channel('chat', function() {
 	return true;
+});
+
+
+/**
+ * Share data with everyone on the team
+ * A prescence chanel
+ */
+Broadcast::channel('team', function(User $user) {
+	return [
+		'id' => $user->id, 
+		'name' => $user->name,
+		'other' => 'other info',
+	];
 });
