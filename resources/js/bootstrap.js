@@ -24,15 +24,42 @@ window.axios.defaults.withXSRFToken = true
  */
 
 import Echo from 'laravel-echo';
-
 import Pusher from 'pusher-js';
-Pusher.logToConsole = false;
-window.Pusher = Pusher;
 
+window.Pusher = Pusher;
+// Enable pusher logging - don't include this in production
+Pusher.logToConsole = true;
+
+
+// laravel websockets
+// window.Echo = new Echo({
+// 	broadcaster: 'pusher',
+// 	key: import.meta.env.VITE_PUSHER_APP_KEY,
+// 	cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
+// 	wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+// 	wsPort: import.meta.env.VITE_PUSHER_PORT ?? 6001,// 80,
+// 	wssPort: import.meta.env.VITE_PUSHER_PORT ?? 6001,// 443,
+// 	forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
+// 	enabledTransports: ['ws', 'wss'],
+// });
+
+// soketi
+// window.Echo = new Echo({
+// 	broadcaster: 'pusher',
+// 	key: import.meta.env.VITE_PUSHER_APP_KEY,
+// 	cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
+// 	wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+// 	wsPort: import.meta.env.VITE_PUSHER_PORT ?? 6001, // 80,
+// 	wssPort: import.meta.env.VITE_PUSHER_PORT ?? 6001, // 443,
+// 	forceTLS: false,
+// 	enabledTransports: ['ws', 'wss'],
+// });
+
+// pusher
 window.Echo = new Echo({
 	broadcaster: 'pusher',
-	key: import.meta.env.VITE_PUSHER_APP_KEY,
-	cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
+	key: 'd0e865d808ad494a0c37',
+	cluster: 'eu',
 	wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
 	wsPort: import.meta.env.VITE_PUSHER_PORT ?? 6001,// 80,
 	wssPort: import.meta.env.VITE_PUSHER_PORT ?? 6001,// 443,

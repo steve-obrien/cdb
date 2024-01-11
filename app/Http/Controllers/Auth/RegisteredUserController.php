@@ -46,6 +46,9 @@ class RegisteredUserController extends Controller
 		]);
 
 		// create the tenant:
+		/**
+		 * @var \App\Models\Tenant $tenant
+		 */
 		$tenant = \App\Models\Tenant::create([
 			'id' => $request->domain
 		]);

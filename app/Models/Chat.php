@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Casts\AsStringable;
 
 /**
  * @property string $id - uuid
+ * @property string $created_at - string
+ * @property string $role - string
  */
 class Chat extends Model
 {

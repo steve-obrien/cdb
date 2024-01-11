@@ -1,5 +1,5 @@
 <template>
-	<Head title="Dashboard" />
+	<Head title="Chat" />
 
 	<ChatLayout :sessions="sessions">
 		<div class="grow flex relative">
@@ -26,6 +26,7 @@
 				<code class="text-xs">tokens: {{ total.tokens }} / cost: {{ total.cost }} - scroll: {{ isUserScrollBottom }}</code>
 			</div>
 			<button @click="test">TEST</button>
+			{{ users }}
 		</div>
 
 	</ChatLayout>
@@ -41,6 +42,7 @@ import PromptForm from './Chat/PromptForm.vue';
 import ChatMessage from './Chat/ChatMessage.vue';
 import { walkTokens } from 'marked';
 import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
 
 export default defineComponent({
 	props: {
@@ -59,33 +61,30 @@ export default defineComponent({
 			charsPerToken: 4, // Constant to estimate characters per token
 			tokenCostPerThousand: 0.01,
 			isUserScrollBottom: true,
-			channel: null
+			channel: null,
+			channelTeam: null,
+			users: {}
 		}
 	},
 	mounted() {
 		window.chat = this;
-		// this.chats.forEach((chat) => {
-		// 	this.messages.push({
-		// 		name: chat.name,
-		// 		user_id: chat.user_id,
-		// 		role: chat.role,
-		// 		content: chat.content,
-		// 		state: 'finished'
-		// 	})
-		// })
-		this.messages = this.chats; 
+		this.messages = this.chats;
+
 		nextTick(() => {
 			this.$refs.chatWindow.scrollTo(0, this.$refs.chatWindow.scrollHeight);
 		})
 		window.chat = this
 
+		// Enable pusher logging - don't include this in production
+		Pusher.logToConsole = true;
+
 		// set up sockets:
 		const chatChannel = window.Echo.join(`chat.${this.sessionId}`)
 			.here((users) => {
-				console.log(users, 'here');
+				console.log(users, 'here y');
 			})
 			.joining((user) => {
-				console.log(user.name);
+				console.log('joining', user.name);
 			})
 			.leaving((user) => {
 				console.log('LEAVING', user.name);
@@ -93,7 +92,7 @@ export default defineComponent({
 			.error((error) => {
 				console.error(error);
 			});
-		
+
 		chatChannel.listen('ChatMessage', (e) => {
 
 			console.log(e);
@@ -102,7 +101,7 @@ export default defineComponent({
 				return
 
 			const chatIndex = this.messages.findIndex(chat => chat.id === e.message.id)
-			
+
 			if (chatIndex === -1) {
 				// check id exists - if it does not add it:
 				this.messages.push(e.message)
@@ -110,35 +109,58 @@ export default defineComponent({
 				// if it does exist update the message
 				this.messages[chatIndex].content = e.message.content;
 			}
-			this.scrollToBottom()
+			nextTick(() => {
+				this.scrollToBottom()
+			})
 		})
-		
 
-		// chatChannel.listenForWhisper('typing', (e) => {
-		// 	console.log(e.name);
-		// });
+		chatChannel.listen('ChatMessageChunk', (e) => {
 
-		// chatChannel.whisper('typing', {
-		// 	id: this.$page.props.auth.user.id,
-		// 	name: this.$page.props.auth.user.name
-		// });
+			console.log(e);
+			// ignore if we are the same user:
+			if (e.message.user_id == this.$page.props.auth.user.id)
+				return
+
+			const chatIndex = this.messages.findIndex(chat => chat.id === e.message.id)
+			if (chatIndex === -1) {
+				// check id exists - if it does not add it:
+				this.messages.push(e.message)
+			} else {
+				// if it does exist update the message
+				this.messages[chatIndex].content += e.contentChunk;
+			}
+			nextTick(() => {
+				this.scrollToBottom()
+			})
+
+		})
 
 
-		// window.Echo.channel('chat').listen('ChatMessage', (e) => {
-		// 	console.log(e.message);
-		// });
+		this.channelTeam = window.Echo.join(`team`)
+			.here((users) => {
+				console.log(users, 'team channel');
+				users.forEach(item => {
+					this.users[item.id] = item
+				})
+			})
+			.joining((user) => {
+				console.log('joining', user.name);
+			})
+			.leaving((user) => {
+				console.log('LEAVING', user.name);
+			})
+			.error((error) => {
+				console.error(error);
+			});
 
-		// const channel2 = pusher.subscribe("presence-chat");
-		// channel2.bind("client-msg", (data, metadata) => {
-		// 	console.log(
-		// 		"I received",
-		// 		data,
-		// 		"from user",
-		// 		metadata.user_id,
-		// 		"with user info",
-		// 		channel2.members.get(metadata.user_id).info
-		// 	);
-		// });
+
+
+
+		this.channelTeam.listenForWhisper('whisper', (data) => {
+			console.log(data);
+		})
+
+		// this.doMouseStuff();
 
 	},
 	computed: {
@@ -171,10 +193,12 @@ export default defineComponent({
 		}
 	},
 	methods: {
+		doMouseStuf() {
+
+		},
 		test() {
-			this.channel.trigger("client-msg", {
-				your: "data",
-			});
+			this.channelTeam.whisper('whisper', { msg: "hello?" })
+
 		},
 		handleScroll() {
 			console.log('USER SCROLL')

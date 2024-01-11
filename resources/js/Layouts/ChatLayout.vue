@@ -7,7 +7,7 @@
 		</template>
 
 		<div class="flex h-full">
-			<div class="h-full relative w-80 flex flex-col stretch">
+			<div class="hidden lg:flex h-full relative lg:w-60 xl:w-80 flex-col stretch ">
 				<div class="shrink p-2">
 					<Link :href="linkChat" class="flex">
 					<div class="grow">Create new</div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PusherTest;
 use \OpenAI;
 use App\Models\Chat;
 use App\Models\ChatSession;
@@ -12,6 +13,10 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ChatApiController extends Controller
 {
+	public function testPing()
+	{
+		event(new \App\Events\PusherTest('hello world'));
+	}
 	public function chatSessionDelete($sessionId)
 	{
 		/** @var ChatSession $session */
@@ -101,12 +106,15 @@ class ChatApiController extends Controller
 
 				foreach ($stream as $response) {
 					$responseArray = $response->choices[0]->toArray();
-					$content .= Arr::get($responseArray, 'delta.content', '');
+					$contentChunk = Arr::get($responseArray, 'delta.content', '');
+					$content .= $contentChunk;
 					$chunks[] = $responseArray;
-					// lets update the database - this is probably a terrible idea
+					// lets update the database - we do this per stream which is a little excessive.
 					$chat->update(['content' => $content, 'chunks' => $chunks]);
-					event(new \App\Events\ChatMessage($chatSession->id, $chat));
-					// server is doing a lot of work
+					// send push messages to listening clients
+					// to avoid lots of network noise lets just send the new part:
+					// event(new \App\Events\ChatMessage($chatSession->id, $chat));
+					event(new \App\Events\ChatMessageChunk($chatSession->id, $chat, $contentChunk));
 
 					echo "event: message\n";
 					echo "data: " . json_encode($responseArray) . "\n\n";
@@ -174,9 +182,7 @@ class ChatApiController extends Controller
 		$response = new StreamedResponse();
 		$response->setCallback(function () use ($stream, $chunks, $message) {
 
-
 			// $message .= $aiMessage['delta']['content'];
-
 			foreach ($stream as $response) {
 				$responseArray = $response->choices[0]->toArray();
 				$message .= Arr::get($responseArray, 'delta.content', '');
