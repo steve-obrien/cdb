@@ -10,6 +10,8 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Broadcasting\Broadcasters\PusherBroadcaster;
 use Pusher\Pusher;
+use Symfony\Component\HttpKernel\Profiler\Profile;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -54,9 +56,10 @@ Route::middleware('auth')->group(function () {
 	Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 	Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 	Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+	Route::delete('/profile/other-browser-sessions', [ProfileController::class, 'destroyOtherBrowserSessions'])
+            ->name('profile.destroyOtherBrowserSessions');
 });
-
-
 
 
 Route::get('/event', function (Request $request) {

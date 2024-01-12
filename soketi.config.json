@@ -5,7 +5,8 @@
 		{
 			"id": "1736725",
 			"key": "d0e865d808ad494a0c37",
-			"secret": "942ba33711a6be54e474"
+			"secret": "942ba33711a6be54e474",
+			"enableClientMessages": true
 		}
 	]
 }

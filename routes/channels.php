@@ -14,21 +14,25 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
+Broadcast::channel('App.Models.User.{id}', function (User $user, $id) {
 	return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('chat.{sessionId}', function(User $user, $sessionId) {
-	return ['id' => $user->id, 'name' => $user->name];
+Broadcast::channel('chat.{sessionId}', function(User $user, string $sessionId) {
+	return [
+		'id' => $user->id, 
+		'name' => $user->name,
+		'other' => 'other info',
+	];
 });
 
 
 /**
  * public channel for all
  */
-Broadcast::channel('chat', function() {
-	return true;
-});
+// Broadcast::channel('chat', function() {
+// 	return true;
+// });
 
 
 /**
