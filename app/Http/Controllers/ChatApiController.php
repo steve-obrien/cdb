@@ -112,7 +112,7 @@ class ChatApiController extends Controller
 					// lets update the database - we do this per stream which is a little excessive.
 					$chat->update(['content' => $content, 'chunks' => $chunks]);
 					// send push messages to listening clients
-					// to avoid lots of network noise lets just send the new part:
+					// to avoid lots of network noise and work around Pusher 1024 packet size limit - lets just send the new part:
 					// event(new \App\Events\ChatMessage($chatSession->id, $chat));
 					event(new \App\Events\ChatMessageChunk($chatSession->id, $chat, $contentChunk));
 

@@ -42,7 +42,11 @@ import PromptForm from './Chat/PromptForm.vue';
 import ChatMessage from './Chat/ChatMessage.vue';
 import { walkTokens } from 'marked';
 import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
+import { alertcenter } from 'googleapis/build/src/apis/alertcenter';
+
+const collect = function(items) {
+	return items
+}
 
 export default defineComponent({
 	props: {
@@ -66,6 +70,9 @@ export default defineComponent({
 			users: {}
 		}
 	},
+	unmounted() {
+		window.Echo.leave(`chat.${this.sessionId}`)
+	},
 	mounted() {
 		window.chat = this;
 		this.messages = this.chats;
@@ -73,25 +80,43 @@ export default defineComponent({
 		nextTick(() => {
 			this.$refs.chatWindow.scrollTo(0, this.$refs.chatWindow.scrollHeight);
 		})
-		window.chat = this
-
-		// Enable pusher logging - don't include this in production
-		Pusher.logToConsole = true;
 
 		// set up sockets:
 		const chatChannel = window.Echo.join(`chat.${this.sessionId}`)
 			.here((users) => {
-				console.log(users, 'here y');
+				console.log(users, 'chat session channel');
+				users.forEach(item => {
+					this.users[item.id] = item
+				})
 			})
 			.joining((user) => {
 				console.log('joining', user.name);
+				this.users[user.id] = user
 			})
 			.leaving((user) => {
-				console.log('LEAVING', user.name);
+				if (this.$page.props.auth.user.id !== user.id)
+				delete this.users[user.id]
 			})
 			.error((error) => {
 				console.error(error);
 			});
+
+		// this.channelTeam = window.Echo.join(`team`)
+		// 	.here((users) => {
+		// 		console.log(users, 'team channel');
+		// 		users.forEach(item => {
+		// 			this.users[item.id] = item
+		// 		})
+		// 	})
+		// 	.joining((user) => {
+		// 		console.log('joining', user.name);
+		// 	})
+		// 	.leaving((user) => {
+		// 		console.log('LEAVING', user.name);
+		// 	})
+		// 	.error((error) => {
+		// 		console.error(error);
+		// 	});
 
 		chatChannel.listen('ChatMessage', (e) => {
 
@@ -136,32 +161,6 @@ export default defineComponent({
 		})
 
 
-		this.channelTeam = window.Echo.join(`team`)
-			.here((users) => {
-				console.log(users, 'team channel');
-				users.forEach(item => {
-					this.users[item.id] = item
-				})
-			})
-			.joining((user) => {
-				console.log('joining', user.name);
-			})
-			.leaving((user) => {
-				console.log('LEAVING', user.name);
-			})
-			.error((error) => {
-				console.error(error);
-			});
-
-
-
-
-		this.channelTeam.listenForWhisper('whisper', (data) => {
-			console.log(data);
-		})
-
-		// this.doMouseStuff();
-
 	},
 	computed: {
 		// Calculate the cost for each message and return an array of the costs
@@ -193,12 +192,8 @@ export default defineComponent({
 		}
 	},
 	methods: {
-		doMouseStuf() {
-
-		},
 		test() {
-			this.channelTeam.whisper('whisper', { msg: "hello?" })
-
+			window.app.channelTeam.whisper('whisper', { msg: "hello?" })
 		},
 		handleScroll() {
 			console.log('USER SCROLL')
