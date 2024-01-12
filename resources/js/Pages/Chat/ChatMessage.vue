@@ -4,6 +4,8 @@
 		<div>
 			<div class="mt-1 font-semibold">{{ message.name ?? 'You' }}</div>
 			<div v-html="formatMessage(message.content)" class="prose"></div>
+
+			{{ message }}
 		</div>
 	</div>
 

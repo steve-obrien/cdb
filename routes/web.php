@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Broadcasting\Broadcasters\PusherBroadcaster;
 use Pusher\Pusher;
 use Symfony\Component\HttpKernel\Profiler\Profile;
-
+use App\Models\User;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,7 +30,14 @@ Route::get('/', function () {
 		'laravelVersion' => Application::VERSION,
 		'phpVersion' => PHP_VERSION,
 	]);
+
 });
+
+// user avatar image
+Route::get('/avatar/{id}', function ($id) {
+	$user = User::findOrFail($id);
+	return $user->avatarUrl;
+})->name('dashboard');
 
 Route::get('/dashboard', function () {
 	return Inertia::render('Dashboard');

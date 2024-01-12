@@ -19,14 +19,13 @@
 							</TransitionChild>
 
 							<div class="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-2 ring-1 ring-white/10">
-								<div class="flex h-16 shrink-0 items-center text-white">
-									<!-- <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company" /> -->
+								<a class="flex h-16 shrink-0 items-center text-white">
 									<svg class="h-5" width="22" height="25" viewBox="0 0 22 25" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<path d="M5.45769 24.2342V9.5455L16.9231 24.2342H20.7335V20.4352L4.7756 0H0V24.2342H5.45769Z" fill="currentColor" />
 										<path d="M16 5.42352L21.4235 5.42352V2.90871e-05L16 2.90871e-05V5.42352Z" fill="currentColor" />
 									</svg>
 
-								</div>
+								</a>
 								<nav class="flex flex-1 flex-col">
 									<ul role="list" class="-mx-2 flex-1 space-y-1">
 										<li v-for="item in navigation" :key="item.name">
@@ -46,20 +45,19 @@
 
 		<!-- Static sidebar for desktop -->
 		<div class="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:block lg:w-20 lg:overflow-y-auto lg:bg-gray-900 lg:pb-4">
-			<div class="flex h-16 shrink-0 items-center justify-center text-white">
+			<Link :href="dashboardHref" class="flex h-16 shrink-0 items-center justify-center text-white">
 				<svg class="h-5" width="22" height="25" viewBox="0 0 22 25" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<path d="M5.45769 24.2342V9.5455L16.9231 24.2342H20.7335V20.4352L4.7756 0H0V24.2342H5.45769Z" fill="currentColor" />
 					<path d="M16 5.42352L21.4235 5.42352V2.90871e-05L16 2.90871e-05V5.42352Z" fill="currentColor" />
 				</svg>
-
-			</div>
+			</Link>
 			<nav class="mt-8">
 				<ul role="list" class="flex flex-col items-center space-y-1">
 					<li v-for="item in navigation" :key="item.name">
-						<a :href="item.href" :class="[item.current ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800', 'group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold']">
+						<Link :href="item.href" :class="[item.current ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800', 'group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold']">
 							<component :is="item.icon" class="h-6 w-6 shrink-0" aria-hidden="true" />
 							<span class="sr-only">{{ item.name }}</span>
-						</a>
+						</Link>
 					</li>
 				</ul>
 			</nav>
@@ -91,7 +89,7 @@
 						<Menu as="div" class="relative">
 							<MenuButton class="-m-1.5 flex items-center p-1.5">
 								<span class="sr-only">Open user menu</span>
-								<img class="h-8 w-8 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+								<img class="h-8 w-8 rounded-full bg-gray-50" :src="$page.props.auth.user.avatar_url" :alt="$page.props.auth.user.name || $page.props.auth.user.email" />
 								<span class="hidden lg:flex lg:items-center">
 
 									<span class="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
@@ -153,6 +151,7 @@ const userNavigation = [
 	{ name: 'Your profile', href: route('profile.edit') },
 	{ name: 'Sign out', href: route('logout'), method: 'post', as: 'button' },
 ]
+const dashboardHref = route('dashboard')
 
 const sidebarOpen = ref(false)
 </script>

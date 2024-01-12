@@ -5,6 +5,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import ActionSection from '@/Components/ActionSection.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 defineProps({
 	mustVerifyEmail: {
@@ -16,11 +17,47 @@ defineProps({
 });
 
 const user = usePage().props.auth.user;
+const photoInput = ref(null);
+const photoPreview = ref(null);
 
 const form = useForm({
 	name: user.name,
 	email: user.email,
+	photo: null
 });
+
+const updateProfileInformation = () => {
+    if (photoInput.value) {
+        form.photo = photoInput.value.files[0];
+    }
+
+    // form.post(route('user-profile-information.update'), {
+    //     errorBag: 'updateProfileInformation',
+    //     preserveScroll: true,
+    //     onSuccess: () => clearPhotoFileInput(),
+    // });
+};
+
+const updatePhotoPreview = () => {
+    const photo = photoInput.value.files[0];
+
+    if (! photo) return;
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+        photoPreview.value = e.target.result;
+    };
+
+    reader.readAsDataURL(photo);
+};
+
+
+const selectNewPhoto = () => {
+    photoInput.value.click();
+};
+
+
 </script>
 
 <template>
@@ -30,7 +67,48 @@ const form = useForm({
 		<template #description>Update your account's profile information and email address.</template>
 
 		<template #content>
-			<form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
+			<form @submitted="updateProfileInformation" @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
+
+				<!-- Profile Photo -->
+				<div class="col-span-6 sm:col-span-4">
+					<!-- Profile Photo File Input -->
+					<input
+					id="photo"
+					ref="photoInput"
+					type="file"
+					class="hidden"
+					@change="updatePhotoPreview">
+
+					<InputLabel for="photo" value="Photo" />
+
+					<!-- Current Profile Photo -->
+					<div v-show="!photoPreview" class="mt-2">
+						<img :src="user.avatar_url" :alt="user.name" class="rounded-full h-20 w-20 object-cover">
+					</div>
+
+					<!-- New Profile Photo Preview -->
+					<div v-show="photoPreview" class="mt-2">
+						<span
+						class="block rounded-full w-20 h-20 bg-cover bg-no-repeat bg-center"
+						:style="'background-image: url(\'' + photoPreview + '\');'" />
+					</div>
+
+					<SecondaryButton class="mt-2 me-2" type="button" @click.prevent="selectNewPhoto">
+						Select A New Photo
+					</SecondaryButton>
+
+					<SecondaryButton
+					v-if="user.profile_photo_path"
+					type="button"
+					class="mt-2"
+					@click.prevent="deletePhoto">
+						Remove Photo
+					</SecondaryButton>
+
+					<InputError :message="form.errors.photo" class="mt-2" />
+				</div>
+
+
 				<div>
 					<InputLabel for="name" value="Name" />
 
