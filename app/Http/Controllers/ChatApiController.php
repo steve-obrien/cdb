@@ -23,7 +23,10 @@ class ChatApiController extends Controller
 		$session = ChatSession::findOrFail($sessionId);
 		return $session->delete();
 	}
-	// create chat session:
+	
+	/**
+	 * 
+	 */
 	public function chatSessionStart(Request $request)
 	{
 		$prompt = $request->post('prompt');
@@ -68,7 +71,7 @@ class ChatApiController extends Controller
 
 		return response()->json([
 			'sessionId' => $chatSession->id,
-			'chat' => $chat
+			'chat' => $chat->load('user')
 		]);
 	}
 

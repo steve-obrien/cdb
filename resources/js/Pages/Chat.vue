@@ -28,7 +28,7 @@
 	</ChatLayout>
 </template>
 <script >
-import ChatLayout from '@/Layouts/ChatLayout.vue';
+import ChatLayout from '@/Pages/Chat/ChatLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { defineComponent, ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
@@ -64,6 +64,21 @@ export default defineComponent({
 				state: 'finished'
 			})
 		})
+		// fetch sessions.
+		window.Echo.join('team')
+			.listen('.ChatSessionCreated',(e) => {
+				console.log('EVENT', e)
+			})
+			.listen('.ChatSessionUpdated',(e) => {
+				console.log('EVENT', e)
+			})
+			.listen('ChatSessionCreated', (e) => {
+				console.log('ChatSession created:', e.chatSession);
+			});
+
+
+			// set up sockets:
+			
 	},
 	methods: {
 		handleScroll() {

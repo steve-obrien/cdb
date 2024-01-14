@@ -6,29 +6,24 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\AsStringable;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 /**
  * @property string $id - uuid
  * @property string $created_at - string
  * @property string $role - string
  */
-class Chat extends Model
+class File extends Model
 {
-	use HasFactory, HasUuids;
+	use HasFactory, HasUlids;
 
 	protected $guarded = [];
 
-	protected $casts = [
-		'chunks' => 'array',
-	];
-
 	/**
-     * Get the phone associated with the user.
+     * The table associated with the model.
+     *
+     * @var string
      */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+    protected $table = 'filefly_files';
+
 }

@@ -3,7 +3,8 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+		"soketi": "soketi start --config=./soketi.config.json"
     },
     "devDependencies": {
         "@inertiajs/vue3": "^1.0.0",

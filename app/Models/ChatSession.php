@@ -7,13 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\BroadcastsEvents;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
 
 /**
  * @property string $id - uuid
  */
 class ChatSession extends Model
 {
-	use HasUuids, SoftDeletes;
+	use HasUuids, SoftDeletes, BroadcastsEvents;
 
 	// Fillable Fields
 	protected $fillable = [
@@ -72,7 +75,7 @@ class ChatSession extends Model
 		$chats->transform(function ($item) {
 			// Open AI library will error if the name is in the format "Steve OBrien" as it does not allow spaces
 			// in the User message object name property
-			if (! Str::of($item->name)->isMatch('/^[a-zA-Z0-9_-]{1,64}$/')) {
+			if (!Str::of($item->name)->isMatch('/^[a-zA-Z0-9_-]{1,64}$/')) {
 				// lets try and make a match
 				$item->name = str_replace(' ', '-', $item->name);
 			}
@@ -87,4 +90,14 @@ class ChatSession extends Model
 	protected $casts = [
 		'folder' => 'array',
 	];
+
+	/**
+	 * Get the channels that model events should broadcast on.
+	 *
+	 * @return array<int, \Illuminate\Broadcasting\Channel|\Illuminate\Database\Eloquent\Model>
+	 */
+	public function broadcastOn(string $event): array
+	{
+		return [new PrivateChannel('team')];
+	}
 }

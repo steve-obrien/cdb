@@ -1,11 +1,10 @@
 <template>
 	<div class="flex" v-if="message.role == 'user'">
-		<img class="h-8 w-8 min-w-8 mr-2 rounded-full" alt="User" loading="lazy" width="24" height="24" src="https://lh3.googleusercontent.com/a/ALm5wu3lSHCzoDzK3aqjxSzMOB6O_gJTDDJTX7zKrJx02BE=s96-c" style="color: transparent;">
+		<img class="h-8 w-8 min-w-8 mr-2 rounded-full" alt="User" loading="lazy" width="24" height="24" 
+			:src="message.user.avatar_url" style="color: transparent;">
 		<div>
 			<div class="mt-1 font-semibold">{{ message.name ?? 'You' }}</div>
 			<div v-html="formatMessage(message.content)" class="prose"></div>
-
-			{{ message }}
 		</div>
 	</div>
 

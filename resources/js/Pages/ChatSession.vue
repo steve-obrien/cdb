@@ -25,15 +25,20 @@
 			<div class="text-center">
 				<code class="text-xs">tokens: {{ total.tokens }} / cost: {{ total.cost }} - scroll: {{ isUserScrollBottom }}</code>
 			</div>
-			<button @click="test">TEST</button>
-			{{ users }}
+			
+			<div class="flex">
+				<button @click="test">TEST</button>
+				<div v-for="user in users" :key="user.id" >
+					<img class="h-4 w-4 rounded-full bg-gray-50" :src="user.avatar_url" alt="Dave Zulauf">
+				</div>
+			</div>
 		</div>
 
 	</ChatLayout>
 </template>
 
 <script lang="ts">
-import ChatLayout from '@/Layouts/ChatLayout.vue';
+import ChatLayout from '@/Pages/Chat/ChatLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { defineComponent, ref, nextTick } from 'vue';
 // import 'highlight.js/styles/vs.css';
@@ -99,6 +104,18 @@ export default defineComponent({
 			})
 			.error((error) => {
 				console.error(error);
+			});
+
+
+		window.Echo.private('team')
+			.listen('.ChatSessionCreated',(e) => {
+				console.log('EVENT', e)
+			})
+			.listen('.ChatSessionUpdated',(e) => {
+				console.log('EVENT', e)
+			})
+			.listenToAll((e) => {
+				console.log('EVENT', e)
 			});
 
 		// this.channelTeam = window.Echo.join(`team`)

@@ -2,17 +2,20 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail as EmailVerify;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Support\Str;
 
-class User extends Authenticatable
+class User extends Authenticatable // implements EmailVerify
 {
-	use HasApiTokens, HasFactory, Notifiable;
+	use HasApiTokens, HasFactory, Notifiable; // MustVerifyEmail;
 
 	/**
 	 * The attributes that are mass assignable.
@@ -70,6 +73,7 @@ class User extends Authenticatable
 			return mb_substr($segment, 0, 1);
 		})->join(' '));
 
+		return  'https://www.gravatar.com/avatar/'.md5(Str::lower($this->email)).'?s=200';
 		return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=7F9CF5&background=EBF4FF';
 	}
 

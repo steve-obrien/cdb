@@ -22,7 +22,7 @@ class ChatController extends Controller
 	{
 		$session = ChatSession::findOrFail($id);
 		return Inertia::render('ChatSession', [
-			'chats' => $session->chats()->get(),
+			'chats' => $session->chats()->with('user')->get(),
 			'sessions' => ChatSession::orderByDesc('created_at')->get(),
 			'sessionId' => $id,
 		]);

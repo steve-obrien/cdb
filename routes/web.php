@@ -39,18 +39,12 @@ Route::get('/avatar/{id}', function ($id) {
 	return $user->avatarUrl;
 })->name('dashboard');
 
-Route::get('/dashboard', function () {
-	return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
-
-Route::middleware([App\Http\Middleware\Authenticate::class, 'verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 	Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
 	Route::get('/chat', [ChatController::class, 'chat'])->name('chat');
 	Route::get('/chat/{id}', [ChatController::class, 'chatSession'])->name('chat.session');
-
-
 
 	Route::delete('/chat/{id}', [ChatApiController::class, 'chatSessionDelete'])->name('api.chatSessionDelete');
 	Route::match(['get', 'post'], 'v1/chat/', [ChatApiController::class, 'chat'])->name('api.chat'); // to deprecate

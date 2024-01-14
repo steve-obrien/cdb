@@ -22,7 +22,7 @@ Broadcast::channel('chat.{sessionId}', function(User $user, string $sessionId) {
 	return [
 		'id' => $user->id,
 		'name' => $user->name,
-		//'avatar_url' => $user->avatar_url
+		'avatar_url' => $user->avatar_url
 	];
 });
 
@@ -40,10 +40,5 @@ Broadcast::channel('chat.{sessionId}', function(User $user, string $sessionId) {
  * A prescence chanel
  */
 Broadcast::channel('team', function(User $user) {
-	dd('POOP');
-	return [
-		'id' => $user->id, 
-		'name' => $user->name,
-		'other' => 'other info',
-	];
+	return true;
 });
