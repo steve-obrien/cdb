@@ -18,8 +18,19 @@ class ChatMessage implements ShouldBroadcastNow
 
 	public function __construct($sessionId, Chat $message)
 	{
-		$this->message = $message;
 		$this->sessionId = $sessionId;
+		$this->message = [
+			'id' => $message->id,
+			'role' => $message->role,
+			'created_at' => $message->created_at,
+			'content' => $message->content,
+			'user_id' => $message->user_id,
+			'user' => [
+				'name' => $message->user->name,
+				'avatar_url' =>  $message->user->avatar_url,
+				'id' =>  $message->user->id,
+			]
+		];
 	}
 
 	public function broadcastOn()

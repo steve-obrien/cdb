@@ -50,21 +50,21 @@ Route::middleware([
 
 });
 
-Route::middleware([
-	'web',
-	InitializeTenancyByDomain::class,
-	PreventAccessFromCentralDomains::class,
-])->group(function () {
+// Route::middleware([
+// 	'web',
+// 	InitializeTenancyByDomain::class,
+// 	PreventAccessFromCentralDomains::class,
+// ])->group(function () {
 
-	Route::get('/', function () {
-		return Inertia::render('Welcome', [
-			'canLogin' => Route::has('login'),
-			'canRegister' => Route::has('register'),
-			'laravelVersion' => Application::VERSION,
-			'phpVersion' => PHP_VERSION,
-		]);
-	});
-});
+// 	Route::get('/', function () {
+// 		return Inertia::render('Welcome', [
+// 			'canLogin' => Route::has('login'),
+// 			'canRegister' => Route::has('register'),
+// 			'laravelVersion' => Application::VERSION,
+// 			'phpVersion' => PHP_VERSION,
+// 		]);
+// 	});
+// });
 
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');

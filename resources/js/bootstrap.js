@@ -43,25 +43,25 @@ Pusher.logToConsole = true;
 // 	enabledTransports: ['ws', 'wss'],
 // });
 // soketi
-window.Echo = new Echo({
-	broadcaster: 'pusher',
-	key: import.meta.env.VITE_PUSHER_APP_KEY,
-	cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
-	wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
-	wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
-	wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
-	forceTLS: import.meta.env.VITE_PUSHER_FORCE_TLS === 'false' ? false : true,
-	enabledTransports: ['ws', 'wss'],
-});
-
-// pusher
 // window.Echo = new Echo({
 // 	broadcaster: 'pusher',
-// 	key: 'd0e865d808ad494a0c37',
-// 	cluster: 'eu',
+// 	key: import.meta.env.VITE_PUSHER_APP_KEY,
+// 	cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
 // 	wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
-// 	wsPort: import.meta.env.VITE_PUSHER_PORT,
-// 	wssPort: import.meta.env.VITE_PUSHER_PORT,
-// 	forceTLS: import.meta.env.VITE_PUSHER_FORCE_TLS,
+// 	wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
+// 	wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
+// 	forceTLS: import.meta.env.VITE_PUSHER_FORCE_TLS === 'false' ? false : true,
 // 	enabledTransports: ['ws', 'wss'],
 // });
+
+// pusher
+window.Echo = new Echo({
+	broadcaster: 'pusher',
+	key: 'd0e865d808ad494a0c37',
+	cluster: 'eu',
+	wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+	wsPort: import.meta.env.VITE_PUSHER_PORT,
+	wssPort: import.meta.env.VITE_PUSHER_PORT,
+	forceTLS: import.meta.env.VITE_PUSHER_FORCE_TLS,
+	enabledTransports: ['ws', 'wss'],
+});

@@ -30,7 +30,6 @@ Route::get('/', function () {
 		'laravelVersion' => Application::VERSION,
 		'phpVersion' => PHP_VERSION,
 	]);
-
 });
 
 // user avatar image

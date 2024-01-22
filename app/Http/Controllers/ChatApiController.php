@@ -67,8 +67,11 @@ class ChatApiController extends Controller
 		/** @var ChatSession $chatSession */
 		$chat = $chatSession->addUserChat($prompt);
 
-		event(new \App\Events\ChatMessage($sessionId, $chat));
-
+		try {
+			event(new \App\Events\ChatMessage($sessionId, $chat));
+		}catch(\Throwable $e) {
+			report($e);
+		}
 		return response()->json([
 			'sessionId' => $chatSession->id,
 			'chat' => $chat->load('user')
@@ -116,8 +119,11 @@ class ChatApiController extends Controller
 					$chat->update(['content' => $content, 'chunks' => $chunks]);
 					// send push messages to listening clients
 					// to avoid lots of network noise and work around Pusher 1024 packet size limit - lets just send the new part:
-					// event(new \App\Events\ChatMessage($chatSession->id, $chat));
-					event(new \App\Events\ChatMessageChunk($chatSession->id, $chat, $contentChunk));
+					try {
+						event(new \App\Events\ChatMessageChunk($chatSession->id, $chat, $contentChunk));
+					} catch(\Throwable $e) {
+						report($e);
+					}
 
 					echo "event: message\n";
 					echo "data: " . json_encode($responseArray) . "\n\n";
