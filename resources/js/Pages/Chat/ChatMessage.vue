@@ -3,31 +3,31 @@
 		<img class="h-8 w-8 min-w-8 mr-2 rounded-full" alt="User" loading="lazy" width="24" height="24" 
 			:src="message.user.avatar_url" style="color: transparent;">
 		<div>
-			<div class="mt-1 font-semibold">{{ message.name ?? 'You' }}</div>
-			<div v-html="formatMessage(message.content)" class="prose"></div>
+			<div class="mt-1 font-semibold text-black dark:text-white">{{ message.name ?? 'You' }}</div>
+			<div v-html="formatMessage(message.content)" class="prose dark:prose-invert"></div>
 		</div>
 	</div>
 
 	<div class="flex" v-else-if="message.role == 'assistant'">
-		<div class="h-8 w-8 min-w-8 mr-2 rounded-full flex items-center justify-center bg-black text-white">AI</div>
+		<div class="h-8 w-8 min-w-8 mr-2 rounded-full flex items-center justify-center bg-black text-white ">AI</div>
 		<div>
-			<div class="mt-1 font-semibold">ChatGPT</div>
+			<div class="mt-1 font-semibold text-black dark:text-white ">ChatGPT</div>
 			<div v-if="message.state == 'loading'">
 				<span class="relative flex h-2 w-2 mt-1">
-					<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-75"></span>
+					<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-black dark:bg-white opacity-75"></span>
 					<span class="relative inline-flex rounded-full h-2 w-2 bg-gray-800/50"></span>
 				</span>
 			</div>
-			<div v-else-if="message.state == 'streaming'" class="prose" v-html="formatMessage(message.content)"></div>
-			<div v-else v-html="formatMessage(message.content)" class="prose"></div>
+			<div v-else-if="message.state == 'streaming'" class="prose dark:prose-invert" v-html="formatMessage(message.content)"></div>
+			<div v-else class="prose dark:prose-invert" v-html="formatMessage(message.content)" ></div>
 		</div>
 	</div>
 
 	<div class="flex" v-else>
 		<div class="h-8 w-8 min-w-8 mr-2 rounded-full flex items-center justify-center bg-black text-white">AI</div>
 		<div>
-			<div class="mt-1 font-semibold">ChatGPT - {{ message.role }}</div>
-			<div>{{ message.content }}</div>
+			<div class="mt-1 font-semibold text-black dark:text-white">ChatGPT - {{ message.role }}</div>
+			<div class="prose dark:prose-invert">{{ message.content }}</div>
 		</div>
 	</div>
 </template>

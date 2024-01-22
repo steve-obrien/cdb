@@ -10,8 +10,8 @@
 						<div class="flex">
 							<div class="h-8 w-8 min-w-8 mr-2 rounded-full flex items-center justify-center bg-black text-white">AI</div>
 							<div>
-								<div class="mt-1 font-semibold">ChatGPT</div>
-								<div class="prose">How can I help you today?</div>
+								<div class="mt-1 font-semibold text-black dark:text-white">ChatGPT</div>
+								<div class="prose dark:prose-invert">How can I help you today?</div>
 							</div>
 						</div>
 					</div>

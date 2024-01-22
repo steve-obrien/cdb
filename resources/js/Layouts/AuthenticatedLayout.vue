@@ -24,7 +24,6 @@
 										<path d="M5.45769 24.2342V9.5455L16.9231 24.2342H20.7335V20.4352L4.7756 0H0V24.2342H5.45769Z" fill="currentColor" />
 										<path d="M16 5.42352L21.4235 5.42352V2.90871e-05L16 2.90871e-05V5.42352Z" fill="currentColor" />
 									</svg>
-
 								</a>
 								<nav class="flex flex-1 flex-col">
 									<ul role="list" class="-mx-2 flex-1 space-y-1">
@@ -64,7 +63,7 @@
 		</div>
 
 		<div class="lg:pl-20 h-full flex flex-col">
-			<div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm">
+			<div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 dark:border-black bg-white dark:bg-gray-800 px-4 shadow-sm">
 				<button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" @click="sidebarOpen = true">
 					<span class="sr-only">Open sidebar</span>
 					<Bars3Icon class="h-6 w-6" aria-hidden="true" />
@@ -92,7 +91,7 @@
 								<img class="h-8 w-8 rounded-full bg-gray-50" :src="$page.props.auth.user.avatar_url" :alt="$page.props.auth.user.name || $page.props.auth.user.email" />
 								<span class="hidden lg:flex lg:items-center">
 
-									<span class="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
+									<span class="ml-4 text-sm font-semibold leading-6 text-gray-900 dark:text-gray-200" aria-hidden="true">
 										{{ $page.props.auth.user.name || $page.props.auth.user.email }}
 									</span>
 									<ChevronDownIcon class="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
