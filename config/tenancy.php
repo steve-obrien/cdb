@@ -17,7 +17,7 @@ return [
      * Only relevant if you're using the domain or subdomain identification middleware.
      */
     'central_domains' => [
-		'cdb.test',
+		env('APP_URL', 'cdb.test'),
         // '127.0.0.1',
         // 'localhost',
     ],
