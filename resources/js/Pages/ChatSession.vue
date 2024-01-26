@@ -106,7 +106,6 @@ export default defineComponent({
 				console.error(error);
 			});
 
-
 		chatChannel.listen('ChatMessage', (e) => {
 			this.addChatChunk(e.message)
 			console.log(e);
@@ -116,7 +115,6 @@ export default defineComponent({
 			this.addChatChunk(e.message)
 			console.log(e);
 		})
-
 
 	},
 	computed: {
@@ -154,8 +152,14 @@ export default defineComponent({
 			if (message.user_id == this.$page.props.auth.user.id)
 				return
 
-			const chatIndex = this.messages.findIndex(chat => chat.id === message.id)
+			this.addMessage(message);
 
+			nextTick(() => {
+				this.scrollToBottom()
+			})
+		},
+		addMessage(message) {
+			const chatIndex = this.messages.findIndex(chat => chat.id === message.id)
 			if (chatIndex === -1) {
 				// check id exists - if it does not add it:
 				this.messages.push(message)
@@ -163,9 +167,6 @@ export default defineComponent({
 				// if it does exist update the message
 				this.messages[chatIndex].content = message.content;
 			}
-			nextTick(() => {
-				this.scrollToBottom()
-			})
 		},
 		test() {
 			window.app.channelTeam.whisper('whisper', { msg: "hello?" })
@@ -200,7 +201,8 @@ export default defineComponent({
 			}
 
 			const chat = response.data.chat
-			this.messages.push(chat)
+			this.addMessage(chat);
+			
 			nextTick(() => {
 				this.$refs.chatWindow.scrollTo(0, this.$refs.chatWindow.scrollHeight);
 			})
@@ -217,25 +219,26 @@ export default defineComponent({
 
 				const eventSource = new EventSource(route('api.chatStream', sessionId), { withCredentials: true });
 
-				eventSource.addEventListener('message', (event) => {
-					console.log('STREAM', event.data);
-					this.messages[index].state = 'streaming'
-					const gpt = JSON.parse(event.data)
-					if (gpt.delta.content) {
-						this.messages[index].content = message.content + gpt.delta.content
-						this.scrollToBottom();
-					}
-				})
+				// lets use websocket instead
+				// eventSource.addEventListener('message', (event) => {
+				// 	console.log('STREAM', event.data);
+				// 	this.messages[index].state = 'streaming'
+				// 	const gpt = JSON.parse(event.data)
+				// 	if (gpt.delta.content) {
+				// 		this.messages[index].content = message.content + gpt.delta.content
+				// 		this.scrollToBottom();
+				// 	}
+				// })
 
-				eventSource.addEventListener("stop", (event) => {
-					eventSource.close();
-					this.messages[index].state = 'finished'
-				});
+				// eventSource.addEventListener("stop", (event) => {
+				// 	eventSource.close();
+				// 	this.messages[index].state = 'finished'
+				// });
 
-				eventSource.addEventListener("error", (err) => {
-					// alert('error - check console!')
-					console.error("EventSource failed:", err);
-				});
+				// eventSource.addEventListener("error", (err) => {
+				// 	// alert('error - check console!')
+				// 	console.error("EventSource failed:", err);
+				// });
 
 			} catch (error) {
 				console.error('There was a problem with the streaming operation:', error);
