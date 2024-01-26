@@ -148,10 +148,7 @@ export default defineComponent({
 	},
 	methods: {
 		addChatChunk(message) {
-			// ignore if we are the same user:
-			if (message.user_id == this.$page.props.auth.user.id)
-				return
-
+			
 			this.addMessage(message);
 
 			nextTick(() => {
@@ -202,7 +199,7 @@ export default defineComponent({
 
 			const chat = response.data.chat
 			this.addMessage(chat);
-			
+
 			nextTick(() => {
 				this.$refs.chatWindow.scrollTo(0, this.$refs.chatWindow.scrollHeight);
 			})
