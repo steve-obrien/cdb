@@ -59,7 +59,7 @@ window.Echo = new Echo({
 	broadcaster: 'pusher',
 	key: 'd0e865d808ad494a0c37',
 	cluster: 'eu',
-	wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+	wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-eu.pusher.com`,
 	wsPort: import.meta.env.VITE_PUSHER_PORT,
 	wssPort: import.meta.env.VITE_PUSHER_PORT,
 	forceTLS: import.meta.env.VITE_PUSHER_FORCE_TLS,
