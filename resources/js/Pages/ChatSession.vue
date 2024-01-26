@@ -107,74 +107,14 @@ export default defineComponent({
 			});
 
 
-		window.Echo.private('team')
-			.listen('.ChatSessionCreated',(e) => {
-				console.log('EVENT', e)
-			})
-			.listen('.ChatSessionUpdated',(e) => {
-				console.log('EVENT', e)
-			})
-			.listenToAll((e) => {
-				console.log('EVENT', e)
-			});
-
-		// this.channelTeam = window.Echo.join(`team`)
-		// 	.here((users) => {
-		// 		console.log(users, 'team channel');
-		// 		users.forEach(item => {
-		// 			this.users[item.id] = item
-		// 		})
-		// 	})
-		// 	.joining((user) => {
-		// 		console.log('joining', user.name);
-		// 	})
-		// 	.leaving((user) => {
-		// 		console.log('LEAVING', user.name);
-		// 	})
-		// 	.error((error) => {
-		// 		console.error(error);
-		// 	});
-
 		chatChannel.listen('ChatMessage', (e) => {
-
+			this.addChatChunk(e.message)
 			console.log(e);
-			// ignore if we are the same user:
-			if (e.message.user_id == this.$page.props.auth.user.id)
-				return
-
-			const chatIndex = this.messages.findIndex(chat => chat.id === e.message.id)
-
-			if (chatIndex === -1) {
-				// check id exists - if it does not add it:
-				this.messages.push(e.message)
-			} else {
-				// if it does exist update the message
-				this.messages[chatIndex].content = e.message.content;
-			}
-			nextTick(() => {
-				this.scrollToBottom()
-			})
 		})
 
 		chatChannel.listen('ChatMessageChunk', (e) => {
-
+			this.addChatChunk(e.message)
 			console.log(e);
-			// ignore if we are the same user:
-			if (e.message.user_id == this.$page.props.auth.user.id)
-				return
-
-			const chatIndex = this.messages.findIndex(chat => chat.id === e.message.id)
-			if (chatIndex === -1) {
-				// check id exists - if it does not add it:
-				this.messages.push(e.message)
-			} else {
-				// if it does exist update the message
-				this.messages[chatIndex].content += e.contentChunk;
-			}
-			nextTick(() => {
-				this.scrollToBottom()
-			})
-
 		})
 
 
@@ -209,6 +149,24 @@ export default defineComponent({
 		}
 	},
 	methods: {
+		addChatChunk(message) {
+			// ignore if we are the same user:
+			if (message.user_id == this.$page.props.auth.user.id)
+				return
+
+			const chatIndex = this.messages.findIndex(chat => chat.id === message.id)
+
+			if (chatIndex === -1) {
+				// check id exists - if it does not add it:
+				this.messages.push(message)
+			} else {
+				// if it does exist update the message
+				this.messages[chatIndex].content = message.content;
+			}
+			nextTick(() => {
+				this.scrollToBottom()
+			})
+		},
 		test() {
 			window.app.channelTeam.whisper('whisper', { msg: "hello?" })
 		},
@@ -260,6 +218,7 @@ export default defineComponent({
 				const eventSource = new EventSource(route('api.chatStream', sessionId), { withCredentials: true });
 
 				eventSource.addEventListener('message', (event) => {
+					console.log('STREAM', event.data);
 					this.messages[index].state = 'streaming'
 					const gpt = JSON.parse(event.data)
 					if (gpt.delta.content) {
@@ -274,7 +233,7 @@ export default defineComponent({
 				});
 
 				eventSource.addEventListener("error", (err) => {
-					alert('error - check console!')
+					// alert('error - check console!')
 					console.error("EventSource failed:", err);
 				});
 

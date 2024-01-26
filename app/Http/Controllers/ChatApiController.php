@@ -127,6 +127,7 @@ class ChatApiController extends Controller
 
 					echo "event: message\n";
 					echo "data: " . json_encode($responseArray) . "\n\n";
+					@ob_flush();
 					flush();
 				}
 
