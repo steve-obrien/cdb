@@ -68,16 +68,14 @@ class AuthSessionController extends Controller
 		$user = User::updateOrCreate([
 			'provider_id' => $googleUser->id,
 		], [
+			'provider' => 'google',
 			'name' => $googleUser->name,
 			'email' => $googleUser->email,
 			'provider_token' => $googleUser->token,
-			
 			//'provider_refresh_token' => $googleUser->refreshToken,
 		]);
 
-		// 	Auth::login($user);
-
-		// 	return redirect('/dashboard');
+		Auth::login($user);
 
 		return redirect('/dashboard'); // Or wherever you wish to redirect the user to.
 	}
