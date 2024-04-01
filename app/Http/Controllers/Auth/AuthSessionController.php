@@ -72,6 +72,7 @@ class AuthSessionController extends Controller
 			'name' => $googleUser->name,
 			'email' => $googleUser->email,
 			'provider_token' => $googleUser->token,
+			'avatar' => $googleUser->getAvatar(),
 			//'provider_refresh_token' => $googleUser->refreshToken,
 		]);
 

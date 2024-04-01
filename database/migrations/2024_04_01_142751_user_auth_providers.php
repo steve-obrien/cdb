@@ -17,6 +17,8 @@ return new class extends Migration
 			$table->string('provider_id')->nullable();
 			// Optional: Store the OAuth token if needed
 			$table->text('provider_token')->nullable();
+			// you could login with google and therefore have no password
+			$table->string('password')->nullable()->change();
 		});
 	}
 

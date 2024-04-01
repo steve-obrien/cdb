@@ -68,9 +68,6 @@ class RegisteredUserController extends Controller
 		});
 
 		// This is a new user 
-
-		
-
 		return redirect(RouteServiceProvider::HOME);
 	}
 }

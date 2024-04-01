@@ -88,5 +88,14 @@ const submit = () => {
 				</PrimaryButton>
 			</div>
 		</form>
+
+		<hr class="my-4">
+		<div class="flex">
+			<a :href="route('login.google')" class="mx-auto">
+				Log in Google
+			</a>
+		</div>
+
+
 	</GuestLayout>
 </template>
