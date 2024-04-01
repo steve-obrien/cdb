@@ -14,6 +14,24 @@ return [
     |
     */
 
+	'github' => [
+		'client_id' => env('GITHUB_CLIENT_ID'),
+		'client_secret' => env('GITHUB_CLIENT_SECRET'),
+		'redirect' => 'http://example.com/callback-url',
+	],
+
+	// 'google' => [
+	// 	'client_id' => '950384888835-qgbaajtc46q17ctscdb7r8aakatg65pe.apps.googleusercontent.com',
+	// 	'client_secret' => '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',
+	// 	'redirect' => 'https://team-ai.co/login/google/callback',
+	// ],
+
+	'google' => [
+		'client_id' => env('GOOGLE_CLIENT_ID'),
+		'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+		'redirect' => env('GOOGLE_REDIRECT_URI'),
+	],
+
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),

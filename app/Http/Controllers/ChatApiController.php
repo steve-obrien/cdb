@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\PusherTest;
 use \OpenAI;
 use App\Models\Chat;
 use App\Models\ChatSession;
@@ -13,10 +12,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ChatApiController extends Controller
 {
-	public function testPing()
-	{
-		event(new \App\Events\PusherTest('hello world'));
-	}
 	public function chatSessionDelete($sessionId)
 	{
 		/** @var ChatSession $session */
@@ -35,7 +30,6 @@ class ChatApiController extends Controller
 		/** @var ChatSession $chatSession */
 		// The first message should be a system message:
 		$chatSession->addSystemMessage();
-		/** @var ChatSession $chatSession */
 		$chat = $chatSession->addUserChat($prompt);
 		return [
 			'sessionId' => $chatSession->id,

@@ -10,8 +10,9 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Broadcasting\Broadcasters\PusherBroadcaster;
 use Pusher\Pusher;
-use Symfony\Component\HttpKernel\Profiler\Profile;
+use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -58,22 +59,12 @@ Route::middleware('auth')->group(function () {
 	Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 	Route::delete('/profile/other-browser-sessions', [ProfileController::class, 'destroyOtherBrowserSessions'])
-            ->name('profile.destroyOtherBrowserSessions');
+		->name('profile.destroyOtherBrowserSessions');
 });
 
 
 Route::get('/event', function (Request $request) {
 
-	// $validated = $request->validate([
-	//     'appId' => ['required', new AppId()],
-	//     'key' => 'required',
-	//     'secret' => 'required',
-	//     'channel' => 'required',
-	//     'event' => 'required',
-	//     'data' => 'json',
-	// ]);
-	// dd(env('PUSHER_PORT'));
-	
 	$pusher = new Pusher(
 		config('broadcasting.connections.pusher.key', []),
 		config('broadcasting.connections.pusher.secret', []),
@@ -91,5 +82,28 @@ Route::get('/event', function (Request $request) {
 	return 'ok';
 });
 
+
+
+
+// Route::get('/auth/redirect', function () {
+// 	return Socialite::driver('github')->redirect();
+// });
+
+// Route::get('/auth/callback', function () {
+// 	$githubUser = Socialite::driver('github')->user();
+
+// 	$user = User::updateOrCreate([
+// 		'github_id' => $githubUser->id,
+// 	], [
+// 		'name' => $githubUser->name,
+// 		'email' => $githubUser->email,
+// 		'github_token' => $githubUser->token,
+// 		'github_refresh_token' => $githubUser->refreshToken,
+// 	]);
+
+// 	Auth::login($user);
+
+// 	return redirect('/dashboard');
+// });
 
 require __DIR__ . '/auth.php';

@@ -108,12 +108,12 @@ export default defineComponent({
 
 		chatChannel.listen('ChatMessage', (e) => {
 			this.addChatChunk(e.message)
-			console.log(e);
+			console.log('ChatMessage', e);
 		})
 
 		chatChannel.listen('ChatMessageChunk', (e) => {
-			this.addChatChunk(e.message)
-			console.log(e);
+			this.addChatChunk(e.message, e.contentChunk)
+			console.log('ChatMessageChunk', e);
 		})
 
 	},
@@ -147,22 +147,23 @@ export default defineComponent({
 		}
 	},
 	methods: {
-		addChatChunk(message) {
-			
+		addChatChunk(message, chunk) {
+			console.log()
 			this.addMessage(message);
 
 			nextTick(() => {
 				this.scrollToBottom()
 			})
 		},
-		addMessage(message) {
+		addMessage(message, chunk) {
+			console.log('ADD MESSAGE', message)
 			const chatIndex = this.messages.findIndex(chat => chat.id === message.id)
 			if (chatIndex === -1) {
 				// check id exists - if it does not add it:
 				this.messages.push(message)
 			} else {
 				// if it does exist update the message
-				this.messages[chatIndex].content = message.content;
+				this.messages[chatIndex].content = this.messages[chatIndex].content + chunk;
 			}
 		},
 		test() {
