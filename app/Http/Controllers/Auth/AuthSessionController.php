@@ -62,19 +62,34 @@ class AuthSessionController extends Controller
 	{
 		$googleUser = Socialite::driver('google')->user();
 
-		// Here, you'd typically find or create a user in your database.
-		// Then, authenticate the user into your application and redirect them.
+		// Attempt to find the user by the email returned by Google.
+		$user = User::where('email', $googleUser->email)->first();
 
-		$user = User::updateOrCreate([
-			'provider_id' => $googleUser->id,
-		], [
-			'provider' => 'google',
-			'name' => $googleUser->name,
-			'email' => $googleUser->email,
-			'provider_token' => $googleUser->token,
-			'avatar' => $googleUser->getAvatar(),
-			//'provider_refresh_token' => $googleUser->refreshToken,
-		]);
+		// If a user already has an email there is a change they use a different email with 
+		// Google - therefore to link the account - we should probably only allow using Google to register
+		// And only allow Google to be linked once logged in.
+
+		if ($user) {
+			// The user already exists, link this Google account to the existing user if not already linked.
+			$user->update([
+				'provider' => 'google',
+				'provider_id' => $googleUser->id,
+				'provider_token' => $googleUser->token,
+				'avatar' => $googleUser->getAvatar(),
+				// Update any other fields if necessary.
+			]);
+		} else {
+			// No user exists with this email, create a new user.
+			$user = User::create([
+				'name' => $googleUser->name,
+				'email' => $googleUser->email,
+				'provider' => 'google',
+				'provider_id' => $googleUser->id,
+				'provider_token' => $googleUser->token,
+				'avatar' => $googleUser->getAvatar(),
+				// Set other fields as required.
+			]);
+		}
 
 		Auth::login($user);
 
