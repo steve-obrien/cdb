@@ -176,7 +176,7 @@ class ChatApiController extends Controller
 		}
 
 		$stream = $client->chat()->createStreamed([
-			'model' => 'gpt-4',
+			'model' => 'gpt-4o',
 			'messages' => $messages
 		]);
 

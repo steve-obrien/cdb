@@ -63,11 +63,10 @@ class AuthSessionController extends Controller
 		$googleUser = Socialite::driver('google')->user();
 
 		// Attempt to find the user by the email returned by Google.
+		/** @var \App\Models\User */
 		$user = User::where('email', $googleUser->email)->first();
 
-		// If a user already has an email there is a change they use a different email with 
-		// Google - therefore to link the account - we should probably only allow using Google to register
-		// And only allow Google to be linked once logged in.
+		// If a user already has an email then this can link to the google account
 
 		if ($user) {
 			// The user already exists, link this Google account to the existing user if not already linked.
