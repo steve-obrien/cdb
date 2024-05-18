@@ -52,7 +52,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::match(['get', 'post'], 'v1/chat-stream/{id}', [ChatApiController::class, 'chatStream'])->name('api.chatStream');
 
 	Route::get('/team', [TeamController::class, 'team'])->name('team');
+	Route::post('/team/invite', [TeamController::class, 'invite'])->name('team.invite');
 });
+
+Route::get('/team/invite/accept/{token}', [TeamController::class, 'inviteAccept'])->name('team.invite.accept');
 
 Route::middleware('auth')->group(function () {
 	// Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');

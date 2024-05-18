@@ -1,20 +1,40 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
+import { router } from '@inertiajs/vue3'
 
 const open = ref(false)
 
 defineProps({
-	auth: {
-		type: Object
-	},
-	users: {
-		type: Object,
-	},
+	auth: { type: Object },
+	users: { type: Object },
+	invites: { type: Object },
 });
+
+const userForm = reactive({
+	name: null,
+	email: null,
+})
+
+// Methods:
+/////////////
+const inviteUser = async function () {
+	alert('oi')
+	try {
+		router.post(route('team.invite'), userForm)
+		console.log('User added successfully:', response.data);
+		// Handle success (e.g., reset form, show success message)
+		this.userForm.name = '';
+		this.userForm.email = '';
+	} catch (error) {
+		console.error('Error adding user:', error);
+		// Handle error (e.g., show error message)
+	}
+}
+
 </script>
 
 <template>
@@ -23,7 +43,7 @@ defineProps({
 
 	<AuthenticatedLayout class="bg-gray-100">
 		<template #header>
-			<h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
+			<h2 class="font-semibold text-xl text-gray-800 leading-tight">Team</h2>
 		</template>
 
 		<div class="p-4 md:p-8">
@@ -59,11 +79,32 @@ defineProps({
 			</div>
 		</div>
 
+		Invites:
+
+		<div class="mt-8 flow-root">
+				<div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+					<div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+						<div class="grid grid-cols-3 bg-white py-4 px-7">
+							<div class="">Name</div>
+							<div>Email</div>
+						</div>
+						<div v-for="user in invites" class="bg-white py-4 px-7 grid grid-cols-3 my-2 rounded-sm">
+							<div class="flex items-center">
+								<span class="font-bold text-lg">{{ user.name }}</span>
+								<span v-if="auth.user.id == user.id" class="bg-gray-200 rounded-md px-2 ml-2">You</span>
+							</div>
+							<div class="flex">
+								<span class="font-normal text-lg">{{ user.email }}</span>
+							</div>
+							<div class="flex">
+								<span class="font-normal text-lg">{{ user.created_at }}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
 		<!-- add user -->
-
-
-	</AuthenticatedLayout>
-
 		<TransitionRoot as="template" :show="open">
 			<Dialog class="relative z-50" @close="open = false">
 				<TransitionChild as="template" enter="ease-in-out duration-500" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in-out duration-500" leave-from="opacity-100" leave-to="opacity-0">
@@ -92,17 +133,17 @@ defineProps({
 										</div>
 										<div class="relative mt-6 flex-1 px-4 sm:px-6">
 											<!-- Your content -->
-											<div class="grid gap-5">
+											<form class="grid gap-5" @submit.prevent="inviteUser">
 												<div>
 													<label for="name" class="text-sm text-gray-700 mb-2">Name:</label>
-													<input id="name" name="name" type="text" tabindex="1" class="bg-gray-100 w-full rounded-md border-2 focus:ring-0 focus:ring-black px-5 py-3" placeholder="Name">
+													<input v-model="userForm.name" required id="name" name="name" type="text" tabindex="1" class="bg-gray-100 w-full rounded-md border-2 focus:ring-0 focus:ring-black px-5 py-3" placeholder="Name">
 												</div>
 												<div>
 													<label for="email" class="text-sm text-gray-700 mb-2">Email:</label>
-													<input id="email" name="email" type="email" tabindex="1" class="bg-gray-100 w-full rounded-md border-2 focus:ring-0 focus:ring-black px-5 py-3" placeholder="Email">
+													<input v-model="userForm.email" required id="email" name="email" type="email" tabindex="1" class="bg-gray-100 w-full rounded-md border-2 focus:ring-0 focus:ring-black px-5 py-3" placeholder="Email">
 												</div>
-												<div><button>Add User</button></div>
-											</div>
+												<div><button tabindex="1"  class="bg-black px-3 py-2 text-center text-sm font-semibold text-white shadow-sm rounded-full" type="submit">Invite User</button></div>
+											</form>
 										</div>
 									</div>
 								</DialogPanel>
@@ -112,4 +153,7 @@ defineProps({
 				</div>
 			</Dialog>
 		</TransitionRoot>
+
+	</AuthenticatedLayout>
+
 </template>
