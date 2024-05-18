@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\ChatApiController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -45,11 +46,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 	Route::get('/chat', [ChatController::class, 'chat'])->name('chat');
 	Route::get('/chat/{id}', [ChatController::class, 'chatSession'])->name('chat.session');
-
 	Route::delete('/chat/{id}', [ChatApiController::class, 'chatSessionDelete'])->name('api.chatSessionDelete');
 	Route::match(['get', 'post'], 'v1/chat/', [ChatApiController::class, 'chat'])->name('api.chat'); // to deprecate
 	Route::match(['post'], 'v1/chat-start/', [ChatApiController::class, 'chatStart'])->name('api.chatStart');
 	Route::match(['get', 'post'], 'v1/chat-stream/{id}', [ChatApiController::class, 'chatStream'])->name('api.chatStream');
+
+	Route::get('/team', [TeamController::class, 'team'])->name('team');
 });
 
 Route::middleware('auth')->group(function () {
