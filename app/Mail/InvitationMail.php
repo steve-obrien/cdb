@@ -6,6 +6,7 @@ use App\Models\Invitation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -32,6 +33,7 @@ class InvitationMail extends Mailable
 	{
 		return new Envelope(
 			subject: 'Invitation Mail',
+			from: new Address('info@ai.newicon.net', 'Newicon') ,
 		);
 	}
 

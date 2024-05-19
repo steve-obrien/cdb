@@ -56,6 +56,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::get('/team/invite/accept/{token}', [TeamController::class, 'inviteAccept'])->name('team.invite.accept');
+Route::post('/team/invite/register/{token}', [TeamController::class, 'inviteRegister'])->name('team.invite.register');
+Route::delete('/team/invite/{token}', [TeamController::class, 'inviteDelete'])->name('team.invite.delete');
 
 Route::middleware('auth')->group(function () {
 	// Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
