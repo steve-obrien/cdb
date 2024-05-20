@@ -25,7 +25,7 @@ class ChatMessageChunk implements ShouldBroadcastNow
 			'id' => $this->_chat->id,
 			'role' => $this->_chat->role,
 			'created_at' => $this->_chat->created_at,
-			'content' => $this->_chat->content,
+			// 'content' => $this->_chat->content,
 			'user_id' => $this->_chat->user_id,
 		];
 		$this->contentChunk = $contentChunk;
