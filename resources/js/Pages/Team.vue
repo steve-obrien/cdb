@@ -84,7 +84,7 @@ const inviteUser = async () => {
 }
 
 const deleteInvite = async (token) => {
-	axios.delete( route('team.invite.delete', { token: token }) ).then(() => {
+	axios.delete(route('team.invite.delete', { token: token })).then(() => {
 		const index = localInvites.value.findIndex(invite => invite.token === token);
 		if (index !== -1) {
 			localInvites.value.splice(index, 1);
@@ -98,7 +98,7 @@ const deleteInvite = async (token) => {
 
 	<Head title="Team" />
 
-	<AuthenticatedLayout class="bg-gray-100">
+	<AuthenticatedLayout class="bg-gray-100 dark:bg-black">
 		<template #header>
 			<h2 class="font-semibold text-xl text-gray-800 leading-tight">Team</h2>
 		</template>
@@ -114,7 +114,7 @@ const deleteInvite = async (token) => {
 					</select>
 				</div>
 				<div class="hidden sm:block">
-					<div class="border-b border-gray-200">
+					<div class="border-b border-gray-200 ">
 						<nav class="-mb-px flex justify-between space-x-8" aria-label="Tabs">
 							<div class="flex space-x-8">
 								<a href="#" @click="tab = 'Users'" :class="[tab == 'Users' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-200 hover:text-gray-700', 'flex whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium']" :aria-current="tab.current ? 'page' : undefined">
@@ -135,19 +135,20 @@ const deleteInvite = async (token) => {
 			<div v-if="tab == 'Users'" class="flow-root">
 				<div class="-mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
 					<div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-						<div v-for="user in users" class="bg-white py-4 px-7 grid grid-cols-3 my-2 rounded-sm">
+						<div v-for="user in users" class="bg-white dark:bg-gray-800 py-4 px-7 grid grid-cols-3 my-2 rounded-sm">
 							<div class="flex items-center">
 								<img class="w-8 rounded-full mr-2" :src="user.avatar_url" />
-								<span class="font-bold text-lg">{{ user.name }}</span>
-								<span v-if="auth.user.id == user.id" class="bg-gray-200 rounded-md px-2 ml-2">You</span>
+								<span class="font-bold text-lg text-gray-900 dark:text-gray-100">{{ user.name }}</span>
+								<span v-if="auth.user.id == user.id" class="bg-gray-200 dark:bg-gray-700 rounded-md px-2 ml-2">You</span>
 							</div>
 							<div class="flex">
-								<span class="font-normal text-lg">{{ user.email }}</span>
+								<span class="font-normal text-lg text-gray-700 dark:text-gray-300">{{ user.email }}</span>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+
 
 			<div v-if="tab == 'Invites'" class="flow-root">
 				<div class="-mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -183,7 +184,7 @@ const deleteInvite = async (token) => {
 		<TransitionRoot as="template" :show="['open', 'success'].includes(invite.state)">
 			<Dialog class="relative z-50" @close="close()">
 				<TransitionChild as="template" enter="ease-in-out duration-500" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in-out duration-500" leave-from="opacity-100" leave-to="opacity-0">
-					<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+					<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity dark:bg-opacity-75" />
 				</TransitionChild>
 
 				<div class="fixed inset-0 overflow-hidden">
@@ -193,16 +194,16 @@ const deleteInvite = async (token) => {
 								<DialogPanel class="pointer-events-auto relative w-screen max-w-md">
 									<TransitionChild as="template" enter="ease-in-out duration-500" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in-out duration-500" leave-from="opacity-100" leave-to="opacity-0">
 										<div class="absolute left-0 top-0 -ml-8 flex pr-2 pt-4 sm:-ml-10 sm:pr-4">
-											<button type="button" class="relative rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white" @click="close()">
+											<button type="button" class="relative rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white dark:focus:ring-gray-600" @click="close()">
 												<span class="absolute -inset-2.5" />
 												<span class="sr-only">Close panel</span>
 												<XMarkIcon class="h-6 w-6" aria-hidden="true" />
 											</button>
 										</div>
 									</TransitionChild>
-									<div class="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
+									<div class="flex h-full flex-col overflow-y-scroll bg-white dark:bg-gray-800 py-6 shadow-xl">
 										<div class="px-4 sm:px-6">
-											<DialogTitle class="text-xl font-semibold leading-6 text-gray-900">
+											<DialogTitle class="text-xl font-semibold leading-6 text-gray-900 dark:text-gray-100">
 												+ Add User
 											</DialogTitle>
 										</div>
@@ -210,23 +211,23 @@ const deleteInvite = async (token) => {
 											<!-- Your content -->
 											<form v-if="invite.state == 'open'" class="grid gap-5" @submit.prevent="inviteUser">
 												<div>
-													<label for="name" class="text-sm text-gray-700 mb-2">Name</label>
-													<input v-model="invite.name" required id="name" name="name" type="text" tabindex="1" class="bg-gray-100 w-full rounded-md border-2 focus:ring-0 focus:ring-black px-5 py-3" placeholder="Name">
-													<span v-if="invite.errors.name">{{ invite.errors.name[0] }}</span>
+													<label for="name" class="text-sm text-gray-700 dark:text-gray-300 mb-2">Name</label>
+													<input v-model="invite.name" required id="name" name="name" type="text" tabindex="1" class="bg-gray-100 dark:bg-gray-700 w-full rounded-md border-2 dark:border-gray-600 focus:ring-0 focus:ring-black dark:focus:ring-white px-5 py-3" placeholder="Name">
+													<span v-if="invite.errors.name" class="text-red-600">{{ invite.errors.name[0] }}</span>
 												</div>
 												<div>
-													<label for="email" class="text-sm text-gray-700 mb-2">Email</label>
-													<input v-model="invite.email" required id="email" name="email" type="email" tabindex="1" class="bg-gray-100 w-full rounded-md border-2 focus:ring-0 focus:ring-black px-5 py-3" placeholder="Email">
+													<label for="email" class="text-sm text-gray-700 dark:text-gray-300 mb-2">Email</label>
+													<input v-model="invite.email" required id="email" name="email" type="email" tabindex="1" class="bg-gray-100 dark:bg-gray-700 w-full rounded-md border-2 dark:border-gray-600 focus:ring-0 focus:ring-black dark:focus:ring-white px-5 py-3" placeholder="Email">
 													<span class="text-red-600" v-if="invite.errors.email">{{ invite.errors.email[0] }}</span>
 												</div>
-												<div><button tabindex="1" class="bg-black px-3 py-3 w-full text-center text-sm font-semibold text-white shadow-sm rounded-full" type="submit">Invite User</button></div>
+												<div><button tabindex="1" class="bg-black dark:bg-gray-700 px-3 py-3 w-full text-center text-sm font-semibold text-white shadow-sm rounded-full" type="submit">Invite User</button></div>
 											</form>
 											<div v-if="invite.state == 'success'" class="flex flex-col">
-												<div class="bg-gray-100 w-[350px] h-[350px] mx-auto flex flex-col items-center justify-center p-20 text-center rounded-full">
-													<span class="text-xl font-medium">New user added to workspace!</span>
-													<p>An invitation has be emailed with directions on how to complete their account creation.</p>
+												<div class="bg-gray-100 dark:bg-gray-700 w-[350px] h-[350px] mx-auto flex flex-col items-center justify-center p-20 text-center rounded-full">
+													<span class="text-xl font-medium dark:text-gray-100">New user added to workspace!</span>
+													<p class="dark:text-gray-300">An invitation has been emailed with directions on how to complete their account creation.</p>
 												</div>
-												<button @click="close()" tabindex="1" class="mt-10 bg-black px-5 py-3 mx-auto text-center text-sm font-semibold text-white shadow-sm rounded-full">Thanks!</button>
+												<button @click="close()" tabindex="1" class="mt-10 bg-black dark:bg-gray-700 px-5 py-3 mx-auto text-center text-sm font-semibold text-white shadow-sm rounded-full">Thanks!</button>
 											</div>
 										</div>
 									</div>
