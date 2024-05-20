@@ -107,8 +107,8 @@ export default defineComponent({
 			});
 
 		chatChannel.listen('ChatMessage', (e) => {
-			this.addChatChunk(e.message)
-			console.log('ChatMessage', e);
+			console.log('ChatMessage - new from push', e);
+			this.addChatChunk(e.message, '')
 		})
 
 		chatChannel.listen('ChatMessageChunk', (e) => {
@@ -148,20 +148,19 @@ export default defineComponent({
 	},
 	methods: {
 		addChatChunk(message, chunk) {
-			console.log()
-			this.addMessage(message);
+			this.addMessage(message, chunk);
 
 			nextTick(() => {
 				this.scrollToBottom()
 			})
 		},
 		addMessage(message, chunk) {
-			console.log('ADD MESSAGE', message)
 			const chatIndex = this.messages.findIndex(chat => chat.id === message.id)
 			if (chatIndex === -1) {
 				// check id exists - if it does not add it:
 				this.messages.push(message)
 			} else {
+				// console.log('ADD CHUNK',chunk,message )
 				// if it does exist update the message
 				this.messages[chatIndex].content = this.messages[chatIndex].content + chunk;
 			}
@@ -184,6 +183,7 @@ export default defineComponent({
 		},
 		send: async function (payload) {
 
+			alert(payload.prompt);
 			const prompt = payload.prompt
 
 			const response = await axios.post(route('api.chatStart'), {
@@ -199,7 +199,7 @@ export default defineComponent({
 			}
 
 			const chat = response.data.chat
-			this.addMessage(chat);
+			//this.addMessage(chat);
 
 			nextTick(() => {
 				this.$refs.chatWindow.scrollTo(0, this.$refs.chatWindow.scrollHeight);
@@ -209,6 +209,7 @@ export default defineComponent({
 			this.streamResponse(this.sessionId)
 		},
 		streamResponse(sessionId) {
+			alert('stream')
 			try {
 
 				let message = { role: 'assistant', content: '', state: 'loading' }
@@ -216,7 +217,6 @@ export default defineComponent({
 				let index = this.messages.indexOf(message);
 
 				const eventSource = new EventSource(route('api.chatStream', sessionId), { withCredentials: true });
-
 				// lets use websocket instead
 				// eventSource.addEventListener('message', (event) => {
 				// 	console.log('STREAM', event.data);
@@ -228,15 +228,15 @@ export default defineComponent({
 				// 	}
 				// })
 
-				// eventSource.addEventListener("stop", (event) => {
-				// 	eventSource.close();
-				// 	this.messages[index].state = 'finished'
-				// });
+				eventSource.addEventListener("stop", (event) => {
+					eventSource.close();
+					this.messages[index].state = 'finished'
+				});
 
-				// eventSource.addEventListener("error", (err) => {
-				// 	// alert('error - check console!')
-				// 	console.error("EventSource failed:", err);
-				// });
+				eventSource.addEventListener("error", (err) => {
+					// alert('error - check console!')
+					console.error("EventSource failed:", err);
+				});
 
 			} catch (error) {
 				console.error('There was a problem with the streaming operation:', error);
