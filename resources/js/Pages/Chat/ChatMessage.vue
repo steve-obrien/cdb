@@ -1,14 +1,25 @@
 <template>
-	<div class="flex" v-if="message.role == 'user'">
-		<img class="h-8 w-8 min-w-8 mr-2 rounded-full" alt="User" loading="lazy" width="24" height="24" 
+	<div v-if="message.role == 'user'" class="flex">
+		<div class="flex ml-auto bg-gray-100 p-2 pl-4 rounded-xl " v-if="$page.props.auth.user.id == message.user_id">
+			<div class="text-right">
+				<div class="mt-1 font-semibold text-black dark:text-white ml-auto">Me</div>
+				<div v-html="formatMessage(message.content)" class="prose dark:prose-invert"></div>
+			</div>
+			<img class="h-8 w-8 min-w-8 ml-2 rounded-full" alt="User" loading="lazy" width="24" height="24"
 			:src="message.user.avatar_url" style="color: transparent;">
-		<div>
-			<div class="mt-1 font-semibold text-black dark:text-white">{{ message.name ?? 'You' }}</div>
-			<div v-html="formatMessage(message.content)" class="prose dark:prose-invert"></div>
+		</div>
+
+		<div class="flex bg-white p-2 pr-4 rounded-md " v-else>
+			<img class="h-8 w-8 min-w-8 mr-2 rounded-full" alt="User" loading="lazy" width="24" height="24"
+			:src="message.user.avatar_url" style="color: transparent;">
+			<div>
+				<div class="mt-1 font-semibold text-black dark:text-white">{{ message.name }}</div>
+				<div v-html="formatMessage(message.content)" class="prose dark:prose-invert"></div>
+			</div>
 		</div>
 	</div>
 
-	<div class="flex" v-else-if="message.role == 'assistant'">
+	<div v-else-if="message.role == 'assistant'" class="flex bg-white p-2 pr-4 rounded-md  ">
 		<div class="h-8 w-8 min-w-8 mr-2 rounded-full flex items-center justify-center bg-black text-white ">AI</div>
 		<div>
 			<div class="mt-1 font-semibold text-black dark:text-white ">ChatGPT</div>
@@ -19,11 +30,11 @@
 				</span>
 			</div>
 			<div v-else-if="message.state == 'streaming'" class="prose dark:prose-invert" v-html="formatMessage(message.content)"></div>
-			<div v-else class="prose dark:prose-invert" v-html="formatMessage(message.content)" ></div>
+			<div v-else class="prose dark:prose-invert" v-html="formatMessage(message.content)"></div>
 		</div>
 	</div>
 
-	<div class="flex" v-else>
+	<div v-else class="flex">
 		<div class="h-8 w-8 min-w-8 mr-2 rounded-full flex items-center justify-center bg-black text-white">AI</div>
 		<div>
 			<div class="mt-1 font-semibold text-black dark:text-white">ChatGPT - {{ message.role }}</div>
@@ -58,7 +69,7 @@ export default {
 			return marked.parse(message);
 		},
 	}
-	
+
 }
 
 </script>

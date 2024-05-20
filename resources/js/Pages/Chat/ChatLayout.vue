@@ -25,7 +25,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="@container h-full grow flex flex-col bg-gray-100 dark:bg-gray-900">
+			<div class="@container h-full grow flex flex-col bg-white dark:bg-gray-900">
 				<slot></slot>
 			</div>
 		</div>

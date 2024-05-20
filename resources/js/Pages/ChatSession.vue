@@ -27,7 +27,6 @@
 			</div>
 			
 			<div class="flex">
-				<button @click="test">TEST</button>
 				<div v-for="user in users" :key="user.id" >
 					<img class="h-4 w-4 rounded-full bg-gray-50" :src="user.avatar_url" alt="Dave Zulauf">
 				</div>
@@ -164,9 +163,6 @@ export default defineComponent({
 				// if it does exist update the message
 				this.messages[chatIndex].content = this.messages[chatIndex].content + chunk;
 			}
-		},
-		test() {
-			window.app.channelTeam.whisper('whisper', { msg: "hello?" })
 		},
 		handleScroll() {
 			console.log('USER SCROLL')
