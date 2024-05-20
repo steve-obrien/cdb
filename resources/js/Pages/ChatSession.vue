@@ -67,7 +67,7 @@ export default defineComponent({
 			data: [],
 			messages: [], // the conversation data
 			charsPerToken: 4, // Constant to estimate characters per token
-			tokenCostPerThousand: 0.01,
+			tokenCostPerThousand: 0.005,
 			isUserScrollBottom: true,
 			channel: null,
 			channelTeam: null,
@@ -179,7 +179,6 @@ export default defineComponent({
 		},
 		send: async function (payload) {
 
-			alert(payload.prompt);
 			const prompt = payload.prompt
 
 			const response = await axios.post(route('api.chatStart'), {
@@ -205,7 +204,6 @@ export default defineComponent({
 			this.streamResponse(this.sessionId)
 		},
 		streamResponse(sessionId) {
-			alert('stream')
 			try {
 
 				let message = { role: 'assistant', content: '', state: 'loading' }
