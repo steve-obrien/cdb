@@ -43,7 +43,7 @@
 		</TransitionRoot>
 
 		<!-- Static sidebar for desktop -->
-		<div class="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:block lg:w-20 lg:overflow-y-auto lg:bg-gray-900 lg:pb-4">
+		<div class="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:block lg:w-20 lg:overflow-y-auto lg:bg-gray-950 lg:pb-4">
 			<Link :href="dashboardHref" class="flex h-16 shrink-0 items-center justify-center text-white">
 				<svg class="h-5" width="22" height="25" viewBox="0 0 22 25" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<path d="M5.45769 24.2342V9.5455L16.9231 24.2342H20.7335V20.4352L4.7756 0H0V24.2342H5.45769Z" fill="currentColor" />

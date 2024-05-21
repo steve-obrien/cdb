@@ -7,7 +7,7 @@
 		</template>
 
 		<div class="flex h-full">
-			<div class="hidden lg:flex h-full relative lg:w-60 xl:w-80 flex-col stretch bg-white dark:bg-gray-900 dark:text-gray-100 ">
+			<div class="hidden lg:flex h-full relative lg:w-60 xl:w-80 flex-col stretch bg-gray-50 dark:bg-gray-950 dark:text-gray-100 ">
 				<div class="shrink p-2">
 					<Link :href="linkChat" class="flex">
 					<div class="grow text-gray-800 dark:text-gray-300">Create new</div>
@@ -25,7 +25,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="@container h-full grow flex flex-col bg-white dark:bg-gray-900">
+			<div class="@container h-full grow flex flex-col bg-white dark:bg-black">
 				<slot></slot>
 			</div>
 		</div>

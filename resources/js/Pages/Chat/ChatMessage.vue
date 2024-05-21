@@ -1,6 +1,6 @@
 <template>
 	<div v-if="message.role == 'user'" class="flex">
-		<div class="flex ml-auto bg-gray-100 p-2 pl-4 rounded-xl " v-if="$page.props.auth.user.id == message.user_id">
+		<div v-if="$page.props.auth.user.id == message.user_id" class="flex ml-auto bg-gray-100 dark:bg-gray-900 p-2 pl-4 rounded-xl " >
 			<div class="text-right">
 				<div class="mt-1 font-semibold text-black dark:text-white ml-auto">Me</div>
 				<div v-html="formatMessage(message.content)" class="prose dark:prose-invert"></div>
@@ -9,7 +9,7 @@
 			:src="message.user.avatar_url" style="color: transparent;">
 		</div>
 
-		<div class="flex bg-white p-2 pr-4 rounded-md " v-else>
+		<div class="flex p-2 pr-4 rounded-md bg-gray-100 dark:bg-gray-800" v-else>
 			<img class="h-8 w-8 min-w-8 mr-2 rounded-full" alt="User" loading="lazy" width="24" height="24"
 			:src="message.user.avatar_url" style="color: transparent;">
 			<div>
@@ -19,7 +19,7 @@
 		</div>
 	</div>
 
-	<div v-else-if="message.role == 'assistant'" class="flex bg-white p-2 pr-4 rounded-md  ">
+	<div v-else-if="message.role == 'assistant'" class="flex  p-2 pr-4 rounded-md  ">
 		<div class="h-8 w-8 min-w-8 mr-2 rounded-full flex items-center justify-center bg-black text-white ">AI</div>
 		<div>
 			<div class="mt-1 font-semibold text-black dark:text-white ">ChatGPT</div>
@@ -48,8 +48,75 @@ import { Marked } from 'marked';
 import { markedHighlight } from "marked-highlight";
 import hljs from 'highlight.js';
 import javascript from 'highlight.js/lib/languages/javascript';
+// import vue from 'highlight.js/lib/languages/vue';
+import python from 'highlight.js/lib/languages/python';
+import php from 'highlight.js/lib/languages/php';
+import sql from 'highlight.js/lib/languages/sql';
+
+/*
+Language: Vue.js
+Requires: xml.js, javascript.js, typescript.js, css.js, stylus.js, scss.js
+Author: Sara Lissette Luis Ibáñez <lissette.ibnz@gmail.com>
+Description: Single-File Components of Vue.js Framework
+*/
+function hljsDefineVue(hljs) {
+  return {
+    subLanguage: "xml",
+    contains: [
+      hljs.COMMENT("<!--", "-->", {
+        relevance: 10,
+      }),
+      {
+        begin: /^(\s*)(<script>)/gm,
+        end: /^(\s*)(<\/script>)/gm,
+        subLanguage: "javascript",
+        excludeBegin: true,
+        excludeEnd: true,
+      },
+      {
+        begin: /^(?:\s*)(?:<script\s+lang=(["'])ts\1>)/gm,
+        end: /^(\s*)(<\/script>)/gm,
+        subLanguage: "typescript",
+        excludeBegin: true,
+        excludeEnd: true,
+      },
+      {
+        begin: /^(\s*)(<style(\s+scoped)?>)/gm,
+        end: /^(\s*)(<\/style>)/gm,
+        subLanguage: "css",
+        excludeBegin: true,
+        excludeEnd: true,
+      },
+      {
+        begin: /^(?:\s*)(?:<style(?:\s+scoped)?\s+lang=(["'])(?:s[ca]ss)\1(?:\s+scoped)?>)/gm,
+        end: /^(\s*)(<\/style>)/gm,
+        subLanguage: "scss",
+        excludeBegin: true,
+        excludeEnd: true,
+      },
+      {
+        begin: /^(?:\s*)(?:<style(?:\s+scoped)?\s+lang=(["'])stylus\1(?:\s+scoped)?>)/gm,
+        end: /^(\s*)(<\/style>)/gm,
+        subLanguage: "stylus",
+        excludeBegin: true,
+        excludeEnd: true,
+      },
+    ],
+  };
+}
+
+
+hljs.registerLanguage("vue", hljsDefineVue);
+
+
 hljs.registerLanguage('javascript', javascript);
+// hljs.registerLanguage('vue', vue);
+hljs.registerLanguage('python', python);
+hljs.registerLanguage('php', php);
+hljs.registerLanguage('sql', sql);
+
 import 'highlight.js/styles/github-dark.css';
+// import 'highlight.js/styles/github.css';
 
 const marked = new Marked(
 	markedHighlight({
