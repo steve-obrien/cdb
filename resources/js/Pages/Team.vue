@@ -100,7 +100,7 @@ const deleteInvite = async (token) => {
 
 	<AuthenticatedLayout class="bg-gray-100 dark:bg-black">
 		<template #header>
-			<h2 class="font-semibold text-xl text-gray-800 leading-tight">Team</h2>
+			<h2 class="font-semibold text-xl text-gray-800 dark:text-white leading-tight">Team</h2>
 		</template>
 
 		<div class="p-4 md:p-8">
@@ -135,7 +135,7 @@ const deleteInvite = async (token) => {
 			<div v-if="tab == 'Users'" class="flow-root">
 				<div class="-mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
 					<div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-						<div v-for="user in users" class="bg-white dark:bg-gray-800 py-4 px-7 grid grid-cols-3 my-2 rounded-sm">
+						<div v-for="user in users" class="bg-white dark:bg-gray-900 py-4 px-7 grid grid-cols-3 my-2 rounded-sm">
 							<div class="flex items-center">
 								<img class="w-8 rounded-full mr-2" :src="user.avatar_url" />
 								<span class="font-bold text-lg text-gray-900 dark:text-gray-100">{{ user.name }}</span>
