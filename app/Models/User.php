@@ -26,6 +26,7 @@ class User extends Authenticatable // implements EmailVerify
 		'name',
 		'email',
 		'password',
+		'avatar',
 	];
 
 	/**
@@ -56,8 +57,8 @@ class User extends Authenticatable // implements EmailVerify
     public function avatarUrl(): Attribute
     {
         return Attribute::get(function (): string {
-            return $this->profile_photo_path
-                    ? Storage::disk($this->profilePhotoDisk())->url($this->profile_photo_path)
+            return $this->avatar
+                    ? Storage::disk('public')->get($this->avatar)
                     : $this->defaultAvatarUrl();
         });
     }

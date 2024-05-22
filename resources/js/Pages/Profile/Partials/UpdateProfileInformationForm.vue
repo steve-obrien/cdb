@@ -2,6 +2,7 @@
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import ActionSection from '@/Components/ActionSection.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
@@ -27,34 +28,35 @@ const form = useForm({
 });
 
 const updateProfileInformation = () => {
-    if (photoInput.value) {
-        form.photo = photoInput.value.files[0];
-    }
 
-    // form.post(route('user-profile-information.update'), {
-    //     errorBag: 'updateProfileInformation',
-    //     preserveScroll: true,
-    //     onSuccess: () => clearPhotoFileInput(),
-    // });
+	if (photoInput.value.files.length) {
+		form.photo = photoInput.value.files[0];
+	}
+
+	form.post(route('profile.update'), {
+		forceFormData: true,
+		errorBag: 'updateProfileInformation',
+		preserveScroll: true,
+	});
 };
 
 const updatePhotoPreview = () => {
-    const photo = photoInput.value.files[0];
+	const photo = photoInput.value.files[0];
 
-    if (! photo) return;
+	if (!photo) return;
 
-    const reader = new FileReader();
+	const reader = new FileReader();
 
-    reader.onload = (e) => {
-        photoPreview.value = e.target.result;
-    };
+	reader.onload = (e) => {
+		photoPreview.value = e.target.result;
+	};
 
-    reader.readAsDataURL(photo);
+	reader.readAsDataURL(photo);
 };
 
 
 const selectNewPhoto = () => {
-    photoInput.value.click();
+	photoInput.value.click();
 };
 
 
@@ -67,13 +69,14 @@ const selectNewPhoto = () => {
 		<template #description>Update your account's profile information and email address.</template>
 
 		<template #content>
-			<form @submitted="updateProfileInformation" @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
+			<form @submit.prevent="updateProfileInformation" class="mt-6 space-y-6">
 
 				<!-- Profile Photo -->
 				<div class="col-span-6 sm:col-span-4">
 					<!-- Profile Photo File Input -->
 					<input
 					id="photo"
+					name="photo"
 					ref="photoInput"
 					type="file"
 					class="hidden"
@@ -98,12 +101,16 @@ const selectNewPhoto = () => {
 					</SecondaryButton>
 
 					<SecondaryButton
-					v-if="user.profile_photo_path"
+					v-if="user.avatar_url"
 					type="button"
 					class="mt-2"
 					@click.prevent="deletePhoto">
 						Remove Photo
 					</SecondaryButton>
+
+					<progress v-if="form.progress" :value="form.progress.percentage" max="100">
+						{{ form.progress.percentage }}%
+					</progress>
 
 					<InputError :message="form.errors.photo" class="mt-2" />
 				</div>
