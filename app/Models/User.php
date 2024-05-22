@@ -57,7 +57,7 @@ class User extends Authenticatable // implements EmailVerify
 	public function avatarUrl(): Attribute
 	{
 		return Attribute::get(function (): string {
-			return $this->avatar;
+			return $this->avatar ?? $this->defaultAvatarUrl();
 		});
 	}
 
