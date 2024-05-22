@@ -19,6 +19,30 @@ use Illuminate\Validation\Rule;
 class ProfileController extends Controller
 {
 	/**
+	 * displays public images
+	 * @return void 
+	 */
+	public function avatar($id)
+	{
+		// Assuming 'public' is the disk configured to point to the 'storage/app/public' folder
+		// 'avatars/...' path needs to be inside 'storage/app/public' for 'public' disk
+		$avatarPath = "avatars/$id.jpg";
+
+		// Build the full path to the image file
+		// $fullImagePath = Storage::disk('public')->path($avatarPath);
+		$fullImagePath = storage_path('app/public/' . $avatarPath);
+
+		// Check if the image exists before attempting to return it
+		if (file_exists($fullImagePath)) {
+			// Return the image file directly as a response
+			return response()->file($fullImagePath);
+		}
+
+		// Image not found, return a 404 error or your custom error response
+		return response()->json(['error' => 'Avatar not found.'], 404);
+	}
+
+	/**
 	 * Display the user's profile form.
 	 */
 	public function edit(Request $request): Response

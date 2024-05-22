@@ -48,10 +48,6 @@ import { walkTokens } from 'marked';
 import Echo from 'laravel-echo';
 import { alertcenter } from 'googleapis/build/src/apis/alertcenter';
 
-const collect = function(items) {
-	return items
-}
-
 export default defineComponent({
 	props: {
 		user: Object,
@@ -142,8 +138,7 @@ export default defineComponent({
 			const totalChars = this.messageCosts.reduce((accumulator, cost) => accumulator + cost.length, 0);
 			const tokens = totalChars / this.charsPerToken
 			const cost = (tokens / 1000) * this.tokenCostPerThousand
-			const tokenFormat = new Intl.NumberFormat('en-GB', { style: 'decimal' }).format(tokens);
-			return { tokens:tokenFormat, cost: cost.toFixed(4) }
+			return { tokens, cost: cost.toFixed(4) }
 		}
 	},
 	methods: {
@@ -160,8 +155,9 @@ export default defineComponent({
 				// check id exists - if it does not add it:
 				this.messages.push(message)
 			} else {
+				// console.log('ADD CHUNK',chunk,message )
 				// if it does exist update the message
-				this.messages[chatIndex].content = (this.messages[chatIndex].content ?? '') + (chunk ?? '');
+				this.messages[chatIndex].content = this.messages[chatIndex].content + chunk;
 			}
 		},
 		handleScroll() {
@@ -194,8 +190,7 @@ export default defineComponent({
 			}
 
 			const chat = response.data.chat
-			// added by push
-			// this.addMessage(chat);
+			//this.addMessage(chat);
 
 			nextTick(() => {
 				this.$refs.chatWindow.scrollTo(0, this.$refs.chatWindow.scrollHeight);
@@ -207,9 +202,9 @@ export default defineComponent({
 		streamResponse(sessionId) {
 			try {
 
-				// let message = { role: 'assistant', content: '', state: 'loading' }
-				// this.messages.push(message)
-				// let index = this.messages.indexOf(message);
+				let message = { role: 'assistant', content: '', state: 'loading' }
+				this.messages.push(message)
+				let index = this.messages.indexOf(message);
 
 				const eventSource = new EventSource(route('api.chatStream', sessionId), { withCredentials: true });
 				// lets use websocket instead
@@ -225,7 +220,7 @@ export default defineComponent({
 
 				eventSource.addEventListener("stop", (event) => {
 					eventSource.close();
-					// this.messages[index].state = 'finished'
+					this.messages[index].state = 'finished'
 				});
 
 				eventSource.addEventListener("error", (err) => {

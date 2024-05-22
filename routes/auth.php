@@ -57,6 +57,6 @@ Route::middleware('auth')->group(function () {
 
 	Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
-	Route::post('logout', [AuthSessionController::class, 'logout'])
+	Route::match(['POST', 'GET'],'logout', [AuthSessionController::class, 'logout'])
 		->name('logout');
 });

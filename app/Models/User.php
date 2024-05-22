@@ -50,18 +50,16 @@ class User extends Authenticatable // implements EmailVerify
 	];
 
 	/**
-     * Get the URL to the user's profile photo.
-     *
-     * @return \Illuminate\Database\Eloquent\Casts\Attribute
-     */
-    public function avatarUrl(): Attribute
-    {
-        return Attribute::get(function (): string {
-            return $this->avatar
-                    ? Storage::disk('public')->get($this->avatar)
-                    : $this->defaultAvatarUrl();
-        });
-    }
+	 * Get the URL to the user's profile photo.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Casts\Attribute
+	 */
+	public function avatarUrl(): Attribute
+	{
+		return Attribute::get(function (): string {
+			return $this->avatar;
+		});
+	}
 
 	/**
 	 * Get the default profile photo URL if no profile photo has been uploaded.
@@ -74,16 +72,16 @@ class User extends Authenticatable // implements EmailVerify
 			return mb_substr($segment, 0, 1);
 		})->join(' '));
 
-		return  'https://www.gravatar.com/avatar/'.md5(Str::lower($this->email)).'?s=200';
+		return  'https://www.gravatar.com/avatar/' . md5(Str::lower($this->email)) . '?s=200';
 		return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=7F9CF5&background=EBF4FF';
 	}
 
 	/**
-     * The accessors to append to the model's array form.
-     *
-     * @var array<int, string>
-     */
-    protected $appends = [
-        'avatar_url',
-    ];
+	 * The accessors to append to the model's array form.
+	 *
+	 * @var array<int, string>
+	 */
+	protected $appends = [
+		'avatar_url',
+	];
 }
