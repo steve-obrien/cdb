@@ -88,7 +88,7 @@
 						<Menu as="div" class="relative">
 							<MenuButton class="-m-1.5 flex items-center p-1.5">
 								<span class="sr-only">Open user menu</span>
-								<img class="h-8 w-8 rounded-full bg-gray-50" :src="$page.props.auth.user.avatar_url" :alt="$page.props.auth.user.name || $page.props.auth.user.email" />
+								<img class="h-8 w-8 rounded-full bg-gray-50" :src="'/'+$page.props.auth.user.avatar_url" :alt="$page.props.auth.user.name || $page.props.auth.user.email" />
 								<span class="hidden lg:flex lg:items-center">
 									<span class="ml-4 text-sm font-semibold leading-6 text-gray-900 dark:text-gray-200" aria-hidden="true">
 										{{ $page.props.auth.user.name || $page.props.auth.user.email }}

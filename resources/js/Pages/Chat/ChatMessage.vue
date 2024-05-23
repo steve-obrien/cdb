@@ -6,12 +6,12 @@
 				<div v-html="formatMessage(message.content)" class="prose dark:prose-invert"></div>
 			</div>
 			<img class="h-8 w-8 min-w-8 ml-2 rounded-full" alt="User" loading="lazy" width="24" height="24"
-			:src="message.user.avatar_url" style="color: transparent;">
+			:src="'/'+message.user.avatar_url" style="color: transparent;">
 		</div>
 
 		<div class="flex p-2 pr-4 rounded-md bg-gray-100 dark:bg-gray-800" v-else>
 			<img class="h-8 w-8 min-w-8 mr-2 rounded-full" alt="User" loading="lazy" width="24" height="24"
-			:src="message.user.avatar_url" style="color: transparent;">
+			:src="'/'+message.user.avatar_url" style="color: transparent;">
 			<div>
 				<div class="mt-1 font-semibold text-black dark:text-white">{{ message.name }}</div>
 				<div v-html="formatMessage(message.content)" class="prose dark:prose-invert"></div>

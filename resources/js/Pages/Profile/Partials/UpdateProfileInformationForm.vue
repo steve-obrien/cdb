@@ -59,6 +59,10 @@ const selectNewPhoto = () => {
 	photoInput.value.click();
 };
 
+const deletePhoto = () => {
+	form.photo = null
+	photoPreview.value = '';
+}
 
 </script>
 
@@ -69,6 +73,7 @@ const selectNewPhoto = () => {
 		<template #description>Update your account's profile information and email address.</template>
 
 		<template #content>
+
 			<form @submit.prevent="updateProfileInformation" class="mt-6 space-y-6">
 
 				<!-- Profile Photo -->
@@ -100,13 +105,13 @@ const selectNewPhoto = () => {
 						Select A New Photo
 					</SecondaryButton>
 
-					<SecondaryButton
+					<!-- <SecondaryButton
 					v-if="user.avatar_url"
 					type="button"
 					class="mt-2"
 					@click.prevent="deletePhoto">
 						Remove Photo
-					</SecondaryButton>
+					</SecondaryButton> -->
 
 					<progress v-if="form.progress" :value="form.progress.percentage" max="100">
 						{{ form.progress.percentage }}%
