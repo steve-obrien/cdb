@@ -179,6 +179,24 @@ class ProfileController extends Controller
 	}
 
 	/**
+	 * Delete a users profile image.
+	 * This is not necessary with a file manager approach
+	 * @param Request $request 
+	 */
+	public function deleteAvatar(Request $request)
+	{
+		$user = $request->user();
+		
+		$user->avatar = '';
+		// If the user already has an avatar, delete the old one
+		if ($user->avatar) {
+			Storage::disk('public')->delete($user->avatar);
+		}
+		$user->save();
+		response()->json([], 200);
+	}
+
+	/**
 	 * Delete the user's account.
 	 */
 	public function destroy(Request $request): RedirectResponse

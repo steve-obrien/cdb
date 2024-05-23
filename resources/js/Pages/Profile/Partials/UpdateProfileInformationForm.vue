@@ -5,7 +5,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import ActionSection from '@/Components/ActionSection.vue';
-import { Link, useForm, usePage } from '@inertiajs/vue3';
+import { Link, useForm, usePage, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 defineProps({
@@ -60,8 +60,9 @@ const selectNewPhoto = () => {
 };
 
 const deletePhoto = () => {
-	form.photo = null
-	photoPreview.value = '';
+	axios.delete(route('profile.avatar.delete')).then(() => {
+		location.reload()
+	})
 }
 
 </script>
@@ -105,13 +106,13 @@ const deletePhoto = () => {
 						Select A New Photo
 					</SecondaryButton>
 
-					<!-- <SecondaryButton
+					<SecondaryButton
 					v-if="user.avatar_url"
 					type="button"
 					class="mt-2"
 					@click.prevent="deletePhoto">
 						Remove Photo
-					</SecondaryButton> -->
+					</SecondaryButton>
 
 					<progress v-if="form.progress" :value="form.progress.percentage" max="100">
 						{{ form.progress.percentage }}%
