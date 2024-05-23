@@ -28,7 +28,7 @@
 			
 			<div class="flex">
 				<div v-for="user in users" :key="user.id" >
-					<img class="h-4 w-4 rounded-full bg-gray-50" :src="route('profile/avatar/', user.avatar_url)" :alt="user.name + 'avatar'">
+					<img class="h-4 w-4 rounded-full bg-gray-50" :src="user.avatar_url" :alt="user.name + 'avatar'">
 				</div>
 			</div>
 		</div>
