@@ -88,7 +88,6 @@ class ChatApiController extends Controller
 			'messages' => $chatSession->getChatsToOpenAiFormat()
 		]);
 
-
 		$chunks = [];
 		$content = '';
 		$response = new StreamedResponse();

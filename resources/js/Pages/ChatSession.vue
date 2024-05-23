@@ -157,7 +157,7 @@ export default defineComponent({
 			} else {
 				// console.log('ADD CHUNK',chunk,message )
 				// if it does exist update the message
-				this.messages[chatIndex].content = this.messages[chatIndex].content + chunk;
+				this.messages[chatIndex].content = (this.messages[chatIndex].content ?? '') + (chunk ?? '');
 			}
 		},
 		handleScroll() {
@@ -190,7 +190,6 @@ export default defineComponent({
 			}
 
 			const chat = response.data.chat
-			//this.addMessage(chat);
 
 			nextTick(() => {
 				this.$refs.chatWindow.scrollTo(0, this.$refs.chatWindow.scrollHeight);
@@ -202,29 +201,13 @@ export default defineComponent({
 		streamResponse(sessionId) {
 			try {
 
-				let message = { role: 'assistant', content: '', state: 'loading' }
-				this.messages.push(message)
-				let index = this.messages.indexOf(message);
-
 				const eventSource = new EventSource(route('api.chatStream', sessionId), { withCredentials: true });
-				// lets use websocket instead
-				// eventSource.addEventListener('message', (event) => {
-				// 	console.log('STREAM', event.data);
-				// 	this.messages[index].state = 'streaming'
-				// 	const gpt = JSON.parse(event.data)
-				// 	if (gpt.delta.content) {
-				// 		this.messages[index].content = message.content + gpt.delta.content
-				// 		this.scrollToBottom();
-				// 	}
-				// })
 
 				eventSource.addEventListener("stop", (event) => {
 					eventSource.close();
-					this.messages[index].state = 'finished'
 				});
 
 				eventSource.addEventListener("error", (err) => {
-					// alert('error - check console!')
 					console.error("EventSource failed:", err);
 				});
 
