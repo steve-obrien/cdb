@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Agent;
+use App\BrowserAgent;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -128,11 +128,11 @@ class ProfileController extends Controller
 	 * Create a new agent instance from the given session.
 	 *
 	 * @param  mixed  $session
-	 * @return \App\Agent
+	 * @return \App\BrowserAgent
 	 */
 	protected function createAgent($session)
 	{
-		return tap(new Agent(), fn ($agent) => $agent->setUserAgent($session->user_agent));
+		return tap(new BrowserAgent(), fn ($agent) => $agent->setUserAgent($session->user_agent));
 	}
 
 	/**

@@ -8,7 +8,7 @@ use Detection\MobileDetect;
 /**
  * @copyright Originally created by Jens Segers: https://github.com/jenssegers/agent
  */
-class Agent extends MobileDetect
+class BrowserAgent extends MobileDetect
 {
 	/**
 	 * List of additional operating systems.

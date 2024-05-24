@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Ai;
 use \OpenAI;
 use App\Models\Chat;
 use App\Models\ChatSession;
@@ -12,6 +13,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ChatApiController extends Controller
 {
+
 	public function chatSessionDelete($sessionId)
 	{
 		/** @var ChatSession $session */
@@ -22,20 +24,20 @@ class ChatApiController extends Controller
 	/**
 	 * 
 	 */
-	public function chatSessionStart(Request $request)
-	{
-		$prompt = $request->post('prompt');
-		// create a new session
-		$chatSession = ChatSession::create(['name' => '', 'created_by' => auth()->user()->id, 'prompt'=>$prompt]);
-		/** @var ChatSession $chatSession */
-		// The first message should be a system message:
-		$chatSession->addSystemMessage();
-		$chat = $chatSession->addUserChat($prompt);
-		return [
-			'sessionId' => $chatSession->id,
-			'chatId' => $chat->id,
-		];
-	}
+	// public function chatSessionStart(Request $request)
+	// {
+	// 	$prompt = $request->post('prompt');
+	// 	// create a new session
+	// 	$chatSession = ChatSession::create(['name' => '', 'created_by' => auth()->user()->id, 'prompt'=>$prompt]);
+	// 	/** @var ChatSession $chatSession */
+	// 	// The first message should be a system message:
+	// 	$chatSession->addSystemMessage();
+	// 	$chat = $chatSession->addUserChat($prompt);
+	// 	return [
+	// 		'sessionId' => $chatSession->id,
+	// 		'chatId' => $chat->id,
+	// 	];
+	// }
 
 	public function chatStart(Request $request)
 	{
@@ -77,14 +79,11 @@ class ChatApiController extends Controller
 		/** @var ChatSession $chatSession */
 		$chatSession = ChatSession::findOrFail($id);
 
-		$yourApiKey = config('services.openai.key');
-		$client = OpenAI::factory()
-			->withApiKey($yourApiKey)
-			->withHttpClient($client = new \GuzzleHttp\Client([]))
-			->make();
+		$client = $this->getAiClient();
 
 		$stream = $client->chat()->createStreamed([
-			'model' => 'gpt-4-1106-preview',
+			'tools' => $this->getAiTools(),
+			'model' => $this->getChatGptModel(),
 			'messages' => $chatSession->getChatsToOpenAiFormat()
 		]);
 
@@ -142,77 +141,43 @@ class ChatApiController extends Controller
 	}
 
 
-	/**
-	 * Display a listing of the resource.
-	 */
-	public function chat(Request $request)
-	{
-		$prompt = $request->input('prompt');
-
-		$yourApiKey = config('services.openai.key');
-
-		$client = OpenAI::factory()
-			->withApiKey($yourApiKey)
-			// ->withOrganization('newicon') // default: null
-			->withHttpClient($client = new \GuzzleHttp\Client([])) // default: HTTP client found using PSR-18 HTTP Client Discovery
+	public function getAiClient() {
+		return OpenAI::factory()
+			->withApiKey(config('services.openai.key'))
+			->withHttpClient($client = new \GuzzleHttp\Client([]))
 			->make();
+	}
 
-		Chat::create([
-			'user_id' => auth()->user()->id,
-			'content' => $prompt,
-			'role' => 'user',
-			'name' => auth()->user()->name,
-		]);
+	public function getAiTools()
+	{
+		return [
+			[
+				"type" => "function",
+				"function" => [
+					"name" => "get_current_weather",
+					"description" => "Get the current weather in a given location",
+					"parameters" => [
+						"type" => "object",
+						"properties"=> [
+							"location"=> [
+								"type"=> "string",
+								"description" => "The city and state, e.g. San Francisco, CA",
+							],
+							"unit" => ["type" => "string", "enum" => ["celsius", "fahrenheit"]],
+						],
+						"required" => ["location"],
+					],
+				]
+			]
+		];
+	}
 
-		// $messages = [];
-		$messages = Chat::select('role', 'name', 'content')->get()->toArray();
-		$messages[] = ['role' => 'user', 'name' => auth()->user()->name, 'content' => $prompt];
-		foreach ($messages as $i => $m) {
-			// openAI api can not cope with empty "name" properties
-			if (array_key_exists('name', $m) && $m['name'] == null) {
-				unset($messages[$i]['name']);
-			}
-		}
-
-		$stream = $client->chat()->createStreamed([
-			'model' => 'gpt-4o',
-			'messages' => $messages
-		]);
-
-		$chunks = [];
-		$message = '';
-
-		$response = new StreamedResponse();
-		$response->setCallback(function () use ($stream, $chunks, $message) {
-
-			// $message .= $aiMessage['delta']['content'];
-			foreach ($stream as $response) {
-				$responseArray = $response->choices[0]->toArray();
-				$message .= Arr::get($responseArray, 'delta.content', '');
-				$chunks[] = $responseArray;
-
-				echo "event: message\n";
-				echo "data: " . json_encode($responseArray) . "\n\n";
-				flush();
-			}
-
-			// save
-			try {
-				Chat::create(['user_id' => auth()->user()->id, 'role' => 'assistant', 'content' => $message, 'chunks' => $chunks]);
-			} catch (\Exception $e) {
-				echo "event: error\n";
-				echo "data: " . $e->__toString() . "\n\n";
-			}
-
-			// stop the stream
-			echo "event: stop\n";
-			echo "data: stopped\n\n";
-			flush();
-		});
-
-		$response->headers->set('Content-Type', 'text/event-stream');
-		$response->headers->set('X-Accel-Buffering', 'no');
-		$response->headers->set('Cach-Control', 'no-cache');
-		$response->send();
+	/**
+	 * Get chatgpt model
+	 * @return string chatgpt model
+	 */
+	public function getChatGptModel()
+	{
+		return 'gpt-4o';
 	}
 }
