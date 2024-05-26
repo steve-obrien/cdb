@@ -13,31 +13,12 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ChatApiController extends Controller
 {
-
 	public function chatSessionDelete($sessionId)
 	{
 		/** @var ChatSession $session */
 		$session = ChatSession::findOrFail($sessionId);
 		return $session->delete();
 	}
-	
-	/**
-	 * 
-	 */
-	// public function chatSessionStart(Request $request)
-	// {
-	// 	$prompt = $request->post('prompt');
-	// 	// create a new session
-	// 	$chatSession = ChatSession::create(['name' => '', 'created_by' => auth()->user()->id, 'prompt'=>$prompt]);
-	// 	/** @var ChatSession $chatSession */
-	// 	// The first message should be a system message:
-	// 	$chatSession->addSystemMessage();
-	// 	$chat = $chatSession->addUserChat($prompt);
-	// 	return [
-	// 		'sessionId' => $chatSession->id,
-	// 		'chatId' => $chat->id,
-	// 	];
-	// }
 
 	public function chatStart(Request $request)
 	{
@@ -48,7 +29,7 @@ class ChatApiController extends Controller
 		$prompt = $request->post('prompt', '');
 		if ($sessionId == null) {
 			// create a new session
-			$chatSession = ChatSession::create(['name' => '', 'created_by' => auth()->user()->id, 'prompt'=>$prompt]);
+			$chatSession = ChatSession::create(['name' => '', 'created_by' => auth()->user()->id, 'prompt' => $prompt]);
 			/** @var ChatSession $chatSession */
 			// The first message should be a system message:
 			$chatSession->addSystemMessage();
@@ -65,7 +46,7 @@ class ChatApiController extends Controller
 
 		try {
 			event(new \App\Events\ChatMessage($sessionId, $chat));
-		}catch(\Throwable $e) {
+		} catch (\Throwable $e) {
 			report($e);
 		}
 		return response()->json([
@@ -88,11 +69,11 @@ class ChatApiController extends Controller
 		]);
 
 		$chunks = [];
-		$content = '';
 		$response = new StreamedResponse();
-		$response->setCallback(function () use ($stream, $chunks, $content, $chatSession) {
+		
+		$response->setCallback(function () use ($stream, $chunks, $chatSession) {
 
-			try {
+			// try {
 				// Create the chat model
 				/** @var Chat $chat */
 				$chat = $chatSession->chats()->create([
@@ -103,30 +84,37 @@ class ChatApiController extends Controller
 				]);
 
 				foreach ($stream as $response) {
-					$responseArray = $response->choices[0]->toArray();
-					$contentChunk = Arr::get($responseArray, 'delta.content', '');
-					$content .= $contentChunk;
-					$chunks[] = $responseArray;
+					$chunk = $response->choices[0]->toArray();
+					$chunks[] = $chunk;
+
+					$nodeltas = Ai::processDeltas($chunks);
 					// lets update the database - we do this per stream which is a little excessive.
-					$chat->update(['content' => $content, 'chunks' => $chunks]);
+					$chat->update([
+						'content' => Arr::get($nodeltas,'content', ''),
+						'chunks' => $chunks,
+						'tool_calls' => Arr::get($nodeltas,'tool_calls', null),
+					]);
 					// send push messages to listening clients
 					// to avoid lots of network noise and work around Pusher 1024 packet size limit - lets just send the new part:
 					try {
-						event(new \App\Events\ChatMessageChunk($chatSession->id, $chat, $contentChunk));
-					} catch(\Throwable $e) {
+						event(new \App\Events\ChatMessageChunk($chatSession->id, $chat, $chunk));
+					} catch (\Throwable $e) {
 						report($e);
 					}
 
 					echo "event: message\n";
-					echo "data: " . json_encode($responseArray) . "\n\n";
+					echo "data: " . json_encode($chunk) . "\n\n";
 					@ob_flush();
 					flush();
 				}
-
-			} catch (\Exception $e) {
-				echo "event: error\n";
-				echo "data: " . $e->__toString() . "\n\n";
-			}
+			// } catch (\Exception $e) {
+			// 	echo "event: error\n";
+			// 	echo "data: " . $e->__toString() . "\n\n";
+			// }
+			
+			$res = $response->toArray();
+			$res['choices'][0] = Ai::processDeltas($chunks);
+			$chat->update(['response' => $res]);
 
 			// stop the stream
 			echo "event: stop\n";
@@ -140,8 +128,8 @@ class ChatApiController extends Controller
 		$response->send();
 	}
 
-
-	public function getAiClient() {
+	public function getAiClient()
+	{
 		return OpenAI::factory()
 			->withApiKey(config('services.openai.key'))
 			->withHttpClient($client = new \GuzzleHttp\Client([]))
@@ -158,9 +146,9 @@ class ChatApiController extends Controller
 					"description" => "Get the current weather in a given location",
 					"parameters" => [
 						"type" => "object",
-						"properties"=> [
-							"location"=> [
-								"type"=> "string",
+						"properties" => [
+							"location" => [
+								"type" => "string",
 								"description" => "The city and state, e.g. San Francisco, CA",
 							],
 							"unit" => ["type" => "string", "enum" => ["celsius", "fahrenheit"]],

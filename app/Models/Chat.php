@@ -22,13 +22,14 @@ class Chat extends Model
 
 	protected $casts = [
 		'chunks' => 'array',
+		'tool_calls' => 'array',
 	];
 
 	/**
-     * Get the phone associated with the user.
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+	 * Get the phone associated with the user.
+	 */
+	public function user(): BelongsTo
+	{
+		return $this->belongsTo(User::class);
+	}
 }

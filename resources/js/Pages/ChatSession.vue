@@ -157,7 +157,7 @@ export default defineComponent({
 			} else {
 				// console.log('ADD CHUNK',chunk,message )
 				// if it does exist update the message
-				this.messages[chatIndex].content = (this.messages[chatIndex].content ?? '') + (chunk ?? '');
+				this.messages[chatIndex].content = (this.messages[chatIndex].content ?? '') + (chunk.delta.content ?? '');
 			}
 		},
 		handleScroll() {

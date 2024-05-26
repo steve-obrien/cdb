@@ -139,9 +139,10 @@ export default defineComponent({
 					onFinish();
 				});
 
-				eventSource.addEventListener("error", (err) => {
-					alert('error - check console!')
-					console.error("EventSource failed:", err);
+				eventSource.addEventListener("error", (event) => {
+					// alert('error - check console!')
+					console.error("EventSource failed:", event.data);
+					eventSource.close();
 				});
 
 			} catch (error) {

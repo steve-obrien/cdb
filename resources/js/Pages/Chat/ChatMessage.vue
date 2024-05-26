@@ -31,6 +31,7 @@
 			</div>
 			<div v-else-if="message.state == 'streaming'" class="prose dark:prose-invert" v-html="formatMessage(message.content)"></div>
 			<div v-else class="prose dark:prose-invert" v-html="formatMessage(message.content)"></div>
+			<div v-if="message.tool_calls !== null">{{message.tool_calls}}</div>
 		</div>
 	</div>
 
