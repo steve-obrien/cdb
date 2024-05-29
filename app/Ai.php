@@ -10,6 +10,9 @@ class Ai {
 
 	/**
 	 * Merges arrays with delta keys
+	 * Similar behavior to array merge but only operates on a delta key.
+	 * And for array keys within delta will concatenate rather than replace.
+	 * This is useful for processing ChatGPT streaming response:
 	 */
 	public static function processDeltas($chunks)
 	{

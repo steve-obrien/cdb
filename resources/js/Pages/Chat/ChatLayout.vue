@@ -4,8 +4,11 @@
 	<AuthenticatedLayout>
 		<template #header>
 			<h2 class="font-semibold text-xl text-gray-800 dark:text-white leading-tight">Chat</h2>
+			<select class="block lg:hidden" @change="alert($event.target.value)">
+				<option v-for="session in sessions" :value="session.id" :key="session.id">{{ sessionName(session) }}</option>
+			</select>
 		</template>
-
+		
 		<div class="flex h-full">
 			<div class="hidden lg:flex h-full relative lg:w-60 xl:w-80 flex-col stretch bg-gray-50 dark:bg-gray-950 dark:text-gray-100 ">
 				<div class="shrink p-2">
@@ -19,7 +22,7 @@
 				<div class="grow relative stretch">
 					<div class="absolute inset-0 overflow-scroll space-y-2 p-2 ">
 						<div class="group border-b dark:border-gray-800 relative  text-gray-800 dark:text-gray-300" v-for="session in sessions" :key="session.id">
-							<Link :class="{'font-bold': isCurrent(session.id)}" class="block" :href="linkSession(session.id)">{{ sessionName(session) }} </Link>
+							<Link :class="{'font-bold': isCurrent(session.id)}" class="block" :href="linkSession(session.id)">{{ sessionName(session) }}</Link>
 							<button class="hidden group-hover:block absolute top-0 right-0" @click="deleteSession(session.id)">delete</button>
 						</div>
 					</div>

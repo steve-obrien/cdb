@@ -1,39 +1,54 @@
 <template>
+
 	<Head title="Chat" />
 
-	<ChatLayout :sessions="sessions">
-		<div class="grow flex relative">
-			<div ref="chatWindow" class="absolute inset-0 overflow-y-scroll" @scroll="handleScroll">
-				<div class="px-4 py-8 flex flex-col flex-1 text-base mx-auto gap-5 @md:max-w-3xl @lg:max-w-[40rem] @xl:max-w-[48rem] group final-completion">
-					<div v-if="messages.length == 0">
-						<div class="flex">
-							<div class="h-8 w-8 min-w-8 mr-2 rounded-full flex items-center justify-center bg-black text-white">AI</div>
-							<div>
-								<div class="mt-1 font-semibold">ChatGPT</div>
-								<div class="prose">How can I help you today?</div>
+	<AuthenticatedLayout>
+		<template #header>
+			<h2 class="font-semibold text-xl text-gray-800 leading-tight">Chat</h2>
+			<select class="ml-3 block lg:hidden" @change="go($route('chat.session', $event.target.value))">
+				<option v-for="session in sessions" :value="session.id" :key="session.id">{{ session.prompt.slice(0, 25) }}</option>
+			</select>
+		</template>
+
+		<div class="flex h-full">
+			
+			<ChatList :sessions="sessions"></ChatList>
+
+			<div class="@container h-full grow flex flex-col bg-white dark:bg-black">
+				<div class="grow flex relative">
+					<div ref="chatWindow" class="absolute inset-0 overflow-y-scroll" @scroll="handleScroll">
+						<div class="px-4 py-8 flex flex-col flex-1 text-base mx-auto gap-5 @md:max-w-3xl @lg:max-w-[40rem] @xl:max-w-[48rem] group final-completion">
+							<div v-if="messages.length == 0">
+								<div class="flex">
+									<div class="h-8 w-8 min-w-8 mr-2 rounded-full flex items-center justify-center bg-black text-white">AI</div>
+									<div>
+										<div class="mt-1 font-semibold">ChatGPT</div>
+										<div class="prose">How can I help you today?</div>
+									</div>
+								</div>
+							</div>
+							<div v-else v-for="(message, index) in messages">
+								<ChatMessage :message="message"></ChatMessage>
 							</div>
 						</div>
 					</div>
-					<div v-else v-for="(message, index) in messages">
-						<ChatMessage :message="message"></ChatMessage>
+				</div>
+				<div class="px-4">
+					<PromptForm @send="send" v-model:prompt="prompt"></PromptForm>
+					<div class="text-center">
+						<code class="text-xs">tokens: {{ total.tokens }} / cost: {{ total.cost }} - scroll: {{ isUserScrollBottom }}</code>
+					</div>
+
+					<div class="flex">
+						<div v-for="user in users" :key="user.id">
+							<img class="h-4 w-4 rounded-full bg-gray-50" :src="user.avatar_url" :alt="user.name + 'avatar'">
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="px-4">
-			<PromptForm @send="send" v-model:prompt="prompt"></PromptForm>
-			<div class="text-center">
-				<code class="text-xs">tokens: {{ total.tokens }} / cost: {{ total.cost }} - scroll: {{ isUserScrollBottom }}</code>
-			</div>
-			
-			<div class="flex">
-				<div v-for="user in users" :key="user.id" >
-					<img class="h-4 w-4 rounded-full bg-gray-50" :src="user.avatar_url" :alt="user.name + 'avatar'">
-				</div>
-			</div>
-		</div>
 
-	</ChatLayout>
+	</AuthenticatedLayout>
 </template>
 
 <script lang="ts">
@@ -41,12 +56,14 @@ import ChatLayout from '@/Pages/Chat/ChatLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { defineComponent, ref, nextTick } from 'vue';
 // import 'highlight.js/styles/vs.css';
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import PromptForm from './Chat/PromptForm.vue';
 import ChatMessage from './Chat/ChatMessage.vue';
 import { walkTokens } from 'marked';
 import Echo from 'laravel-echo';
 import { alertcenter } from 'googleapis/build/src/apis/alertcenter';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import ChatList from './chat/ChatList.vue';
 
 export default defineComponent({
 	props: {
@@ -56,7 +73,7 @@ export default defineComponent({
 		// The ID of the current selected chat session
 		sessionId: { required: true, type: String }
 	},
-	components: { Head, Link, ChatLayout, PromptForm, ChatMessage },
+	components: { Head, Link, AuthenticatedLayout, PromptForm, ChatMessage, ChatList },
 	data() {
 		return {
 			prompt: '',
@@ -95,7 +112,7 @@ export default defineComponent({
 			})
 			.leaving((user) => {
 				if (this.$page.props.auth.user.id !== user.id)
-				delete this.users[user.id]
+					delete this.users[user.id]
 			})
 			.error((error) => {
 				console.error(error);
@@ -142,6 +159,9 @@ export default defineComponent({
 		}
 	},
 	methods: {
+		go(url) {
+			router.visit(url)
+		},
 		addChatChunk(message, chunk) {
 			this.addMessage(message, chunk);
 

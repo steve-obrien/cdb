@@ -9,11 +9,11 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 const appName = import.meta.env.VITE_APP_NAME || 'Newicon';
 
 
-createInertiaApp({
+const app = createInertiaApp({
 	title: (title) => `${title} - ${appName}`,
 	resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
 	setup({ el, App, props, plugin }) {
-		return createApp({
+		const app = createApp({
 			data() {
 				return {
 					channelTeam: null,
@@ -26,39 +26,12 @@ createInertiaApp({
 			},
 			mounted(){
 				window.app = this
-				// global public websocket:
-				// this.channelTeam = window.Echo.join(`team`)
-				// 	.here((users) => {
-				// 		console.log(users, 'team channel');
-				// 		users.forEach(item => {
-				// 			this.users[item.id] = item
-				// 		})
-				// 	})
-				// 	.joining((user) => {
-				// 		console.log('joining', user.name);
-
-
-				// 	})
-				// 	.leaving((user) => {
-				// 		console.log('LEAVING', user.name);
-				// 	})
-				// 	.error((error) => {
-				// 		console.error(error);
-				// 	});
-				// this.channelTeam.whisper('whisper', {
-				// 	user_id: this.$page.props.auth.user.id,
-				// 	location: window.location.href
-				// })
-				
-				// this.channelTeam.listenForWhisper('whisper', (data) => {
-					
-				// })
-				
 			},
-		})
-			.use(plugin)
+		});
+		app.use(plugin)
 			.use(ZiggyVue, Ziggy)
 			.mount(el);
+		app.config.globalProperties.$route = route
 	},
 	progress: {
 		color: '#4B5563',
