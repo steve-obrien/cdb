@@ -62,7 +62,7 @@ import ChatMessage from './Chat/ChatMessage.vue';
 import { walkTokens } from 'marked';
 import Echo from 'laravel-echo';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ChatList from './chat/ChatList.vue';
+import ChatList from './Chat/ChatList.vue';
 
 export default defineComponent({
 	props: {
