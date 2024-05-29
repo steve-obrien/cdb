@@ -4,8 +4,8 @@
 	<AuthenticatedLayout>
 		<template #header>
 			<h2 class="font-semibold text-xl text-gray-800 dark:text-white leading-tight">Chat</h2>
-			<select class="block lg:hidden" @change="alert($event.target.value)">
-				<option v-for="session in sessions" :value="session.id" :key="session.id">{{ sessionName(session) }}</option>
+			<select class="ml-3 block lg:hidden" @change="go($route('chat.session', $event.target.value))">
+				<option v-for="session in sessions" :value="session.id" :key="session.id">{{ session.prompt.slice(0, 25) }}</option>
 			</select>
 		</template>
 		

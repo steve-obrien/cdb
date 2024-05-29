@@ -2,7 +2,7 @@ import './bootstrap';
 import '../css/app.css';
 
 import { createApp, h } from 'vue';
-import { createInertiaApp } from '@inertiajs/vue3';
+import { createInertiaApp, router } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
@@ -32,6 +32,7 @@ const app = createInertiaApp({
 			.use(ZiggyVue, Ziggy)
 			.mount(el);
 		app.config.globalProperties.$route = route
+		app.config.globalProperties.$router = router
 	},
 	progress: {
 		color: '#4B5563',
