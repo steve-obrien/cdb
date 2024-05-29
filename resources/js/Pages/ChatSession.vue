@@ -61,7 +61,6 @@ import PromptForm from './Chat/PromptForm.vue';
 import ChatMessage from './Chat/ChatMessage.vue';
 import { walkTokens } from 'marked';
 import Echo from 'laravel-echo';
-import { alertcenter } from 'googleapis/build/src/apis/alertcenter';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ChatList from './chat/ChatList.vue';
 
