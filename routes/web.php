@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\ChatApiController;
+use App\Http\Controllers\UiController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -44,11 +45,15 @@ Route::get('/avatar/{id}', function ($id) {
 Route::middleware(['auth', 'verified'])->group(function () {
 	Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
+	
 	Route::get('/chat', [ChatController::class, 'chat'])->name('chat');
 	Route::get('/chat/{id}', [ChatController::class, 'chatSession'])->name('chat.session');
 	Route::delete('/chat/{id}', [ChatApiController::class, 'chatSessionDelete'])->name('api.chatSessionDelete');
 	Route::match(['post'], 'v1/chat-start/', [ChatApiController::class, 'chatStart'])->name('api.chatStart');
 	Route::match(['get', 'post'], 'v1/chat-stream/{id}', [ChatApiController::class, 'chatStream'])->name('api.chatStream');
+
+	Route::get('/ui', [UiController::class, 'ui'])->name('ui');
+	Route::get('/ui/send', [UiController::class, 'send'])->name('ui.send');
 
 	Route::get('/team', [TeamController::class, 'team'])->name('team');
 	Route::post('/team/invite', [TeamController::class, 'invite'])->name('team.invite');

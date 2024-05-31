@@ -4,7 +4,7 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-		"soketi": "soketi start --config=./soketi.config.json"
+        "soketi": "soketi start --config=./soketi.config.json"
     },
     "devDependencies": {
         "@inertiajs/vue3": "^1.0.0",
@@ -27,6 +27,9 @@
         "laravel-echo": "^1.15.3",
         "marked": "^11.1.0",
         "marked-highlight": "^2.1.0",
-        "pusher-js": "^8.4.0-rc2"
+        "monaco-editor": "^0.49.0",
+        "monaco-editor-vue3": "^0.1.10",
+        "pusher-js": "^8.4.0-rc2",
+        "vite-plugin-monaco-editor": "^1.1.0"
     }
 }

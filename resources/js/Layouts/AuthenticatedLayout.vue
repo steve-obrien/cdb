@@ -109,7 +109,7 @@
 			</div>
 
 			<main class="grow">
-				<div class="h-full">
+				<div class="h-full relative">
 					<!-- Main area -->
 					<slot></slot>
 				</div>
@@ -134,6 +134,7 @@ import {
 	UsersIcon,
 	XMarkIcon,
 	CircleStackIcon,
+	CommandLineIcon,
 	ChatBubbleLeftRightIcon
 } from '@heroicons/vue/24/outline'
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
@@ -141,6 +142,7 @@ import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 const navigation = [
 	{ name: 'Dashboard', href: route('dashboard'), icon: HomeIcon, current: route().current('dashboard')  },
 	{ name: 'Projects', href: route('chat'), icon: ChatBubbleLeftRightIcon, current: route().current('chat*') },
+	{ name: 'Ui', href: route('ui'), icon: CommandLineIcon, current: route().current('ui*') },
 	{ name: 'Team', href: route('team'), icon: UsersIcon, current: route().current('team*') },
 	// { name: 'Database', href: '#', icon: CircleStackIcon, current: false },
 	// { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },

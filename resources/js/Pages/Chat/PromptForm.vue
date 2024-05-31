@@ -3,7 +3,7 @@
 		<div class="relative flex h-full flex-1 items-stretch md:flex-col">
 			<div class="flex w-full items-center">
 				<div class="overflow-hidden [&:has(textarea:focus)]:border-token-border-xheavy [&:has(textarea:focus)]:shadow-[0_2px_6px_rgba(0,0,0,.05)] flex flex-col w-full dark:border-token-border-heavy flex-grow relative border border-token-border-heavy dark:text-white rounded-2xl bg-white dark:bg-gray-800 shadow-[0_0_0_2px_rgba(255,255,255,0.95)] dark:shadow-[0_0_0_2px_rgba(52,53,65,0.95)]">
-					<textarea @keyup="autoExpand" @keydown="handleKeyPress" @blur="onBlur" :value="prompt" @input="$emit('update:prompt', $event.target.value)" ref="prompt" id="prompt-textarea" tabindex="0" rows="1" placeholder="Message ChatGPT…" class="m-0 w-full resize-none border-0 bg-transparent py-[10px] pr-10 focus:ring-0 focus-visible:ring-0 dark:bg-transparent md:py-3.5 md:pr-12 placeholder-black/50 dark:placeholder-white/50 pl-10 md:pl-[55px]" style="max-height: 250px; height: 52px; "></textarea>
+					<textarea @keyup="autoExpand" @keydown="handleKeyPress" @blur="onBlur" :value="prompt" @input="$emit('update:prompt', $event.target.value)" ref="prompt" id="prompt-textarea" tabindex="0" :rows="rows" :placeholder="placeholder" class="m-0 w-full resize-none border-0 bg-transparent py-[10px] pr-10 focus:ring-0 focus-visible:ring-0 dark:bg-transparent md:py-3.5 md:pr-12 placeholder-black/50 dark:placeholder-white/50 pl-10 md:pl-[55px]" style="max-height: 250px; height: 52px; "></textarea>
 					<div class="absolute bottom-2 md:bottom-3 left-2 md:left-4">
 						<div class="flex">
 							<button class="btn relative p-0 text-black dark:text-white" aria-label="Attach files">
@@ -34,9 +34,21 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
 	emits: ['send', 'update:prompt'],
-	props: ['prompt'],
+	props: {
+		prompt: String,
+		rows: String,
+		placeholder: { type: String, default: 'Message ChatGPT…'}
+	},
 	mounted() {
 		this.$refs.prompt.focus()
+	},
+	watch: {
+		placeholder() {
+			this.autoExpand()
+		},
+		prompt() {
+			this.autoExpand()
+		}
 	},
 	methods: {
 		send() {
