@@ -49,10 +49,15 @@ class UiController extends Controller
 	{
 		$ui = UiComponent::findOrFail($uiId);
 
+
 		$ai = new Ai();
 		$systemPrompt = "You are a tailwing css html component generator."
 		 . "You recieve prompts of component descriptions and you output the html markup only without markdown formatting."
-		 . "You must only respond with html components. Do not include html, head, or body tags";
+		 . "You must only respond with html components. Do not include html, head, or body tags"
+		 . "For images you can use a placeholder src url http://newicon.test/firefly/file/get?w=100"
+		 . "You can add ?w and h parameters for width and height values in pixels"
+		 . "Only return content within the body tag.";
+
 		$ai->addMessage('system', $systemPrompt)
 			->addMessage('user', $ui->prompt);
 
