@@ -1,14 +1,24 @@
 <template>
 	<div v-if="message.role == 'user'" class="flex">
-		<div v-if="$page.props.auth.user.id == message.user_id" class="flex ml-auto bg-gray-100 dark:bg-gray-900 p-2 pl-4 rounded-xl " >
+		<!-- me -->
+		<div v-if="$page.props.auth.user.id == message.user_id" class="flex ml-auto bg-gray-100 dark:bg-gray-900 p-2 pl-4 rounded-xl ">
 			<div class="text-right">
 				<div class="mt-1 font-semibold text-black dark:text-white ml-auto">Me</div>
-				<div v-html="formatMessage(message.content)" class="prose dark:prose-invert"></div>
+				<div v-if="isArray">
+					<!-- We are an array of conent messages -->
+					<div v-for="msg in messages" class="prose dark:prose-invert">
+						<div v-if="msg.type == 'text'" v-html="formatMessage(msg.text)"></div>
+						<div v-if="msg.type == 'image_url'">
+							<img :src="msg.image_url.url" />
+						</div>
+					</div>
+				</div>
+				<div v-else v-html="formatMessage(message.content)" class="prose dark:prose-invert"></div>
 			</div>
 			<img class="h-8 w-8 min-w-8 ml-2 rounded-full" alt="User" loading="lazy" width="24" height="24"
 			:src="message.user.avatar_url" style="color: transparent;">
 		</div>
-
+		<!-- you -->
 		<div class="flex p-2 pr-4 rounded-md bg-gray-100 dark:bg-gray-800" v-else>
 			<img class="h-8 w-8 min-w-8 mr-2 rounded-full" alt="User" loading="lazy" width="24" height="24"
 			:src="message.user.avatar_url" style="color: transparent;">
@@ -31,7 +41,7 @@
 			</div>
 			<div v-else-if="message.state == 'streaming'" class="prose dark:prose-invert" v-html="formatMessage(message.content)"></div>
 			<div v-else class="prose dark:prose-invert" v-html="formatMessage(message.content)"></div>
-			<div v-if="message.tool_calls !== null">{{message.tool_calls}}</div>
+			<div v-if="message.tool_calls !== null">{{ message.tool_calls }}</div>
 		</div>
 	</div>
 
@@ -61,49 +71,49 @@ Author: Sara Lissette Luis Ibáñez <lissette.ibnz@gmail.com>
 Description: Single-File Components of Vue.js Framework
 */
 function hljsDefineVue(hljs) {
-  return {
-    subLanguage: "xml",
-    contains: [
-      hljs.COMMENT("<!--", "-->", {
-        relevance: 10,
-      }),
-      {
-        begin: /^(\s*)(<script>)/gm,
-        end: /^(\s*)(<\/script>)/gm,
-        subLanguage: "javascript",
-        excludeBegin: true,
-        excludeEnd: true,
-      },
-      {
-        begin: /^(?:\s*)(?:<script\s+lang=(["'])ts\1>)/gm,
-        end: /^(\s*)(<\/script>)/gm,
-        subLanguage: "typescript",
-        excludeBegin: true,
-        excludeEnd: true,
-      },
-      {
-        begin: /^(\s*)(<style(\s+scoped)?>)/gm,
-        end: /^(\s*)(<\/style>)/gm,
-        subLanguage: "css",
-        excludeBegin: true,
-        excludeEnd: true,
-      },
-      {
-        begin: /^(?:\s*)(?:<style(?:\s+scoped)?\s+lang=(["'])(?:s[ca]ss)\1(?:\s+scoped)?>)/gm,
-        end: /^(\s*)(<\/style>)/gm,
-        subLanguage: "scss",
-        excludeBegin: true,
-        excludeEnd: true,
-      },
-      {
-        begin: /^(?:\s*)(?:<style(?:\s+scoped)?\s+lang=(["'])stylus\1(?:\s+scoped)?>)/gm,
-        end: /^(\s*)(<\/style>)/gm,
-        subLanguage: "stylus",
-        excludeBegin: true,
-        excludeEnd: true,
-      },
-    ],
-  };
+	return {
+		subLanguage: "xml",
+		contains: [
+			hljs.COMMENT("<!--", "-->", {
+				relevance: 10,
+			}),
+			{
+				begin: /^(\s*)(<script>)/gm,
+				end: /^(\s*)(<\/script>)/gm,
+				subLanguage: "javascript",
+				excludeBegin: true,
+				excludeEnd: true,
+			},
+			{
+				begin: /^(?:\s*)(?:<script\s+lang=(["'])ts\1>)/gm,
+				end: /^(\s*)(<\/script>)/gm,
+				subLanguage: "typescript",
+				excludeBegin: true,
+				excludeEnd: true,
+			},
+			{
+				begin: /^(\s*)(<style(\s+scoped)?>)/gm,
+				end: /^(\s*)(<\/style>)/gm,
+				subLanguage: "css",
+				excludeBegin: true,
+				excludeEnd: true,
+			},
+			{
+				begin: /^(?:\s*)(?:<style(?:\s+scoped)?\s+lang=(["'])(?:s[ca]ss)\1(?:\s+scoped)?>)/gm,
+				end: /^(\s*)(<\/style>)/gm,
+				subLanguage: "scss",
+				excludeBegin: true,
+				excludeEnd: true,
+			},
+			{
+				begin: /^(?:\s*)(?:<style(?:\s+scoped)?\s+lang=(["'])stylus\1(?:\s+scoped)?>)/gm,
+				end: /^(\s*)(<\/style>)/gm,
+				subLanguage: "stylus",
+				excludeBegin: true,
+				excludeEnd: true,
+			},
+		],
+	};
 }
 
 
@@ -134,8 +144,29 @@ export default {
 	methods: {
 		formatMessage(message) {
 			// Set options for marked
+			if (message == undefined) return '';
 			return marked.parse(message);
 		},
+	},
+	computed: {
+		isArray() {
+			console.log(typeof this.message.content, 'typeofmessage')
+			if (typeof this.message.content === 'string') {
+				try {
+					const parsed = JSON.parse(this.message.content);
+					if (Array.isArray(parsed)) {
+						return true;
+					}
+				} catch (e) {
+					// If parsing throws an error, it's not a JSON array
+					return false;
+				}
+			}
+			return false;
+		},
+		messages(){
+			return JSON.parse(this.message.content);
+		}
 	}
 
 }

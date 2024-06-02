@@ -9,7 +9,7 @@
 		</template>
 
 		<div class="flex flex-col h-full">
-			<img class="absolute z-10 inset-0 object-cover pointer-events-none" src="img/bg.svg" />
+			<img class="absolute z-10 inset-0 object-cover pointer-events-none" src="/img/bg.svg" />
 			<div class="@container z-20 items-center justify-center grow flex flex-col">
 				<div class="z-20 my-32">
 					<PromptForm class="" @send="send" v-model:prompt="prompt" rows="2" :placeholder="placeholder"></PromptForm>
@@ -26,6 +26,12 @@
 			</div>
 			<div class="z-10">
 				<Editor class="mx-auto px-4 lg:px-10 border-2 mx-5 lg:mx-20" v-model="code"></Editor>
+			</div>
+		</div>
+
+		<div class="grid grid-cols-3">
+			<div v-for="component in components">
+				<!-- <Editor :editor="false" class="mx-auto px-4 lg:px-10 border-2 mx-5 lg:mx-20" v-model="component.html"></Editor> -->
 			</div>
 		</div>
 	</AuthenticatedLayout>
@@ -52,6 +58,7 @@ export default defineComponent({
 			code: '',
 			messages: [],
 			placeholder: '',
+			components: [],
 			examples: [
 				{ "prompt": 'A kanban board', label: 'Kanban' },
 				{ "prompt": 'A landing page hero section with a heading, leading text and an opt-in form.', label: 'Landing Page' },
@@ -99,6 +106,10 @@ export default defineComponent({
 		const randomIndex = Math.floor(Math.random() * this.examples.length)
 		this.placeholder = this.examples[randomIndex].prompt
 		this.promptButtons = this.getRandomPrompts(this.examples, 5);
+
+		axios.get(route('ui.fetch')).then((response) => {
+			this.components = response.data?.components
+		})
 	},
 	methods: {
 		shuffle() {
@@ -115,16 +126,21 @@ export default defineComponent({
 
 			let prompt = payload.prompt
 			this.prompt = ''
-			try {
 
-				// if we have code assume the prompt is a continuation - so send it the previous context
-				prompt = this.code + ' ' + prompt;
-				const eventSource = new EventSource(route('ui.send', { prompt: prompt }), { withCredentials: true });
+			// if we have code assume the prompt is a continuation - so send it the previous context
+			prompt = this.code + ' ' + prompt;
+
+			try {
+				const response = await axios.post(route('ui.send', {}), { prompt: prompt });
+
+				// Check if the response contains the SSE URL
+				const uiId = response.data.uiId;
+
+				const eventSource = new EventSource(route('ui.stream', { uiId: uiId }), { withCredentials: true });
 				// reset the code window
 				this.code = '';
 
 				eventSource.addEventListener('message', (event) => {
-
 					const gpt = JSON.parse(event.data)
 					if (gpt.delta.content) {
 						this.code = this.code + gpt.delta.content
@@ -139,11 +155,11 @@ export default defineComponent({
 					console.error("EventSource failed:", event.data);
 					eventSource.close();
 				});
-
 			} catch (error) {
-				console.error('There was a problem with the fetch operation:', error);
+				console.error('Error with POST request:', error);
 			}
-		}
+
+		},
 	}
 })
 </script>

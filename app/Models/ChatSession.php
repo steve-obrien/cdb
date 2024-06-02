@@ -23,7 +23,7 @@ class ChatSession extends Model
 		'name', 'visibility', 'created_by', 'folder', 'prompt'
 	];
 
-	public function addSystemMessage($content = 'You are a helpful assistant'): Chat
+	public function addSystemMessage($content = 'You are an helpful assistant'): Chat
 	{
 		return $this->chats()->create([
 			'user_id' => auth()->user()->id,
@@ -64,25 +64,12 @@ class ChatSession extends Model
 	/**
 	 * 
 	 */
-	public function getChatsToOpenAiFormat()
+	public function getChatsForOpenAi()
 	{
 		$chats = $this->chats()
 			->select('role', 'name', 'content')
 			->orderBy('created_at', 'asc')
 			->get();
-
-		// Transform the collection to remove 'name' attribute if it's null
-		$chats->transform(function ($item) {
-			// Open AI library will error if the name is in the format "Steve OBrien" as it does not allow spaces
-			// in the User message object name property
-			if (!Str::of($item->name)->isMatch('/^[a-zA-Z0-9_-]{1,64}$/')) {
-				// lets try and make a match
-				$item->name = str_replace(' ', '-', $item->name);
-			}
-			// It also gets upset with empty values
-			if (empty($item->name)) unset($item->name);
-			return $item;
-		});
 
 		return $chats->toArray();
 	}

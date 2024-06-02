@@ -45,7 +45,6 @@ Route::get('/avatar/{id}', function ($id) {
 Route::middleware(['auth', 'verified'])->group(function () {
 	Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
-	
 	Route::get('/chat', [ChatController::class, 'chat'])->name('chat');
 	Route::get('/chat/{id}', [ChatController::class, 'chatSession'])->name('chat.session');
 	Route::delete('/chat/{id}', [ChatApiController::class, 'chatSessionDelete'])->name('api.chatSessionDelete');
@@ -53,7 +52,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::match(['get', 'post'], 'v1/chat-stream/{id}', [ChatApiController::class, 'chatStream'])->name('api.chatStream');
 
 	Route::get('/ui', [UiController::class, 'ui'])->name('ui');
-	Route::get('/ui/send', [UiController::class, 'send'])->name('ui.send');
+	Route::post('/ui/send', [UiController::class, 'send'])->name('ui.send');
+	Route::get('/ui/stream/{uiId}', [UiController::class, 'stream'])->name('ui.stream');
+	Route::get('/ui/fetch', [UiController::class, 'fetch'])->name('ui.fetch');
 
 	Route::get('/team', [TeamController::class, 'team'])->name('team');
 	Route::post('/team/invite', [TeamController::class, 'invite'])->name('team.invite');
@@ -96,27 +97,26 @@ Route::get('/event', function (Request $request) {
 });
 
 
+// Dynamic convention based routes:
+Route::get('app/{controller}/{action}', function ($controller, $action) {
+	// Format the controller name to match Laravel's naming convention and namespace
+	$controller = 'App\Http\Controllers\\' . ucfirst($controller) . 'Controller';
+	// Check if the controller exists
+	if (class_exists($controller)) {
+		// Create an instance of the controller
+		$controllerInstance = app()->make($controller);
+		// Check if the method (action) exists in the controller
+		if (method_exists($controllerInstance, $action)) {
+			// Call the action method and return the response
+			return app()->call([$controllerInstance, $action]);
+		} else {
+			abort(404, "Action $action not found in controller $controller.");
+		}
+	} else {
+		abort(404, "Controller $controller not found.");
+	}
+});
 
 
-// Route::get('/auth/redirect', function () {
-// 	return Socialite::driver('github')->redirect();
-// });
-
-// Route::get('/auth/callback', function () {
-// 	$githubUser = Socialite::driver('github')->user();
-
-// 	$user = User::updateOrCreate([
-// 		'github_id' => $githubUser->id,
-// 	], [
-// 		'name' => $githubUser->name,
-// 		'email' => $githubUser->email,
-// 		'github_token' => $githubUser->token,
-// 		'github_refresh_token' => $githubUser->refreshToken,
-// 	]);
-
-// 	Auth::login($user);
-
-// 	return redirect('/dashboard');
-// });
 
 require __DIR__ . '/auth.php';

@@ -11,7 +11,7 @@
 		</template>
 
 		<div class="flex h-full">
-			
+
 			<ChatList :sessions="sessions"></ChatList>
 
 			<div class="@container h-full grow flex flex-col bg-white dark:bg-black">
@@ -36,7 +36,7 @@
 				<div class="px-4">
 					<PromptForm @send="send" v-model:prompt="prompt"></PromptForm>
 					<div class="text-center">
-						<code class="text-xs">tokens: {{ total.tokens }} / cost: {{ total.cost }} - scroll: {{ isUserScrollBottom }}</code>
+						<code class="text-xs">tokens: {{ totalTokens }} | cost: {{totalCost}}</code>
 					</div>
 
 					<div class="flex">
@@ -59,7 +59,6 @@ import { defineComponent, ref, nextTick } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import PromptForm from './Chat/PromptForm.vue';
 import ChatMessage from './Chat/ChatMessage.vue';
-import { walkTokens } from 'marked';
 import Echo from 'laravel-echo';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ChatList from './Chat/ChatList.vue';
@@ -155,6 +154,18 @@ export default defineComponent({
 			const tokens = totalChars / this.charsPerToken
 			const cost = (tokens / 1000) * this.tokenCostPerThousand
 			return { tokens, cost: cost.toFixed(4) }
+		},
+		totalTokens() {
+			return this.messages.reduce((total, message) => {
+				if (typeof message.total_tokens === 'number') {
+					return total + message.total_tokens;
+				}
+				return total;
+			}, 0);
+		},
+		totalCost() {
+			const cost = (this.totalTokens / 1000) * this.tokenCostPerThousand
+			return cost.toFixed(4)
 		}
 	},
 	methods: {
@@ -182,14 +193,13 @@ export default defineComponent({
 		handleScroll() {
 			console.log('USER SCROLL')
 			let chatWindow = this.$refs.chatWindow;
-			this.isUserScrollBottom = chatWindow.scrollTop + chatWindow.clientHeight >= chatWindow.scrollHeight - 40;
+			this.isUserScrollBottom = chatWindow.scrollTop + chatWindow.clientHeight >= chatWindow.scrollHeight - 100;
 		},
 		scrollToBottom() {
-			let chatWindow = this.$refs.chatWindow;
 
 			if (this.isUserScrollBottom) {
 				// Scroll to bottom
-				chatWindow.scrollTo(0, chatWindow.scrollHeight);
+				this.$refs.chatWindow.scrollTo(0, this.$refs.chatWindow.scrollHeight);
 			}
 		},
 		send: async function (payload) {

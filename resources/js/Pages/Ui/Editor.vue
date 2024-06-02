@@ -1,8 +1,8 @@
 <template>
 	<div class="bg-white">
-		<button @click="debug = !debug">debug {{debug}}</button>
+		<!-- <button @click="debug = !debug">debug</button> -->
 		<div class="flex flex-row h-screen p-4">
-			<div class="w-full ">
+			<div v-show="editor" class="w-full ">
 				<MonacoEditor :options="editorOptions" v-model:value="value" ></MonacoEditor>
 				<!-- <textarea class="w-full h-full" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)"></textarea> -->
 			</div>
@@ -22,9 +22,13 @@ export default defineComponent({
 	components: { MonacoEditor },
 	emits: ['update:modelValue'],
 	props: {
+		editor: {
+			type: Boolean,
+			default:true
+		},
 		modelValue: {
 			type: String,
-			required: true
+			required: false
 		},
 		editorOptions: {
 			type: Object,

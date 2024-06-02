@@ -26,7 +26,7 @@ class ChatApiController extends Controller
 
 		// Or is it a new session?
 		$sessionId = $request->post('sessionId');
-		$prompt = $request->post('prompt', '');
+		$prompt = json_encode($request->post('prompt', ''));
 		if ($sessionId == null) {
 			// create a new session
 			$chatSession = ChatSession::create(['name' => '', 'created_by' => auth()->user()->id, 'prompt' => $prompt]);
@@ -60,112 +60,40 @@ class ChatApiController extends Controller
 		/** @var ChatSession $chatSession */
 		$chatSession = ChatSession::findOrFail($id);
 
-		$client = $this->getAiClient();
+		$ai = new Ai();
+		// add historic messages:
+		$ai->addMessages($chatSession->getChatsForOpenAi());
 
-		$stream = $client->chat()->createStreamed([
-			'tools' => $this->getAiTools(),
-			'model' => $this->getChatGptModel(),
-			'messages' => $chatSession->getChatsToOpenAiFormat()
+		// Create the chat model - for the ai chat response
+		/** @var Chat $chat */
+		$chat = $chatSession->chats()->create([
+			'user_id' => auth()->user()->id,
+			'role' => 'assistant',
+			'content' => '',
+			'chunks' => []
 		]);
 
-		$chunks = [];
-		$response = new StreamedResponse();
-		
-		$response->setCallback(function () use ($stream, $chunks, $chatSession) {
-
-			// try {
-				// Create the chat model
-				/** @var Chat $chat */
-				$chat = $chatSession->chats()->create([
-					'user_id' => auth()->user()->id,
-					'role' => 'assistant',
-					'content' => '',
-					'chunks' => $chunks
+		$ai->eventStream(
+			function ($chunk, $chunks) use ($chat, $chatSession) {
+				$nodeltas = Ai::processDeltas($chunks);
+				// lets update the database - we do this per stream which is a little excessive.
+				$chat->update([
+					'content' => Arr::get($nodeltas,'choices.0.content', ''),
+					'chunks' => $chunks,
+					'tool_calls' => Arr::get($nodeltas,'choices.0.tool_calls', null),
 				]);
-
-				foreach ($stream as $response) {
-					$chunk = $response->choices[0]->toArray();
-					$chunks[] = $chunk;
-
-					$nodeltas = Ai::processDeltas($chunks);
-					// lets update the database - we do this per stream which is a little excessive.
-					$chat->update([
-						'content' => Arr::get($nodeltas,'content', ''),
-						'chunks' => $chunks,
-						'tool_calls' => Arr::get($nodeltas,'tool_calls', null),
-					]);
-					// send push messages to listening clients
-					// to avoid lots of network noise and work around Pusher 1024 packet size limit - lets just send the new part:
-					try {
-						event(new \App\Events\ChatMessageChunk($chatSession->id, $chat, $chunk));
-					} catch (\Throwable $e) {
-						report($e);
-					}
-
-					echo "event: message\n";
-					echo "data: " . json_encode($chunk) . "\n\n";
-					@ob_flush();
-					flush();
+				// send push messages to listening clients
+				// to avoid lots of network noise and work around Pusher 1024 packet size limit - lets just send the new part:
+				try {
+					event(new \App\Events\ChatMessageChunk($chatSession->id, $chat, Arr::get($chunk,'choices.0')));
+				} catch (\Throwable $e) {
+					report($e);
 				}
-			// } catch (\Exception $e) {
-			// 	echo "event: error\n";
-			// 	echo "data: " . $e->__toString() . "\n\n";
-			// }
-			
-			$res = $response->toArray();
-			$res['choices'][0] = Ai::processDeltas($chunks);
-			$chat->update(['response' => $res]);
-
-			// stop the stream
-			echo "event: stop\n";
-			echo "data: stopped\n\n";
-			flush();
-		});
-
-		$response->headers->set('Content-Type', 'text/event-stream');
-		$response->headers->set('X-Accel-Buffering', 'no');
-		$response->headers->set('Cach-Control', 'no-cache');
-		$response->send();
-	}
-
-	public function getAiClient()
-	{
-		return OpenAI::factory()
-			->withApiKey(config('services.openai.key'))
-			->withHttpClient($client = new \GuzzleHttp\Client([]))
-			->make();
-	}
-
-	public function getAiTools()
-	{
-		return [
-			[
-				"type" => "function",
-				"function" => [
-					"name" => "get_current_weather",
-					"description" => "Get the current weather in a given location",
-					"parameters" => [
-						"type" => "object",
-						"properties" => [
-							"location" => [
-								"type" => "string",
-								"description" => "The city and state, e.g. San Francisco, CA",
-							],
-							"unit" => ["type" => "string", "enum" => ["celsius", "fahrenheit"]],
-						],
-						"required" => ["location"],
-					],
-				]
-			]
-		];
-	}
-
-	/**
-	 * Get chatgpt model
-	 * @return string chatgpt model
-	 */
-	public function getChatGptModel()
-	{
-		return 'gpt-4o';
+			}, 
+			// on finish
+			function($response) use($chat) {
+				$chat->update(['response' => $response, 'total_tokens' => Arr::get($response,'usage.total_tokens')]);
+			},
+		);
 	}
 }

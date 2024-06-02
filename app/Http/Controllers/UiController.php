@@ -7,6 +7,7 @@ use App\Models\ChatSession;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Ai;
+use App\Models\UiComponent;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
@@ -22,50 +23,55 @@ class UiController extends Controller
 		]);
 	}
 
+	/**
+	 * Sets up a SSE stream event - handles the reciept of large data
+	 */
 	public function send(Request $request)
 	{
-		$prompt = $request->get('prompt', '');
-		/** @var ChatSession $chatSession */
+		$prompt = $request->post('prompt', '');
 
-		$ai = new Ai();
+		$ui = UiComponent::create([
+			'prompt' => $prompt,
+			'user_id' => auth()->user()->id
+		]);
 
-		$ai->addMessage('system', "You are a tailwing css html component generator.
-			You recieve prompts of component descriptions and you output the html markup only without markdown formatting")
-			->addMessage('user', $prompt);
-		
-		$ai->stream();
-	}
-
-	public function getAiTools()
-	{
-		return [
-			[
-				"type" => "function",
-				"function" => [
-					"name" => "get_current_weather",
-					"description" => "Get the current weather in a given location",
-					"parameters" => [
-						"type" => "object",
-						"properties" => [
-							"location" => [
-								"type" => "string",
-								"description" => "The city and state, e.g. San Francisco, CA",
-							],
-							"unit" => ["type" => "string", "enum" => ["celsius", "fahrenheit"]],
-						],
-						"required" => ["location"],
-					],
-				]
-			]
-		];
+		return response()->json([
+			'uiId' => $ui->id,
+		]);
 	}
 
 	/**
-	 * Get chatgpt model
-	 * @return string chatgpt model
+	 * Return a chat stream
+	 * @param string $uiId - ulid of UiComponent
+	 * @return void 
 	 */
-	public function getChatGptModel()
+	public function stream($uiId)
 	{
-		return 'gpt-4o';
+		$ui = UiComponent::findOrFail($uiId);
+
+		$ai = new Ai();
+		$systemPrompt = "You are a tailwing css html component generator."
+		 . "You recieve prompts of component descriptions and you output the html markup only without markdown formatting."
+		 . "You must only respond with html components. Do not include html, head, or body tags";
+		$ai->addMessage('system', $systemPrompt)
+			->addMessage('user', $ui->prompt);
+
+		$handleChunk = function($chunk, $chunks) {};
+
+		$handleFinished = function($result) use($ui) {
+			$ui->html = Arr::get($result, 'choices.0.content');
+			$ui->save();
+		};
+
+		$ai->eventStream($handleChunk, $handleFinished);
+
+	}
+
+	public function fetch()
+	{
+		$components = UiComponent::all();
+		return response()->json([
+			'components' => $components
+		]);
 	}
 }
