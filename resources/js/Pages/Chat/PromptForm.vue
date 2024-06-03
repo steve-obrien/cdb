@@ -4,14 +4,14 @@
 			<div class="flex w-full items-center">
 				<div class="overflow-hidden [&:has(textarea:focus)]:border-token-border-xheavy [&:has(textarea:focus)]:shadow-[0_2px_6px_rgba(0,0,0,.05)] flex flex-row w-full dark:border-token-border-heavy flex-grow relative border border-token-border-heavy dark:text-white rounded-2xl bg-white dark:bg-gray-800 shadow-[0_0_0_2px_rgba(255,255,255,0.95)] dark:shadow-[0_0_0_2px_rgba(52,53,65,0.95)]">
 					<div class="relative flex">
-						<button @click="image" class="self-end mb-3 pl-3 btn  p-0 text-black dark:text-white" aria-label="Attach files">
+						<button @click="triggerFileInput" class="self-end mb-3 pl-3 btn  p-0 text-black dark:text-white" aria-label="Attach files">
 							<div class="flex w-full gap-2 items-center justify-center">
 								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path fill-rule="evenodd" clip-rule="evenodd" d="M9 7C9 4.23858 11.2386 2 14 2C16.7614 2 19 4.23858 19 7V15C19 18.866 15.866 22 12 22C8.13401 22 5 18.866 5 15V9C5 8.44772 5.44772 8 6 8C6.55228 8 7 8.44772 7 9V15C7 17.7614 9.23858 20 12 20C14.7614 20 17 17.7614 17 15V7C17 5.34315 15.6569 4 14 4C12.3431 4 11 5.34315 11 7V15C11 15.5523 11.4477 16 12 16C12.5523 16 13 15.5523 13 15V9C13 8.44772 13.4477 8 14 8C14.5523 8 15 8.44772 15 9V15C15 16.6569 13.6569 18 12 18C10.3431 18 9 16.6569 9 15V7Z" fill="currentColor"></path>
 								</svg>
 							</div>
 						</button>
-						<input multiple="" type="file" tabindex="-1" class="hidden" style="display: none;">
+						<input ref="fileInput" @change="handleFileChange" multiple="" type="file" tabindex="-1" class="hidden" style="display: none;">
 					</div>
 					<div class="w-full items-center flex-col">
 						<div v-if="images.length" class="flex gap-2">
@@ -44,13 +44,9 @@ export default defineComponent({
 	emits: ['send', 'update:prompt'],
 	props: {
 		prompt: String,
-		rows: {type: String, default: 1},
-		placeholder: { type: String, default: 'Message ChatGPT…' }
-	},
-	data() {
-		return {
-			images: []
-		}
+		rows: { type: String, default: 1 },
+		placeholder: { type: String, default: 'Message ChatGPT…' },
+		images: { type: Array, default: [] }
 	},
 	mounted() {
 		this.$refs.prompt.focus()
@@ -64,7 +60,36 @@ export default defineComponent({
 		}
 	},
 	methods: {
-		removeImage(key){
+		getPrompt(text) {
+			prompt = this.prompt;
+			prompt[0] = {type: 'text', text: text};
+			return prompt;
+		},
+		triggerFileInput() {
+			this.$refs.fileInput.click();
+		},
+		handleFileChange(event) {
+			const files = event.target.files;
+			// Handle the selected files
+			console.log(files);
+			const file = files[0];
+			for (const file of files) {
+				this.addFileToUpload(file)
+			}
+
+		},
+		addFileToUpload(file) {
+			if (file && file.type.startsWith('image/')) {
+				const reader = new FileReader();
+				reader.onload = (e) => {
+					this.images.push(
+						{ type: "image_url", image_url: { "url": e.target.result } }
+					)
+				};
+				reader.readAsDataURL(file);
+			}
+		},
+		removeImage(key) {
 			this.images.splice(key, 1)
 		},
 		/**
@@ -88,6 +113,7 @@ export default defineComponent({
 			let imageUrl = images[Math.floor(Math.random() * images.length)];
 
 			this.convertImageToBase64(imageUrl, (base64) => {
+
 				this.images.push(
 					{
 						type: "image_url",
@@ -97,7 +123,7 @@ export default defineComponent({
 					}
 				)
 			})
-			
+
 		},
 		convertImageToBase64(imageUrl, callback) {
 			fetch(imageUrl)
@@ -114,7 +140,7 @@ export default defineComponent({
 		send() {
 
 			if (this.images.length) {
-				this.$emit('send', { 
+				this.$emit('send', {
 					prompt: [
 						{
 							type: 'text',
@@ -124,12 +150,10 @@ export default defineComponent({
 					]
 				})
 			} else {
-				this.$emit('send', { 
-					prompt: this.prompt 
+				this.$emit('send', {
+					prompt: this.prompt
 				})
 			}
-			
-
 
 			setTimeout(() => {
 				this.autoExpand();

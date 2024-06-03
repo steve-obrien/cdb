@@ -8,6 +8,14 @@
 			<h2 class="font-semibold text-xl text-gray-800 leading-tight">Ui</h2>
 		</template>
 
+		<!-- <div class="grid grid-cols-3">
+			<div class="cursor-pointer" @click="$router.visit(route('ui.make'))">
+				+
+			</div>
+			<div v-for="component in components">
+				{{ component }}
+			</div>
+		</div> -->
 
 		<div class="flex flex-col h-full">
 
@@ -25,18 +33,6 @@
 						</button>
 					</div>
 				</div>
-			</div>
-			<div>
-
-			<div class="grid grid-cols-3">
-				<div class="cursor-pointer" @click="$router.visit(route('ui.make'))">
-					+
-				</div>
-				<div v-for="component in components">
-					{{component.prompt}}
-				</div>
-			</div>
-
 			</div>
 			<div class="z-10">
 				<Editor class="mx-auto px-4 lg:px-10 border-2 mx-5 lg:mx-20" v-model="code"></Editor>

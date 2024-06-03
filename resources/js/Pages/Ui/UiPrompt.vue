@@ -1,61 +1,22 @@
 <template>
-
-	<Head title="Chat" />
-
-	<AuthenticatedLayout class="bg-gray-50 dark:bg-black">
-
-		<template #header>
-			<h2 class="font-semibold text-xl text-gray-800 leading-tight">Ui</h2>
-		</template>
-
-
-		<div class="flex flex-col h-full">
-
-			<img class="absolute z-10 inset-0 object-cover pointer-events-none" src="/img/bg.svg" />
-			<div class="@container z-20 items-center justify-center grow flex flex-col">
-				<div class="z-20 my-32">
-					<PromptForm class=""  @send="send" @changeImages="changeImages" :images="promptImages" v-model:prompt="prompt" rows="2" :placeholder="placeholder"></PromptForm>
-					<div class="max-w-[80vw] overflow-x-scroll flex space-x-2 mt-2 whitespace-nowrap">
-						<button :class="(prompt == example.prompt) ? 'bg-gray-100' : 'bg-white'" v-for="example in promptButtons" @click="examplePrompt(example)" class="border hover:border-gray-800 rounded-full px-2 ">
-							<div>{{ example.label }}</div>
-						</button>
-						<button class="border hover:border-gray-800 rounded-full px-2 bg-white" @click="shuffle"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-							</svg>
-						</button>
-					</div>
-				</div>
-			</div>
-			<div>
-
-			<div class="grid grid-cols-3">
-				<div class="cursor-pointer" @click="$router.visit(route('ui.make'))">
-					+
-				</div>
-				<div v-for="component in components">
-					{{component.prompt}}
-				</div>
-			</div>
-
-			</div>
-			<div class="z-10">
-				<Editor class="mx-auto px-4 lg:px-10 border-2 mx-5 lg:mx-20" v-model="code"></Editor>
-			</div>
-		</div>
-
-		<div class="grid grid-cols-3">
-			<div v-for="component in components">
-				<!-- <Editor :editor="false" class="mx-auto px-4 lg:px-10 border-2 mx-5 lg:mx-20" v-model="component.html"></Editor> -->
-			</div>
-		</div>
-	</AuthenticatedLayout>
+	<PromptForm class="" @send="send" @changeImages="changeImages" :images="promptImages" v-model:prompt="prompt" rows="2" :placeholder="placeholder"></PromptForm>
+	<div class="max-w-[80vw] overflow-x-scroll flex space-x-2 mt-2 whitespace-nowrap">
+		<button :class="(prompt == example.prompt) ? 'bg-gray-100' : 'bg-white'" v-for="example in promptButtons" @click="examplePrompt(example)" class="border hover:border-gray-800 rounded-full px-2 ">
+			<div>{{ example.label }}</div>
+		</button>
+		<button class="border hover:border-gray-800 rounded-full px-2 bg-white" @click="shuffle"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+			</svg>
+		</button>
+	</div>
 </template>
+
 <script>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { defineComponent, ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
-import PromptForm from './Chat/PromptForm.vue';
+import UiPromptForm from './Ui/UiPrompt.vue';
 import ChatMessage from './Chat/ChatMessage.vue';
 import ChatList from './Chat/ChatList.vue';
 import Editor from './Ui/Editor.vue';
@@ -66,7 +27,7 @@ export default defineComponent({
 		chats: Array,
 		sessions: Array,
 	},
-	components: { AuthenticatedLayout, Head, Link, PromptForm, ChatMessage, ChatList, Editor },
+	components: { AuthenticatedLayout, Head, Link, UiPromptForm, ChatMessage, ChatList, Editor },
 	data() {
 		return {
 			code: '',
@@ -121,10 +82,6 @@ export default defineComponent({
 		const randomIndex = Math.floor(Math.random() * this.examples.length)
 		this.placeholder = this.examples[randomIndex].prompt
 		this.promptButtons = this.getRandomPrompts(this.examples, 5);
-
-		axios.get(route('ui.fetch')).then((response) => {
-			this.components = response.data?.components
-		})
 	},
 	methods: {
 		changeImages(images) {
@@ -195,9 +152,3 @@ export default defineComponent({
 	}
 })
 </script>
-
-<style>
-.prose {
-	--tw-prose-pre-bg: black
-}
-</style>

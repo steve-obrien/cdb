@@ -73,27 +73,27 @@ class ChatApiController extends Controller
 			'chunks' => []
 		]);
 
-		$ai->eventStream(
-			function ($chunk, $chunks) use ($chat, $chatSession) {
-				$nodeltas = Ai::processDeltas($chunks);
-				// lets update the database - we do this per stream which is a little excessive.
-				$chat->update([
-					'content' => Arr::get($nodeltas,'choices.0.content', ''),
-					'chunks' => $chunks,
-					'tool_calls' => Arr::get($nodeltas,'choices.0.tool_calls', null),
-				]);
-				// send push messages to listening clients
-				// to avoid lots of network noise and work around Pusher 1024 packet size limit - lets just send the new part:
-				try {
-					event(new \App\Events\ChatMessageChunk($chatSession->id, $chat, Arr::get($chunk,'choices.0')));
-				} catch (\Throwable $e) {
-					report($e);
-				}
-			}, 
-			// on finish
-			function($response) use($chat) {
-				$chat->update(['response' => $response, 'total_tokens' => Arr::get($response,'usage.total_tokens')]);
-			},
-		);
+		$handleChunk = function ($chunk, $chunks) use ($chat, $chatSession) {
+			$nodeltas = Ai::processDeltas($chunks);
+			// lets update the database - we do this per stream which is a little excessive.
+			$chat->update([
+				'content' => Arr::get($nodeltas,'choices.0.content', ''),
+				'chunks' => $chunks,
+				'tool_calls' => Arr::get($nodeltas,'choices.0.tool_calls', null),
+			]);
+			// send push messages to listening clients
+			// to avoid lots of network noise and work around Pusher 1024 packet size limit - lets just send the new part:
+			try {
+				event(new \App\Events\ChatMessageChunk($chatSession->id, $chat, Arr::get($chunk,'choices.0')));
+			} catch (\Throwable $e) {
+				report($e);
+			}
+		};
+
+		$handleFinished = function($response) use($chat) {
+			$chat->update(['response' => $response, 'total_tokens' => Arr::get($response,'usage.total_tokens')]);
+		};
+
+		$ai->eventStream($handleChunk, $handleFinished);
 	}
 }

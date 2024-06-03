@@ -18,6 +18,13 @@ class UiController extends Controller
 	public function ui(Request $request): Response
 	{
 		return Inertia::render('Ui', [
+			'components' => UiComponent::all(),
+			'sessions' => ChatSession::orderByDesc('created_at')->get(),
+		]);
+	}
+	public function make(Request $request): Response
+	{
+		return Inertia::render('UiMake', [
 			'chats' => [],
 			'sessions' => ChatSession::orderByDesc('created_at')->get(),
 		]);
@@ -48,7 +55,6 @@ class UiController extends Controller
 	public function stream($uiId)
 	{
 		$ui = UiComponent::findOrFail($uiId);
-
 
 		$ai = new Ai();
 		$systemPrompt = "You are a tailwing css html component generator."

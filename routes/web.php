@@ -52,8 +52,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::match(['get', 'post'], 'v1/chat-stream/{id}', [ChatApiController::class, 'chatStream'])->name('api.chatStream');
 
 	Route::get('/ui', [UiController::class, 'ui'])->name('ui');
+	Route::get('/ui/make', [UiController::class, 'make'])->name('ui.make');
 	Route::post('/ui/send', [UiController::class, 'send'])->name('ui.send');
 	Route::get('/ui/stream/{uiId}', [UiController::class, 'stream'])->name('ui.stream');
+	// get the list of components
 	Route::get('/ui/fetch', [UiController::class, 'fetch'])->name('ui.fetch');
 
 	Route::get('/team', [TeamController::class, 'team'])->name('team');

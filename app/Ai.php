@@ -42,8 +42,13 @@ class Ai
 	 * @param string|null $name - an optional user name
 	 * @return $this - a chainable method
 	 */
-	public function addMessage(String $role, String $content, $name = null)
+	public function addMessage(String $role, String|Array $content, $name = null)
 	{
+
+		if (is_array($content)) {
+			// ensure, if empty, it is an empty string (laravel requests sometimes change empty strings to null)
+			$content[0]['text'] = Arr::get($content, '0.text', "");
+		}
 		$message = ['role' => $role, 'content' => $content];
 		// Open AI library will error if:
 		// - The name key exists but is empty or null value
@@ -53,12 +58,8 @@ class Ai
 			$name = preg_replace('/\s+/', '-', $name);
 			if (preg_match('/^[a-zA-Z0-9_-]{1,64}$/', $name)) {
 				$message['name'] = $name;
-			} else {
-				// Handle the case where the name still doesn't match the pattern after replacing spaces
-				// You might want to log an error, throw an exception, or set a default value
-				// throw new InvalidArgumentException("Invalid name format: $name");
-				// For now, we simply don't add it
 			}
+			// if the name still does not match then we will not add it.
 		}
 		$this->messages[] = $message;
 		return $this;
@@ -115,6 +116,23 @@ class Ai
 		$response->headers->set('Cach-Control', 'no-cache');
 		$response->send();
 	}
+
+
+	/**
+	 * An event stream keeps the request open.
+	 * A push stream instead creates a job.  
+	 * This allows the request to complete.
+	 * It returns a uuid that the client can subscribe to via a websocket.
+	 * A job is added that makes a request to the API.
+	 * This job sends the stream data to a push event.
+	 * And calls a complete job with the finished output.
+	 * @return void 
+	 */
+	public function pushStream()
+	{
+
+	}
+
 
 	/**
 	 * Responsible for making the call to OpenAI ChatGPT.
@@ -197,11 +215,11 @@ class Ai
 		// Loop through each item in the array
 		foreach ($chunks as $item) {
 			// Merge common attributes (assuming they are the same for all elements)
-			$merged['id'] = $item['id'];
-			$merged['object'] = $item['object'];
-			$merged['created'] = $item['created'];
-			$merged['model'] = $item['model'];
-			$merged['system_fingerprint'] = $item['system_fingerprint'];
+			$merged['id'] = Arr::get($item,'id','');
+			$merged['object'] = Arr::get($item,'object', '');
+			$merged['created'] = Arr::get($item,'created', '');
+			$merged['model'] = Arr::get($item, 'model', '');
+			$merged['system_fingerprint'] = Arr::get($item, 'system_fingerprint', '');
 
 			// Concatenate content from delta keys
 			if (isset($item['choices'][0]['delta']['content'])) {
