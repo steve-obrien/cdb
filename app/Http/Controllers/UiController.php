@@ -18,15 +18,14 @@ class UiController extends Controller
 	public function ui(Request $request): Response
 	{
 		return Inertia::render('Ui', [
-			'components' => UiComponent::all(),
-			'sessions' => ChatSession::orderByDesc('created_at')->get(),
+			'components' => UiComponent::orderBy('created_at', 'desc')->get(),
 		]);
 	}
-	public function make(Request $request): Response
+	public function edit($uiId): Response
 	{
-		return Inertia::render('UiMake', [
-			'chats' => [],
-			'sessions' => ChatSession::orderByDesc('created_at')->get(),
+		$ui = UiComponent::findOrFail($uiId);
+		return Inertia::render('UiEdit', [
+			'ui' => $ui,
 		]);
 	}
 
@@ -66,7 +65,7 @@ class UiController extends Controller
 
 		$ai->addMessage('system', $systemPrompt)
 			->addMessage('user', $ui->prompt);
-
+			
 		$handleChunk = function($chunk, $chunks) {};
 
 		$handleFinished = function($result) use($ui) {
@@ -76,13 +75,5 @@ class UiController extends Controller
 
 		$ai->eventStream($handleChunk, $handleFinished);
 
-	}
-
-	public function fetch()
-	{
-		$components = UiComponent::all();
-		return response()->json([
-			'components' => $components
-		]);
 	}
 }

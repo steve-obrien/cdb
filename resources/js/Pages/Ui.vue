@@ -14,7 +14,7 @@
 			<img class="absolute z-10 inset-0 object-cover pointer-events-none" src="/img/bg.svg" />
 			<div class="@container z-20 items-center justify-center grow flex flex-col">
 				<div class="z-20 my-32">
-					<PromptForm class=""  @send="send" @changeImages="changeImages" :images="promptImages" v-model:prompt="prompt" rows="2" :placeholder="placeholder"></PromptForm>
+					<PromptForm class="" @send="send" @changeImages="changeImages" :images="promptImages" v-model:prompt="prompt" rows="2" :placeholder="placeholder"></PromptForm>
 					<div class="max-w-[80vw] overflow-x-scroll flex space-x-2 mt-2 whitespace-nowrap">
 						<button :class="(prompt == example.prompt) ? 'bg-gray-100' : 'bg-white'" v-for="example in promptButtons" @click="examplePrompt(example)" class="border hover:border-gray-800 rounded-full px-2 ">
 							<div>{{ example.label }}</div>
@@ -26,28 +26,33 @@
 					</div>
 				</div>
 			</div>
-			<div>
 
-			<div class="grid grid-cols-3 gap-4 px-4 z-20 relative ">
-				<div class="cursor-pointer" @click="$router.visit(route('ui.make'))">
-					+
-				</div>
-				<div v-for="component in components" class="shadow-xl border bg-white h-40">
-					component.prompt
-				</div>
+			<div class="relative">
+
+				<button @click="state = 'list'">List</button>
+				<button @click="state = 'code'">Code</button>
+
+				<transition :duration="{ enter: 500, leave: 800 }" name="fade">
+					<div v-if="state == 'list'" class="relative z-10">
+
+						<div class="grid grid-cols-3 gap-4 px-4 z-20 relative ">
+							<div @click="$router.visit(route('ui.edit', {uiId: component.id}))" v-for="component in components" class="shadow-xl border bg-white h-40">
+								{{component.prompt[0].text}}
+								<div v-if="component.prompt[1]?.type == 'image_url'">
+									<img class="w-10" :src="component.prompt[1].image_url.url">
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div v-else class="relative z-10">
+						<Editor class="mx-auto px-4 lg:px-10 border-2 mx-5 lg:mx-20" v-model="code"></Editor>
+					</div>
+				</transition>
 			</div>
 
-			</div>
-			<div class="z-10">
-				<Editor class="mx-auto px-4 lg:px-10 border-2 mx-5 lg:mx-20" v-model="code"></Editor>
-			</div>
 		</div>
 
-		<div class="grid grid-cols-3">
-			<div v-for="component in components">
-				<!-- <Editor :editor="false" class="mx-auto px-4 lg:px-10 border-2 mx-5 lg:mx-20" v-model="component.html"></Editor> -->
-			</div>
-		</div>
 	</AuthenticatedLayout>
 </template>
 <script>
@@ -63,16 +68,15 @@ import Editor from './Ui/Editor.vue';
 export default defineComponent({
 	props: {
 		user: Object,
-		chats: Array,
-		sessions: Array,
+		components: []
 	},
 	components: { AuthenticatedLayout, Head, Link, PromptForm, ChatMessage, ChatList, Editor },
 	data() {
 		return {
+			state: 'list',
 			code: '',
 			messages: [],
 			placeholder: '',
-			components: [],
 			examples: [
 				{ "prompt": 'A kanban board', label: 'Kanban' },
 				{ "prompt": 'A landing page hero section with a heading, leading text and an opt-in form.', label: 'Landing Page' },
@@ -111,7 +115,7 @@ export default defineComponent({
 				{ "prompt": "A feature section with icons, headings, and descriptions for each feature.", "label": "Feature Section" }
 			],
 			prompt: '',
-			promptImages:[],
+			promptImages: [],
 			promptButtons: [],
 			isUserScrollBottom: true
 		}
@@ -122,9 +126,6 @@ export default defineComponent({
 		this.placeholder = this.examples[randomIndex].prompt
 		this.promptButtons = this.getRandomPrompts(this.examples, 5);
 
-		axios.get(route('ui.fetch')).then((response) => {
-			this.components = response.data?.components
-		})
 	},
 	methods: {
 		changeImages(images) {
@@ -141,6 +142,7 @@ export default defineComponent({
 			this.prompt = example.prompt;
 		},
 		send: async function () {
+			this.state = 'code'
 			let prompt = this.getPrompt
 			//this.prompt = ''
 
@@ -199,5 +201,15 @@ export default defineComponent({
 <style>
 .prose {
 	--tw-prose-pre-bg: black
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>

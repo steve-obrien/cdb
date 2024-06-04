@@ -157,7 +157,7 @@ export default defineComponent({
 
 				eventSource.addEventListener("error", (event) => {
 					// alert('error - check console!')
-					console.error("EventSource failed:", event.data);
+					console.error("EventSource failed:", event);
 					eventSource.close();
 				});
 

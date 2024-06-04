@@ -35,7 +35,7 @@
 				</div>
 			</div>
 			<div class="z-10">
-				<Editor class="mx-auto px-4 lg:px-10 border-2 mx-5 lg:mx-20" v-model="code"></Editor>
+				<Editor class="mx-auto px-4 lg:px-10 border-2 mx-5 lg:mx-20" v-model="ui.html"></Editor>
 			</div>
 		</div>
 
@@ -59,8 +59,7 @@ import Editor from './Ui/Editor.vue';
 export default defineComponent({
 	props: {
 		user: Object,
-		chats: Array,
-		sessions: Array,
+		ui: Object,
 	},
 	components: { AuthenticatedLayout, Head, Link, PromptForm, ChatMessage, ChatList, Editor },
 	data() {
@@ -117,10 +116,6 @@ export default defineComponent({
 		const randomIndex = Math.floor(Math.random() * this.examples.length)
 		this.placeholder = this.examples[randomIndex].prompt
 		this.promptButtons = this.getRandomPrompts(this.examples, 5);
-
-		axios.get(route('ui.fetch')).then((response) => {
-			this.components = response.data?.components
-		})
 	},
 	methods: {
 		changeImages(images) {
@@ -183,7 +178,7 @@ export default defineComponent({
 			return [
 				{
 					type: 'text',
-					text: this.prompt
+					text: this.prompt ?? ""
 				},
 				...this.promptImages
 			]

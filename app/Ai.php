@@ -7,12 +7,18 @@ use Http\Discovery\Exception\NotFoundException;
 use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use \OpenAI;
-use OpenAI\Client;
 use OpenAI\Exceptions\ErrorException;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Str;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Exception\ClientException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Chat GPT AI object
@@ -22,18 +28,6 @@ class Ai
 {
 
 	public $messages = [];
-	protected $_handleChunk = null;
-	protected $_handleFinished = null;
-
-	public function handleChunk(callable $callback)
-	{
-		$this->_handleChunk = $callback;
-	}
-
-	public function handleFinished(callable $callback)
-	{
-		$this->_handleFinished = $callback;
-	}
 
 	/**
 	 * 
@@ -42,12 +36,15 @@ class Ai
 	 * @param string|null $name - an optional user name
 	 * @return $this - a chainable method
 	 */
-	public function addMessage(String $role, String|Array $content, $name = null)
+	public function addMessage(String $role, String|array $content, $name = null)
 	{
-
 		if (is_array($content)) {
-			// ensure, if empty, it is an empty string (laravel requests sometimes change empty strings to null)
-			$content[0]['text'] = Arr::get($content, '0.text', "");
+			// ensure, if empty, it is an empty string
+			foreach($content as $key => $c) {
+				if ($c['type'] === 'text' && $c['text'] == null) {
+					$content[$key]['text'] = '';
+				}
+			}
 		}
 		$message = ['role' => $role, 'content' => $content];
 		// Open AI library will error if:
@@ -89,28 +86,33 @@ class Ai
 		throw_if(empty($this->messages), \BadFunctionCallException::class, 'No messages to send');
 
 		$response = new StreamedResponse();
+		
 		$response->setCallback(function () use ($callback, $finished, $options) {
 
-			$mergedChunks = $this->makeChatRequest(function ($chunk, $chunks) use ($callback) {
+			$handleChunk = function ($chunk, $chunks) use ($callback) {
 				if (isset($chunk['choices'][0])) {
 					echo "event: message\n";
 					echo "data: " . json_encode($chunk['choices'][0]) . "\n\n";
-					@ob_flush();
-					flush();
-					if ($this->_handleChunk) call_user_func($this->_handleChunk, $chunk, $chunks);
+					@ob_flush(); flush();
 					if ($callback) call_user_func($callback, $chunk, $chunks);
 				}
-			}, $options);
+			};
+
+			// $handleError = function ($error) {
+			// 	echo "event: error\n";
+			// 	echo "data: " . json_encode($error) . "\n\n";
+			// 	@ob_flush(); flush();
+			// };
+
+			$mergedChunks = $this->makeChatRequest($handleChunk, $options);
 
 			// stop the stream
 			echo "event: stop\n";
 			echo "data: stopped\n\n";
 			flush();
 
-			if ($this->_handleFinished) call_user_func($this->_handleFinished, $mergedChunks);
 			if ($finished) call_user_func($finished, $mergedChunks);
 		});
-
 		$response->headers->set('Content-Type', 'text/event-stream');
 		$response->headers->set('X-Accel-Buffering', 'no');
 		$response->headers->set('Cach-Control', 'no-cache');
@@ -130,9 +132,7 @@ class Ai
 	 */
 	public function pushStream()
 	{
-
 	}
-
 
 	/**
 	 * Responsible for making the call to OpenAI ChatGPT.
@@ -173,6 +173,12 @@ class Ai
 			static $buffer = '';
 			// Append new data to buffer
 			$buffer .= $data;
+			$errors = json_decode($buffer, true);
+			if (isset($errors['error'])) {
+				$http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+				response()->json($errors, $http_status)->send();
+				die;
+			}
 			// Split buffer into chunks of complete JSON responses
 			while (($pos = strpos($buffer, "\n")) !== false) {
 				$chunk = substr($buffer, 0, $pos);
@@ -188,12 +194,21 @@ class Ai
 					call_user_func($handleChunk, $chunkData, $chunks);
 				}
 			}
+			
 			return strlen($data);
 		});
-		curl_exec($ch);
-		if (curl_errno($ch)) {
-			echo 'Error:' . curl_error($ch);
+
+		$result = curl_exec($ch);
+		if ($result === false) {
+			throw new \Exception('cURL error: ' . curl_error($ch));
 		}
+
+		$http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		if ($http_status >= 400) {
+			$error_info = print_r(curl_getinfo($ch), true);
+			throw new \Exception($error_info);
+		}
+
 		curl_close($ch);
 
 		return $this->mergeChatChunks($chunks);
@@ -215,9 +230,9 @@ class Ai
 		// Loop through each item in the array
 		foreach ($chunks as $item) {
 			// Merge common attributes (assuming they are the same for all elements)
-			$merged['id'] = Arr::get($item,'id','');
-			$merged['object'] = Arr::get($item,'object', '');
-			$merged['created'] = Arr::get($item,'created', '');
+			$merged['id'] = Arr::get($item, 'id', '');
+			$merged['object'] = Arr::get($item, 'object', '');
+			$merged['created'] = Arr::get($item, 'created', '');
 			$merged['model'] = Arr::get($item, 'model', '');
 			$merged['system_fingerprint'] = Arr::get($item, 'system_fingerprint', '');
 
