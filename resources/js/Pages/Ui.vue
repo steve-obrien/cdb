@@ -28,12 +28,12 @@
 			</div>
 			<div>
 
-			<div class="grid grid-cols-3">
+			<div class="grid grid-cols-3 gap-4 px-4 z-20 relative ">
 				<div class="cursor-pointer" @click="$router.visit(route('ui.make'))">
 					+
 				</div>
-				<div v-for="component in components">
-					{{component.prompt}}
+				<div v-for="component in components" class="shadow-xl border bg-white h-40">
+					component.prompt
 				</div>
 			</div>
 
