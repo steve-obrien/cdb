@@ -1,13 +1,16 @@
 <template>
 	<div class="bg-white">
 		<!-- <button @click="debug = !debug">debug</button> -->
-		<div class="flex flex-row h-screen p-4">
-			<div v-show="editor" class="w-full ">
-				<MonacoEditor :options="editorOptions" v-model:value="value" ></MonacoEditor>
+		<div class="flex flex-row h-screen">
+			<div ref="codeWindow" v-show="editor" class="w-full flex relative min-h-[200px]">
+				<div ref="dragger" @mousedown="rowResizeStart" class="h-1 cursor-row-resize bg-black absolute bottom-0 w-full z-40"></div>
+				<div ref="draggerCol" @mousedown="colResizeStart" class="w-2 cursor-col-resize bg-black absolute bottom-0 right-0 h-full z-40"></div>
+				<MonacoEditor :width="width" ref="editor" :options="editorOptions" v-model:value="value" ></MonacoEditor>
 				<!-- <textarea class="w-full h-full" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)"></textarea> -->
 			</div>
-			<div class="w-[4px]"></div>
-			<div class="w-full bg-white">
+			<!-- <div class="w-[4px]"></div> -->
+			<div class="w-full bg-white relative">
+				<div v-show="dragging" class="absolute inset-0"></div>
 				<iframe style="border:none;background:white;height:100vh;width:100%;" ref="iframe" :srcdoc="iframeContent" class="w-full h-full border-none" sandbox="allow-popups-to-escape-sandbox allow-scripts allow-popups allow-forms allow-pointer-lock allow-top-navigation allow-modals"></iframe>
 			</div>
 		</div>
@@ -39,6 +42,8 @@ export default defineComponent({
 					minimap: {
 						enabled: false,
 					},
+					automaticLayout: true,
+					wordWrap: "off"
 				}
 			}
 		}
@@ -47,7 +52,9 @@ export default defineComponent({
 		return {
 			test:'',
 			debug: false,
-			css: ''
+			css: '',
+			dragging: false,
+			width: '100%'
 		}
 	},
 	mounted() {
@@ -69,6 +76,40 @@ export default defineComponent({
 		}
 	},
 	methods: {
+		rowResizeStart() {
+			const bounds = this.$refs.codeWindow.getBoundingClientRect();
+			const codeWindow = this.$refs.codeWindow;
+			console.log(bounds);
+			this.dragging = true
+			const move =  (e) => {
+				console.log(e)
+				this.$refs.dragger.style.position = 'absolute';
+				this.$refs.dragger.style.top = e.pageY - bounds.top  +'px'
+				codeWindow.style.height = e.pageY - bounds.top + 'px'
+			}
+			window.document.addEventListener('mousemove', move)
+			window.document.addEventListener('mouseup', () => {
+				this.dragging = false;
+				window.document.removeEventListener('mousemove', move)
+			})
+		},
+		colResizeStart() {
+			const bounds = this.$refs.codeWindow.getBoundingClientRect();
+			console.log(bounds);
+			this.dragging = true
+			const move =  (e) => {
+				console.log(e)
+				//this.$refs.dragger.style.top = e.pageX - bounds.x  +'px'
+				this.$refs.codeWindow.style.width = e.pageX - bounds.x + 'px'
+				this.$refs.editor.style.width = e.pageX - bounds.x + 'px'
+				this.width = e.pageX - bounds.x + 'px'
+			}
+			window.document.addEventListener('mousemove', move)
+			window.document.addEventListener('mouseup', () => {
+				this.dragging = false;
+				window.document.removeEventListener('mousemove', move)
+			})
+		},
 		updateIframeContent() {
 			console.log('here');
 			this.$refs.iframe.contentWindow.postMessage({

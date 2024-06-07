@@ -46,7 +46,7 @@
 
 					</div>
 					<div v-else class="relative z-10">
-						<Editor class="mx-auto px-4 lg:px-10 border-2 mx-5 lg:mx-20" v-model="code"></Editor>
+						<Editor class="border-2 mx-5 lg:mx-20" v-model="code"></Editor>
 					</div>
 				</transition>
 			</div>
