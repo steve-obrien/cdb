@@ -1,7 +1,7 @@
 <template>
 	<div class="bg-white">
 		<!-- <button @click="debug = !debug">debug</button> -->
-		<div class="flex flex-row h-screen">
+		<div class="flex flex-row h-full">
 			<div ref="codeWindow" v-show="editor" class="w-full flex relative min-h-[200px]">
 				<div ref="dragger" @mousedown="rowResizeStart" class="h-1 cursor-row-resize bg-black absolute bottom-0 w-full z-40"></div>
 				<div ref="draggerCol" @mousedown="colResizeStart" class="w-2 cursor-col-resize bg-black absolute bottom-0 right-0 h-full z-40"></div>
@@ -10,7 +10,7 @@
 			</div>
 			<!-- <div class="w-[4px]"></div> -->
 			<div class="w-full bg-white relative">
-				<div v-show="dragging" class="absolute inset-0"></div>
+				<div v-if="dragging" class="absolute bg-black/10 inset-0"></div>
 				<iframe style="border:none;background:white;height:100vh;width:100%;" ref="iframe" :srcdoc="iframeContent" class="w-full h-full border-none" sandbox="allow-popups-to-escape-sandbox allow-scripts allow-popups allow-forms allow-pointer-lock allow-top-navigation allow-modals"></iframe>
 			</div>
 		</div>

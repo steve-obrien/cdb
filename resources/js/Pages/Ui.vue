@@ -157,7 +157,7 @@ export default defineComponent({
 				const response = await axios.post(route('ui.send', {}), { prompt: prompt });
 
 				// Check if the response contains the SSE URL
-				const uiId = response.data.uiId;
+				const uiId = response.data.id;
 
 				const eventSource = new EventSource(route('ui.stream', { uiId: uiId }), { withCredentials: true });
 				// reset the code window

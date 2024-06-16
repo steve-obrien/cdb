@@ -18,12 +18,15 @@ class UiController extends Controller
 	public function ui(Request $request): Response
 	{
 		return Inertia::render('Ui', [
-			'components' => UiComponent::orderBy('created_at', 'desc')->get(),
+			'components' => UiComponent::where('parent_id', '=', null)->orderBy('created_at', 'desc')->get(),
 		]);
 	}
 	public function edit($uiId): Response
 	{
 		$ui = UiComponent::findOrFail($uiId);
+		// get the latest one.
+		// $ui->getLatestRevision();
+		$ui = UiComponent::where('parent_id', '=', $ui->id)->get()->last();
 		return Inertia::render('UiEdit', [
 			'ui' => $ui,
 		]);
@@ -35,15 +38,29 @@ class UiController extends Controller
 	public function send(Request $request)
 	{
 		$prompt = $request->post('prompt', '');
+		$id = $request->post('id', null);
 
-		$ui = UiComponent::create([
-			'prompt' => $prompt,
-			'user_id' => auth()->user()->id
-		]);
-
-		return response()->json([
-			'uiId' => $ui->id,
-		]);
+		if ($id == null) {
+			// create a new component
+			$ui = UiComponent::create([
+				'prompt' => $prompt,
+				'user_id' => auth()->user()->id
+			]);
+		} else {
+			// we have a reference to an existing component with existing html
+			// therefore this is an instructed revision
+			// we want to create a new component but reference its parent.
+			// So we can give the parents html as context
+			$ui = UiComponent::findOrFail($id);
+			$parentId = $ui->parent_id ?? $ui->id;
+			// this needs to find the latest revision based on parent id
+			$ui = UiComponent::create([
+				'prompt' => $prompt,
+				'user_id' => auth()->user()->id,
+				'parent_id' => $parentId,
+			])->fresh();
+		}
+		return response()->json($ui);
 	}
 
 	/**
@@ -63,17 +80,31 @@ class UiController extends Controller
 		 . "You can add ?w and h parameters for width and height values in pixels"
 		 . "Only return content within the body tag.";
 
-		$ai->addMessage('system', $systemPrompt)
-			->addMessage('user', $ui->prompt);
-			
-		$handleChunk = function($chunk, $chunks) {};
+		$ai->addMessage('system', $systemPrompt);
+		
+		// Get the previous version
+		// this returns the latest we want the latest -1
+		$previous = $ui->getPrevious();
+		if ($previous != null) {
+			$ai->addMessage('user', $previous->html);
+		}
+
+		$ai->addMessage('user', $ui->prompt);
+
+		$handleChunk = function($chunk, $chunks) use($ui) {
+			// $nodeltas = Ai::processDeltas($chunks);
+			// // add incrementally.
+			// $ui->html = $ui->html + Arr::get($nodeltas,'choices.0.content', '');
+			// $ui->save();
+		};
 
 		$handleFinished = function($result) use($ui) {
 			$ui->html = Arr::get($result, 'choices.0.content');
+			// maybe save the full prompt
+			// $ui->promptSend = $ai->messages
 			$ui->save();
 		};
 
 		$ai->eventStream($handleChunk, $handleFinished);
-
 	}
 }
