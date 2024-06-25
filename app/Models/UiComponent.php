@@ -39,12 +39,30 @@ class UiComponent extends Model
 		'prompt', 'user_id', 'html', 'parent_id'
 	];
 
+	/**
+	 * Get the previous version
+	 * @return mixed 
+	 */
 	public function getPrevious()
 	{
 		return self::where('parent_id', $this->parent_id)
+			->where('parent_id', '!=', null)
 			->where('created_at', '<', $this->created_at)
 			->orderBy('created_at', 'desc')
 			->first();
+	}
+
+	/**
+	 * Get the latest revision of the row
+	 * @return UiComponent 
+	 */
+	public function getLatestRevision()
+	{
+		$latestRevision = UiComponent::where('parent_id', '=', $this->id)->get()->last();
+		// This might be the first one. (no child versions (this row is not a parent))
+		if ($latestRevision == null)
+			return $this;
+		return $latestRevision;
 	}
 
 	/**

@@ -36,12 +36,17 @@
 					<div v-if="state == 'list'" class="relative z-10">
 
 						<div class="grid grid-cols-3 gap-4 px-4 z-20 relative ">
-							<div @click="$router.visit(route('ui.edit', {uiId: component.id}))" v-for="component in components" class="shadow-xl border bg-white h-40">
-								{{component.prompt[0].text}}
-								<div v-if="component.prompt[1]?.type == 'image_url'">
-									<img class="w-10" :src="component.prompt[1].image_url.url">
+							<div  @click="$router.visit(route('ui.edit', {uiId: component.id}))" v-for="component in components" class="shadow-xl border bg-white h-40">
+								<div class="bg-gray-100 rounded-xl">
+									{{component.prompt[0].text}}
+									<div v-if="component.prompt[1]?.type == 'image_url'">
+										<img class="w-10" :src="component.prompt[1].image_url.url">
+									</div>
 								</div>
+								<!-- <div v-html="component.html"></div> -->
 							</div>
+							<!-- <div v-html="component.html"></div> -->
+							<!-- <iframe :src="component.html"></iframe> -->
 						</div>
 
 					</div>

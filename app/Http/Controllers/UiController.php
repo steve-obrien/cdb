@@ -24,11 +24,8 @@ class UiController extends Controller
 	public function edit($uiId): Response
 	{
 		$ui = UiComponent::findOrFail($uiId);
-		// get the latest one.
-		// $ui->getLatestRevision();
-		$ui = UiComponent::where('parent_id', '=', $ui->id)->get()->last();
 		return Inertia::render('UiEdit', [
-			'ui' => $ui,
+			'ui' => $ui->getLatestRevision(),
 		]);
 	}
 
@@ -81,11 +78,10 @@ class UiController extends Controller
 		 . "Only return content within the body tag.";
 
 		$ai->addMessage('system', $systemPrompt);
-		
 		// Get the previous version
 		// this returns the latest we want the latest -1
 		$previous = $ui->getPrevious();
-		if ($previous != null) {
+		if ($previous != null ) {
 			$ai->addMessage('user', $previous->html);
 		}
 
