@@ -19,7 +19,8 @@
 						<button :class="(prompt == example.prompt) ? 'bg-gray-100' : 'bg-white'" v-for="example in promptButtons" @click="examplePrompt(example)" class="border hover:border-gray-800 rounded-full px-2 ">
 							<div>{{ example.label }}</div>
 						</button>
-						<button class="border hover:border-gray-800 rounded-full px-2 bg-white" @click="shuffle"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+						<button class="border hover:border-gray-800 rounded-full px-2 bg-white" @click="shuffle">
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
 								<path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
 							</svg>
 						</button>
@@ -149,7 +150,6 @@ export default defineComponent({
 		send: async function () {
 			this.state = 'code'
 			let prompt = this.getPrompt
-			//this.prompt = ''
 
 			// if we have code assume the prompt is a continuation - so send it the previous context
 			if (this.code != '') {
@@ -163,22 +163,20 @@ export default defineComponent({
 
 				// Check if the response contains the SSE URL
 				const uiId = response.data.id;
+				alert(response.data.id);
 
 				const eventSource = new EventSource(route('ui.stream', { uiId: uiId }), { withCredentials: true });
 				// reset the code window
 				this.code = '';
-
 				eventSource.addEventListener('message', (event) => {
 					const gpt = JSON.parse(event.data)
 					if (gpt.delta.content) {
 						this.code = this.code + gpt.delta.content
 					}
 				})
-
 				eventSource.addEventListener("stop", (event) => {
 					eventSource.close();
 				});
-
 				eventSource.addEventListener("error", (event) => {
 					console.error("EventSource failed:", event.data);
 					eventSource.close();

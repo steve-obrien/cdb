@@ -72,12 +72,13 @@ class UiController extends Controller
 		$ai = new Ai();
 		$systemPrompt = "You are a tailwing css html component generator."
 		 . "You recieve prompts of component descriptions and you output the html markup only without markdown formatting."
-		 . "You must only respond with html components. Do not include html, head, or body tags"
-		 . "For images you can use a placeholder src url http://newicon.test/firefly/file/get?w=100"
-		 . "You can add ?w and h parameters for width and height values in pixels"
+		 . "You must only respond with html components. Do not include html, head, or body tags. "
+		 . "For images you can use a placeholder src url http://newicon.test/firefly/file/get?w=100 "
+		 . "You can add ?w and h parameters for width and height values in pixels. "
 		 . "Only return content within the body tag.";
 
 		$ai->addMessage('system', $systemPrompt);
+
 		// Get the previous version
 		// this returns the latest we want the latest -1
 		$previous = $ui->getPrevious();
@@ -86,6 +87,10 @@ class UiController extends Controller
 		}
 
 		$ai->addMessage('user', $ui->prompt);
+
+		// we should store a log of the messages that got us this far.
+		$ui->prompt_log = $ai->messages;
+		$ui->save();
 
 		$handleChunk = function($chunk, $chunks) use($ui) {
 			// $nodeltas = Ai::processDeltas($chunks);

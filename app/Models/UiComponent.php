@@ -45,11 +45,22 @@ class UiComponent extends Model
 	 */
 	public function getPrevious()
 	{
-		return self::where('parent_id', $this->parent_id)
-			->where('parent_id', '!=', null)
+		return self::where('parent_id', '=', $this->parent_id)
+			->orWhere('id', '=', $this->parent_id)
 			->where('created_at', '<', $this->created_at)
-			->orderBy('created_at', 'desc')
+			->orderBy('created_at', 'asc')
 			->first();
+	}
+
+	public function isRoot()
+	{
+		return $this->parent_id == null;
+	}
+
+	public function getRoot() : UiComponent
+	{
+		if ($this->isRoot()) return $this;
+		return self::findOrFail($this->parent_id);
 	}
 
 	/**
