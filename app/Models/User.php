@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Support\Str;
 
+use function PHPSTORM_META\map;
+
 class User extends Authenticatable // implements EmailVerify
 {
 	use HasApiTokens, HasFactory, Notifiable; // MustVerifyEmail;
@@ -27,6 +29,9 @@ class User extends Authenticatable // implements EmailVerify
 		'email',
 		'password',
 		'avatar',
+		'provider',
+		'provider_id',
+		'provider_token',
 	];
 
 	/**
