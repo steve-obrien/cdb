@@ -21,7 +21,6 @@ class TeamController extends Controller
 		return Inertia::render('Team', [
 			'users' => User::all(),
 			'invites' => Invitation::all()
-
 		]);
 	}
 
@@ -75,7 +74,6 @@ class TeamController extends Controller
 		$invitation->delete();
 
 		return redirect(RouteServiceProvider::HOME);
-
 	}
 
 	public function inviteDelete($token)
