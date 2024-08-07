@@ -144,6 +144,9 @@ const deleteInvite = async (token) => {
 							<div class="flex">
 								<span class="font-normal text-lg text-gray-700 dark:text-gray-300">{{ user.email }}</span>
 							</div>
+							<div class="flex">
+								<span class="font-normal text-lg text-gray-700 dark:text-gray-300">{{ user.provider ?? 'Email + Password' }}</span>
+							</div>
 						</div>
 					</div>
 				</div>
