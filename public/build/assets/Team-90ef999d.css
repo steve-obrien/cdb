@@ -1,0 +1,1 @@
+.flash-enter-active[data-v-b417ddb2],.flash-leave-active[data-v-b417ddb2]{transition:opacity .5s}.flash-enter-from[data-v-b417ddb2],.flash-leave-to[data-v-b417ddb2]{opacity:0}.new-item[data-v-b417ddb2]{animation:flash-bg-b417ddb2 2s}@keyframes flash-bg-b417ddb2{0%{background-color:#ff0}to{background-color:#fff}}
