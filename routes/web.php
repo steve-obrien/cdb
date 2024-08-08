@@ -15,6 +15,7 @@ use Pusher\Pusher;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Models\ChatSession;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,6 +33,15 @@ Route::get('/', function () {
 		'canRegister' => Route::has('register'),
 		'laravelVersion' => Application::VERSION,
 		'phpVersion' => PHP_VERSION,
+	]);
+});
+
+Route::get('/share/{id}', function ($id) {
+	$session = ChatSession::findOrFail($id);
+	return Inertia::render('Share', [
+		'chats' => $session->chats()->with('user')->get(),
+		'sessions' => ChatSession::orderByDesc('created_at')->get(),
+		'sessionId' => $id,
 	]);
 });
 

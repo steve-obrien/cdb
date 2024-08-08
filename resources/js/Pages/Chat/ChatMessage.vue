@@ -1,7 +1,7 @@
 <template>
 	<div v-if="message.role == 'user'">
-		<!-- me -->
-		<div v-if="$page.props.auth.user.id == message.user_id" class="grid grid-cols-chat p-2">
+		<!-- me v-if="$page.props.auth.user.id == message.user_id" -->
+		<div  class="grid grid-cols-chat p-2">
 			<div class="col-start-3 col-span-2 text-right">
 				<div class="bg-gray-100 dark:bg-gray-900 rounded-l-xl p-2 inline-block text-left break-words max-w-full">
 					<div class="font-semibold text-black dark:text-white text-right">Me</div>
@@ -23,14 +23,14 @@
 			</div>
 		</div>
 		<!-- you -->
-		<div class="flex p-2 rounded-md bg-gray-100 dark:bg-gray-800" v-else>
+		<!-- <div class="flex p-2 rounded-md bg-gray-100 dark:bg-gray-800" v-else>
 			<img class="h-8 w-8 min-w-8 mr-2 rounded-full" alt="User" loading="lazy" width="24" height="24"
 			:src="message.user.avatar_url" style="color: transparent;">
 			<div>
 				<div class="mt-1 font-semibold text-black dark:text-white">{{ message.name }}</div>
 				<div v-html="formatMessage(message.content)" class="prose dark:prose-invert"></div>
 			</div>
-		</div>
+		</div> -->
 	</div>
 
 	<div v-else-if="message.role == 'assistant'" class="flex p-2 rounded-md  ">
