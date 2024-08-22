@@ -18,7 +18,7 @@ class UiController extends Controller
 	public function ui(Request $request): Response
 	{
 		return Inertia::render('Ui', [
-			'components' => UiComponent::where('parent_id', '=', null)->orderBy('created_at', 'desc')->get(),
+			'components' => UiComponent::where('parent_id', '=', null)->orderBy('created_at', 'desc')->limit(10)->get(),
 		]);
 	}
 	public function edit($uiId): Response

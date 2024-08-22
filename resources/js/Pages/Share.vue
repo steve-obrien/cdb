@@ -1,16 +1,16 @@
 <template>
 
-	<Head title="Chat" />
-
-			<h2 class="font-semibold text-xl text-gray-800 leading-tight">Chat</h2>
-			<select class="ml-3 block lg:hidden" @change="go($route('chat.session', $event.target.value))">
-				<option v-for="session in sessions" :value="session.id" :key="session.id">{{ session.prompt.slice(0, 25) }}</option>
-			</select>
+	<div class="absolute inset-0 flex flex-col">
+		<div class="font-semibold text-xl text-gray-800 leading-tight text-center p-2">
+			<a href="https://ai.newicon.net">
+				<svg class="inline-flex" width="22" height="25" viewBox="0 0 22 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M5.45769 24.2342V9.5455L16.9231 24.2342H20.7335V20.4352L4.7756 0H0V24.2342H5.45769Z" fill="black"/>
+					<path d="M16 5.42352L21.4235 5.42352V2.90871e-05L16 2.90871e-05V5.42352Z" fill="black"/>
+				</svg>
+			</a>
+		</div>
 
 		<div class="flex h-full">
-
-
-			<ChatList :sessions="sessions"></ChatList>
 
 			<div class="@container h-full grow flex flex-col bg-white dark:bg-black">
 				<div class="grow flex relative">
@@ -28,24 +28,15 @@
 							<div v-else v-for="(message, index) in messages">
 								<ChatMessage :message="message"></ChatMessage>
 							</div>
-						</div>
-					</div>
-				</div>
-				<div class="px-4">
-					<PromptForm @send="send" v-model:prompt="prompt"></PromptForm>
-					<div class="text-center">
-						<code class="text-xs">tokens: {{ totalTokens }} | cost: {{totalCost}}</code>
-					</div>
-
-					<div class="flex">
-						<div v-for="user in users" :key="user.id">
-							<img class="h-4 w-4 rounded-full bg-gray-50" :src="user.avatar_url" :alt="user.name + 'avatar'">
+							<div class="text-center">
+								<code class="text-xs">tokens: {{ totalTokens }} | cost: {{totalCost}}</code>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
+	</div>
 </template>
 
 <script lang="ts">

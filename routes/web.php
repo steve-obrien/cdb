@@ -68,6 +68,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 	Route::get('/team', [TeamController::class, 'team'])->name('team');
 	Route::post('/team/invite', [TeamController::class, 'invite'])->name('team.invite');
+
 });
 
 Route::get('/team/invite/accept/{token}', [TeamController::class, 'inviteAccept'])->name('team.invite.accept');
