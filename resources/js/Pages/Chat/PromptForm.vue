@@ -24,7 +24,7 @@
 							<textarea @keyup="autoExpand" @keydown="handleKeyPress" @blur="onBlur" :value="prompt" @input="$emit('update:prompt', $event.target.value)" ref="prompt" id="prompt-textarea" tabindex="0" :rows="rows" :placeholder="placeholder" class="m-0 w-full resize-none border-0 bg-transparent py-3 pr-10 focus:ring-0 focus-visible:ring-0 dark:bg-transparent md:pr-12 placeholder-black/50 dark:placeholder-white/50 pl-4" style="max-height: 250px; height: 52px; "></textarea>
 						</div>
 					</div>
-					<button @click="send" class="absolute bg-black hover:bg-gray-600 dark:bg-white md:bottom-3 md:right-3 dark:hover:bg-gray-900 dark:disabled:hover:bg-transparent right-2 dark:disabled:bg-white disabled:opacity-10 disabled:text-gray-400 text-white p-0.5 border border-black rounded-lg dark:border-white  bottom-1.5 transition-colors" data-testid="send-button">
+					<button @click="send" class="absolute bg-black hover:bg-gray-600 dark:bg-white md:bottom-3 md:right-3 dark:hover:bg-gray-900 dark:disabled:hover:bg-transparent right-2 dark:disabled:bg-white disabled:opacity-10 disabled:text-gray-400 text-white p-0.5 border border-black rounded-lg dark:border-white  bottom-1.5 transition-colors">
 						<span class="" data-state="closed">
 							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="text-white dark:text-black">
 								<path d="M7 11L12 6L17 11M12 18V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -167,7 +167,12 @@ export default defineComponent({
 			this.$refs.prompt.style.height = newHeight;
 		},
 		handleKeyPress(event) {
-			if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+			// if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+			// 	this.send();
+			// }
+			const shiftOrCtrlDown = (event.shiftKey || event.ctrlKey)
+			console.log(event.key, shiftOrCtrlDown, event)
+			if (event.key === 'Enter' && !shiftOrCtrlDown) {
 				this.send();
 			}
 		},
