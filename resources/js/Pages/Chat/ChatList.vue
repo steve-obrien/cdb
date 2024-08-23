@@ -39,7 +39,7 @@ export default defineComponent({
 		},
 		sessionName(session) {
 			if (session.prompt) {
-				return session.prompt.slice(0, 25)
+				return session.prompt.slice(0, 25).replace(/"/g,'')
 			}
 			return session.id
 		},
