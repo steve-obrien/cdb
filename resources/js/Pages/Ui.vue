@@ -30,15 +30,15 @@
 
 			<div class="relative">
 
-				<button @click="state = 'list'">List</button>
-				<button @click="state = 'code'">Code</button>
+				<!-- <button @click="state = 'list'">List</button>
+				<button @click="state = 'code'">Code</button> -->
 
 				<transition :duration="{ enter: 500, leave: 800 }" name="fade">
 					<div v-if="state == 'list'" class="relative z-10">
 
 						<div class="grid grid-cols-3 gap-4 px-4 z-20 relative ">
-							<div  @click="$router.visit(route('ui.edit', {uiId: component.id}))" v-for="component in components" class="shadow-xl border bg-white h-40 p-3">
-								<div class="bg-gray-100 rounded-xl p-3">
+							<div  @click="$router.visit(route('ui.edit', {uiId: component.id}))" v-for="component in components" class=" h-40 p-3">
+								<div class="bg-white/50 rounded-xl p-3 shadow-xl backdrop-blur-xs ">
 									{{component.prompt[0].text}}
 									<div v-if="component.prompt[1]?.type == 'image_url'">
 										<img class="w-10" :src="component.prompt[1].image_url.url">
@@ -163,7 +163,6 @@ export default defineComponent({
 
 				// Check if the response contains the SSE URL
 				const uiId = response.data.id;
-				alert(response.data.id);
 
 				const eventSource = new EventSource(route('ui.stream', { uiId: uiId }), { withCredentials: true });
 				// reset the code window

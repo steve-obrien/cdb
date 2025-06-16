@@ -7,26 +7,26 @@
     "file": "assets/MonacoEditor-5f366f55.css",
     "src": "MonacoEditor.css"
   },
-  "_ActionSection-c9d29472.js": {
-    "file": "assets/ActionSection-c9d29472.js",
+  "_ActionSection-97f4b240.js": {
+    "file": "assets/ActionSection-97f4b240.js",
     "imports": [
       "__plugin-vue_export-helper-c27b6911.js",
       "resources/js/app.js"
     ]
   },
-  "_AuthenticatedLayout-e0ef55ae.js": {
-    "file": "assets/AuthenticatedLayout-e0ef55ae.js",
+  "_AuthenticatedLayout-358b7676.js": {
+    "file": "assets/AuthenticatedLayout-358b7676.js",
     "imports": [
       "resources/js/app.js"
     ]
   },
-  "_DialogModal-cd30d18a.js": {
-    "file": "assets/DialogModal-cd30d18a.js",
+  "_DialogModal-8e84c106.js": {
+    "file": "assets/DialogModal-8e84c106.js",
     "imports": [
       "resources/js/app.js"
     ]
   },
-  "_Editor-76d816a6.js": {
+  "_Editor-4629217f.js": {
     "assets": [
       "assets/codicon-c99115f8.ttf"
     ],
@@ -124,33 +124,33 @@
       "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/language/json/jsonMode.js",
       "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/language/typescript/tsMode.js"
     ],
-    "file": "assets/Editor-76d816a6.js",
+    "file": "assets/Editor-4629217f.js",
     "imports": [
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true
   },
-  "_GuestLayout-4383ed78.js": {
-    "file": "assets/GuestLayout-4383ed78.js",
+  "_GuestLayout-6ee3dd71.js": {
+    "file": "assets/GuestLayout-6ee3dd71.js",
     "imports": [
       "__plugin-vue_export-helper-c27b6911.js",
       "resources/js/app.js"
     ]
   },
-  "_InputError-d48c2102.js": {
-    "file": "assets/InputError-d48c2102.js",
+  "_InputError-e1e4aa28.js": {
+    "file": "assets/InputError-e1e4aa28.js",
     "imports": [
       "resources/js/app.js"
     ]
   },
-  "_InputLabel-c0d90347.js": {
-    "file": "assets/InputLabel-c0d90347.js",
+  "_InputLabel-dd5c0a09.js": {
+    "file": "assets/InputLabel-dd5c0a09.js",
     "imports": [
       "resources/js/app.js"
     ]
   },
-  "_MonacoEditor-c300703b.js": {
+  "_MonacoEditor-df4cb878.js": {
     "assets": [
       "assets/codicon-36052757.ttf"
     ],
@@ -252,34 +252,34 @@
       "node_modules/monaco-editor/esm/vs/language/json/jsonMode.js",
       "node_modules/monaco-editor/esm/vs/language/typescript/tsMode.js"
     ],
-    "file": "assets/MonacoEditor-c300703b.js",
+    "file": "assets/MonacoEditor-df4cb878.js",
     "imports": [
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true
   },
-  "_PasswordInput-0a8e9114.js": {
-    "file": "assets/PasswordInput-0a8e9114.js",
+  "_PasswordInput-1523829e.js": {
+    "file": "assets/PasswordInput-1523829e.js",
     "imports": [
       "resources/js/app.js"
     ]
   },
-  "_PrimaryButton-70e0109c.js": {
-    "file": "assets/PrimaryButton-70e0109c.js",
+  "_PrimaryButton-96bd0ae2.js": {
+    "file": "assets/PrimaryButton-96bd0ae2.js",
     "imports": [
       "__plugin-vue_export-helper-c27b6911.js",
       "resources/js/app.js"
     ]
   },
-  "_SecondaryButton-b0537354.js": {
-    "file": "assets/SecondaryButton-b0537354.js",
+  "_SecondaryButton-788a5f27.js": {
+    "file": "assets/SecondaryButton-788a5f27.js",
     "imports": [
       "resources/js/app.js"
     ]
   },
-  "_TextInput-3eea1de1.js": {
-    "file": "assets/TextInput-3eea1de1.js",
+  "_TextInput-b7a033d7.js": {
+    "file": "assets/TextInput-b7a033d7.js",
     "imports": [
       "resources/js/app.js"
     ]
@@ -377,9 +377,9 @@
     "src": "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/flow9/flow9.js"
   },
   "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/freemarker2/freemarker2.js": {
-    "file": "assets/freemarker2-a0d234ff.js",
+    "file": "assets/freemarker2-809a735f.js",
     "imports": [
-      "_Editor-76d816a6.js",
+      "_Editor-4629217f.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -402,9 +402,9 @@
     "src": "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/graphql/graphql.js"
   },
   "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/handlebars/handlebars.js": {
-    "file": "assets/handlebars-e1d3b065.js",
+    "file": "assets/handlebars-6609dbbd.js",
     "imports": [
-      "_Editor-76d816a6.js",
+      "_Editor-4629217f.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -417,9 +417,9 @@
     "src": "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/hcl/hcl.js"
   },
   "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/html/html.js": {
-    "file": "assets/html-487beeb1.js",
+    "file": "assets/html-2edfbec3.js",
     "imports": [
-      "_Editor-76d816a6.js",
+      "_Editor-4629217f.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -437,10 +437,10 @@
     "src": "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/java/java.js"
   },
   "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/javascript/javascript.js": {
-    "file": "assets/javascript-acb0041a.js",
+    "file": "assets/javascript-345117f9.js",
     "imports": [
       "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/typescript/typescript.js",
-      "_Editor-76d816a6.js",
+      "_Editor-4629217f.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -468,9 +468,9 @@
     "src": "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/lexon/lexon.js"
   },
   "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/liquid/liquid.js": {
-    "file": "assets/liquid-52ce19d8.js",
+    "file": "assets/liquid-4db660a0.js",
     "imports": [
-      "_Editor-76d816a6.js",
+      "_Editor-4629217f.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -568,9 +568,9 @@
     "src": "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/pug/pug.js"
   },
   "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/python/python.js": {
-    "file": "assets/python-6a14fea1.js",
+    "file": "assets/python-34047f41.js",
     "imports": [
-      "_Editor-76d816a6.js",
+      "_Editor-4629217f.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -588,9 +588,9 @@
     "src": "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/r/r.js"
   },
   "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/razor/razor.js": {
-    "file": "assets/razor-c181813f.js",
+    "file": "assets/razor-73a67bf2.js",
     "imports": [
-      "_Editor-76d816a6.js",
+      "_Editor-4629217f.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -693,9 +693,9 @@
     "src": "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/twig/twig.js"
   },
   "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/typescript/typescript.js": {
-    "file": "assets/typescript-6196e8e7.js",
+    "file": "assets/typescript-56a0e064.js",
     "imports": [
-      "_Editor-76d816a6.js",
+      "_Editor-4629217f.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -708,9 +708,9 @@
     "src": "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/vb/vb.js"
   },
   "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/xml/xml.js": {
-    "file": "assets/xml-bf82339a.js",
+    "file": "assets/xml-6e06975a.js",
     "imports": [
-      "_Editor-76d816a6.js",
+      "_Editor-4629217f.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -723,9 +723,9 @@
     "src": "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/basic-languages/yaml/yaml.js"
   },
   "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/language/css/cssMode.js": {
-    "file": "assets/cssMode-2b558085.js",
+    "file": "assets/cssMode-c00b7aa3.js",
     "imports": [
-      "_Editor-76d816a6.js",
+      "_Editor-4629217f.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -733,9 +733,9 @@
     "src": "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/language/css/cssMode.js"
   },
   "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/language/html/htmlMode.js": {
-    "file": "assets/htmlMode-d69bfdec.js",
+    "file": "assets/htmlMode-40c70986.js",
     "imports": [
-      "_Editor-76d816a6.js",
+      "_Editor-4629217f.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -743,9 +743,9 @@
     "src": "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/language/html/htmlMode.js"
   },
   "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/language/json/jsonMode.js": {
-    "file": "assets/jsonMode-e6bd6a1e.js",
+    "file": "assets/jsonMode-f3fdfe15.js",
     "imports": [
-      "_Editor-76d816a6.js",
+      "_Editor-4629217f.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -753,9 +753,9 @@
     "src": "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/language/json/jsonMode.js"
   },
   "node_modules/monaco-editor-vue3/node_modules/monaco-editor/esm/vs/language/typescript/tsMode.js": {
-    "file": "assets/tsMode-165a3a4f.js",
+    "file": "assets/tsMode-8e0b918f.js",
     "imports": [
-      "_Editor-76d816a6.js",
+      "_Editor-4629217f.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -857,9 +857,9 @@
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/flow9/flow9.js"
   },
   "node_modules/monaco-editor/esm/vs/basic-languages/freemarker2/freemarker2.js": {
-    "file": "assets/freemarker2-e38bdc26.js",
+    "file": "assets/freemarker2-579b6f52.js",
     "imports": [
-      "_MonacoEditor-c300703b.js",
+      "_MonacoEditor-df4cb878.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -882,9 +882,9 @@
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/graphql/graphql.js"
   },
   "node_modules/monaco-editor/esm/vs/basic-languages/handlebars/handlebars.js": {
-    "file": "assets/handlebars-d8ee51a1.js",
+    "file": "assets/handlebars-d449121c.js",
     "imports": [
-      "_MonacoEditor-c300703b.js",
+      "_MonacoEditor-df4cb878.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -897,9 +897,9 @@
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/hcl/hcl.js"
   },
   "node_modules/monaco-editor/esm/vs/basic-languages/html/html.js": {
-    "file": "assets/html-332fa01b.js",
+    "file": "assets/html-b65e9a48.js",
     "imports": [
-      "_MonacoEditor-c300703b.js",
+      "_MonacoEditor-df4cb878.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -917,10 +917,10 @@
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/java/java.js"
   },
   "node_modules/monaco-editor/esm/vs/basic-languages/javascript/javascript.js": {
-    "file": "assets/javascript-c61c3d58.js",
+    "file": "assets/javascript-7966fbbd.js",
     "imports": [
       "node_modules/monaco-editor/esm/vs/basic-languages/typescript/typescript.js",
-      "_MonacoEditor-c300703b.js",
+      "_MonacoEditor-df4cb878.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -948,9 +948,9 @@
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/lexon/lexon.js"
   },
   "node_modules/monaco-editor/esm/vs/basic-languages/liquid/liquid.js": {
-    "file": "assets/liquid-ed2d0a7c.js",
+    "file": "assets/liquid-e5cfccea.js",
     "imports": [
-      "_MonacoEditor-c300703b.js",
+      "_MonacoEditor-df4cb878.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -973,9 +973,9 @@
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/markdown/markdown.js"
   },
   "node_modules/monaco-editor/esm/vs/basic-languages/mdx/mdx.js": {
-    "file": "assets/mdx-4e785d61.js",
+    "file": "assets/mdx-8765e05c.js",
     "imports": [
-      "_MonacoEditor-c300703b.js",
+      "_MonacoEditor-df4cb878.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -1058,9 +1058,9 @@
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/pug/pug.js"
   },
   "node_modules/monaco-editor/esm/vs/basic-languages/python/python.js": {
-    "file": "assets/python-98d174c4.js",
+    "file": "assets/python-b772a9da.js",
     "imports": [
-      "_MonacoEditor-c300703b.js",
+      "_MonacoEditor-df4cb878.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -1078,9 +1078,9 @@
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/r/r.js"
   },
   "node_modules/monaco-editor/esm/vs/basic-languages/razor/razor.js": {
-    "file": "assets/razor-a2e7b615.js",
+    "file": "assets/razor-f3614a8e.js",
     "imports": [
-      "_MonacoEditor-c300703b.js",
+      "_MonacoEditor-df4cb878.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -1183,9 +1183,9 @@
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/twig/twig.js"
   },
   "node_modules/monaco-editor/esm/vs/basic-languages/typescript/typescript.js": {
-    "file": "assets/typescript-2741eb3e.js",
+    "file": "assets/typescript-642cd062.js",
     "imports": [
-      "_MonacoEditor-c300703b.js",
+      "_MonacoEditor-df4cb878.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -1208,9 +1208,9 @@
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/wgsl/wgsl.js"
   },
   "node_modules/monaco-editor/esm/vs/basic-languages/xml/xml.js": {
-    "file": "assets/xml-e2a83b38.js",
+    "file": "assets/xml-99a4f095.js",
     "imports": [
-      "_MonacoEditor-c300703b.js",
+      "_MonacoEditor-df4cb878.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -1218,9 +1218,9 @@
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/xml/xml.js"
   },
   "node_modules/monaco-editor/esm/vs/basic-languages/yaml/yaml.js": {
-    "file": "assets/yaml-75cba01e.js",
+    "file": "assets/yaml-18d2575a.js",
     "imports": [
-      "_MonacoEditor-c300703b.js",
+      "_MonacoEditor-df4cb878.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -1228,9 +1228,9 @@
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/yaml/yaml.js"
   },
   "node_modules/monaco-editor/esm/vs/language/css/cssMode.js": {
-    "file": "assets/cssMode-08df40f2.js",
+    "file": "assets/cssMode-5b57c3b3.js",
     "imports": [
-      "_MonacoEditor-c300703b.js",
+      "_MonacoEditor-df4cb878.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -1238,9 +1238,9 @@
     "src": "node_modules/monaco-editor/esm/vs/language/css/cssMode.js"
   },
   "node_modules/monaco-editor/esm/vs/language/html/htmlMode.js": {
-    "file": "assets/htmlMode-777f327e.js",
+    "file": "assets/htmlMode-b95c40ac.js",
     "imports": [
-      "_MonacoEditor-c300703b.js",
+      "_MonacoEditor-df4cb878.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -1248,9 +1248,9 @@
     "src": "node_modules/monaco-editor/esm/vs/language/html/htmlMode.js"
   },
   "node_modules/monaco-editor/esm/vs/language/json/jsonMode.js": {
-    "file": "assets/jsonMode-707ee785.js",
+    "file": "assets/jsonMode-b8aab3e4.js",
     "imports": [
-      "_MonacoEditor-c300703b.js",
+      "_MonacoEditor-df4cb878.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -1258,9 +1258,9 @@
     "src": "node_modules/monaco-editor/esm/vs/language/json/jsonMode.js"
   },
   "node_modules/monaco-editor/esm/vs/language/typescript/tsMode.js": {
-    "file": "assets/tsMode-946874ca.js",
+    "file": "assets/tsMode-d349ea18.js",
     "imports": [
-      "_MonacoEditor-c300703b.js",
+      "_MonacoEditor-df4cb878.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -1268,82 +1268,82 @@
     "src": "node_modules/monaco-editor/esm/vs/language/typescript/tsMode.js"
   },
   "resources/js/Pages/Auth/ConfirmPassword.vue": {
-    "file": "assets/ConfirmPassword-7d2b0f2a.js",
+    "file": "assets/ConfirmPassword-97e8a81a.js",
     "imports": [
       "resources/js/app.js",
-      "_GuestLayout-4383ed78.js",
-      "_InputError-d48c2102.js",
-      "_InputLabel-c0d90347.js",
-      "_PrimaryButton-70e0109c.js",
-      "_TextInput-3eea1de1.js",
+      "_GuestLayout-6ee3dd71.js",
+      "_InputError-e1e4aa28.js",
+      "_InputLabel-dd5c0a09.js",
+      "_PrimaryButton-96bd0ae2.js",
+      "_TextInput-b7a033d7.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Auth/ConfirmPassword.vue"
   },
   "resources/js/Pages/Auth/ForgotPassword.vue": {
-    "file": "assets/ForgotPassword-787e942d.js",
+    "file": "assets/ForgotPassword-c9bfe2cc.js",
     "imports": [
       "resources/js/app.js",
-      "_GuestLayout-4383ed78.js",
-      "_InputError-d48c2102.js",
-      "_InputLabel-c0d90347.js",
-      "_PrimaryButton-70e0109c.js",
-      "_TextInput-3eea1de1.js",
+      "_GuestLayout-6ee3dd71.js",
+      "_InputError-e1e4aa28.js",
+      "_InputLabel-dd5c0a09.js",
+      "_PrimaryButton-96bd0ae2.js",
+      "_TextInput-b7a033d7.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Auth/ForgotPassword.vue"
   },
   "resources/js/Pages/Auth/Login.vue": {
-    "file": "assets/Login-f32361bc.js",
+    "file": "assets/Login-2a5ee21f.js",
     "imports": [
       "resources/js/app.js",
-      "_GuestLayout-4383ed78.js",
-      "_InputError-d48c2102.js",
-      "_InputLabel-c0d90347.js",
-      "_PrimaryButton-70e0109c.js",
-      "_TextInput-3eea1de1.js",
-      "_PasswordInput-0a8e9114.js",
+      "_GuestLayout-6ee3dd71.js",
+      "_InputError-e1e4aa28.js",
+      "_InputLabel-dd5c0a09.js",
+      "_PrimaryButton-96bd0ae2.js",
+      "_TextInput-b7a033d7.js",
+      "_PasswordInput-1523829e.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Auth/Login.vue"
   },
   "resources/js/Pages/Auth/Register.vue": {
-    "file": "assets/Register-d2e1c239.js",
+    "file": "assets/Register-ba56c8f1.js",
     "imports": [
       "resources/js/app.js",
-      "_GuestLayout-4383ed78.js",
-      "_InputError-d48c2102.js",
-      "_InputLabel-c0d90347.js",
-      "_PrimaryButton-70e0109c.js",
-      "_TextInput-3eea1de1.js",
+      "_GuestLayout-6ee3dd71.js",
+      "_InputError-e1e4aa28.js",
+      "_InputLabel-dd5c0a09.js",
+      "_PrimaryButton-96bd0ae2.js",
+      "_TextInput-b7a033d7.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Auth/Register.vue"
   },
   "resources/js/Pages/Auth/ResetPassword.vue": {
-    "file": "assets/ResetPassword-6e83d0f5.js",
+    "file": "assets/ResetPassword-7af479ab.js",
     "imports": [
       "resources/js/app.js",
-      "_GuestLayout-4383ed78.js",
-      "_InputError-d48c2102.js",
-      "_InputLabel-c0d90347.js",
-      "_PrimaryButton-70e0109c.js",
-      "_TextInput-3eea1de1.js",
+      "_GuestLayout-6ee3dd71.js",
+      "_InputError-e1e4aa28.js",
+      "_InputLabel-dd5c0a09.js",
+      "_PrimaryButton-96bd0ae2.js",
+      "_TextInput-b7a033d7.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Auth/ResetPassword.vue"
   },
   "resources/js/Pages/Auth/VerifyEmail.vue": {
-    "file": "assets/VerifyEmail-a11fba52.js",
+    "file": "assets/VerifyEmail-4ac76458.js",
     "imports": [
       "resources/js/app.js",
-      "_GuestLayout-4383ed78.js",
-      "_PrimaryButton-70e0109c.js",
+      "_GuestLayout-6ee3dd71.js",
+      "_PrimaryButton-96bd0ae2.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
@@ -1357,9 +1357,9 @@
     "css": [
       "assets/Chat-bfc5c0a2.css"
     ],
-    "file": "assets/Chat-746642f3.js",
+    "file": "assets/Chat-2a919ada.js",
     "imports": [
-      "_AuthenticatedLayout-e0ef55ae.js",
+      "_AuthenticatedLayout-358b7676.js",
       "resources/js/app.js",
       "resources/js/Pages/Chat/PromptForm.vue",
       "resources/js/Pages/Chat/ChatMessage.vue",
@@ -1377,9 +1377,9 @@
     "css": [
       "assets/Chat-bfc5c0a2.css"
     ],
-    "file": "assets/ChatLayout-7e94d4ab.js",
+    "file": "assets/ChatLayout-c4cdf5a6.js",
     "imports": [
-      "_AuthenticatedLayout-e0ef55ae.js",
+      "_AuthenticatedLayout-358b7676.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -1394,7 +1394,7 @@
     "css": [
       "assets/Chat-bfc5c0a2.css"
     ],
-    "file": "assets/ChatList-c1060d01.js",
+    "file": "assets/ChatList-6fc82564.js",
     "imports": [
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
@@ -1410,7 +1410,7 @@
     "css": [
       "assets/ChatMessage-af0391e3.css"
     ],
-    "file": "assets/ChatMessage-9faa2b64.js",
+    "file": "assets/ChatMessage-ad782f8e.js",
     "imports": [
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
@@ -1419,7 +1419,7 @@
     "src": "resources/js/Pages/Chat/ChatMessage.vue"
   },
   "resources/js/Pages/Chat/PromptForm.vue": {
-    "file": "assets/PromptForm-8bac1295.js",
+    "file": "assets/PromptForm-e16c6cd2.js",
     "imports": [
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
@@ -1435,12 +1435,12 @@
     "css": [
       "assets/Chat-bfc5c0a2.css"
     ],
-    "file": "assets/ChatSession-983f4806.js",
+    "file": "assets/ChatSession-c5751311.js",
     "imports": [
       "resources/js/app.js",
       "resources/js/Pages/Chat/PromptForm.vue",
       "resources/js/Pages/Chat/ChatMessage.vue",
-      "_AuthenticatedLayout-e0ef55ae.js",
+      "_AuthenticatedLayout-358b7676.js",
       "resources/js/Pages/Chat/ChatList.vue",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -1448,90 +1448,99 @@
     "src": "resources/js/Pages/ChatSession.vue"
   },
   "resources/js/Pages/Dashboard.vue": {
-    "file": "assets/Dashboard-3a0ede18.js",
+    "file": "assets/Dashboard-5b2fc8fc.js",
     "imports": [
-      "_AuthenticatedLayout-e0ef55ae.js",
+      "_AuthenticatedLayout-358b7676.js",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Dashboard.vue"
   },
-  "resources/js/Pages/Profile/Edit.vue": {
-    "file": "assets/Edit-cb2ae782.js",
+  "resources/js/Pages/Email.vue": {
+    "file": "assets/Email-e6041df8.js",
     "imports": [
-      "_AuthenticatedLayout-e0ef55ae.js",
+      "_AuthenticatedLayout-358b7676.js",
+      "resources/js/app.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "resources/js/Pages/Email.vue"
+  },
+  "resources/js/Pages/Profile/Edit.vue": {
+    "file": "assets/Edit-99bf50fb.js",
+    "imports": [
+      "_AuthenticatedLayout-358b7676.js",
       "resources/js/Pages/Profile/Partials/DeleteUserForm.vue",
       "resources/js/Pages/Profile/Partials/UpdatePasswordForm.vue",
       "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.vue",
       "resources/js/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue",
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js",
-      "_InputError-d48c2102.js",
-      "_InputLabel-c0d90347.js",
-      "_SecondaryButton-b0537354.js",
-      "_TextInput-3eea1de1.js",
-      "_ActionSection-c9d29472.js",
-      "_DialogModal-cd30d18a.js",
-      "_PrimaryButton-70e0109c.js"
+      "_InputError-e1e4aa28.js",
+      "_InputLabel-dd5c0a09.js",
+      "_SecondaryButton-788a5f27.js",
+      "_TextInput-b7a033d7.js",
+      "_ActionSection-97f4b240.js",
+      "_DialogModal-8e84c106.js",
+      "_PrimaryButton-96bd0ae2.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Profile/Edit.vue"
   },
   "resources/js/Pages/Profile/Partials/DeleteUserForm.vue": {
-    "file": "assets/DeleteUserForm-a829e9ac.js",
+    "file": "assets/DeleteUserForm-de9af771.js",
     "imports": [
       "resources/js/app.js",
       "__plugin-vue_export-helper-c27b6911.js",
-      "_InputError-d48c2102.js",
-      "_InputLabel-c0d90347.js",
-      "_SecondaryButton-b0537354.js",
-      "_TextInput-3eea1de1.js",
-      "_ActionSection-c9d29472.js",
-      "_DialogModal-cd30d18a.js"
+      "_InputError-e1e4aa28.js",
+      "_InputLabel-dd5c0a09.js",
+      "_SecondaryButton-788a5f27.js",
+      "_TextInput-b7a033d7.js",
+      "_ActionSection-97f4b240.js",
+      "_DialogModal-8e84c106.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Profile/Partials/DeleteUserForm.vue"
   },
   "resources/js/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue": {
-    "file": "assets/LogoutOtherBrowserSessionsForm-54aecfb4.js",
+    "file": "assets/LogoutOtherBrowserSessionsForm-f6be65af.js",
     "imports": [
       "resources/js/app.js",
-      "_ActionSection-c9d29472.js",
-      "_DialogModal-cd30d18a.js",
-      "_InputError-d48c2102.js",
-      "_PrimaryButton-70e0109c.js",
-      "_SecondaryButton-b0537354.js",
-      "_TextInput-3eea1de1.js",
+      "_ActionSection-97f4b240.js",
+      "_DialogModal-8e84c106.js",
+      "_InputError-e1e4aa28.js",
+      "_PrimaryButton-96bd0ae2.js",
+      "_SecondaryButton-788a5f27.js",
+      "_TextInput-b7a033d7.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue"
   },
   "resources/js/Pages/Profile/Partials/UpdatePasswordForm.vue": {
-    "file": "assets/UpdatePasswordForm-6cff74fc.js",
+    "file": "assets/UpdatePasswordForm-506d2a9f.js",
     "imports": [
       "resources/js/app.js",
-      "_InputError-d48c2102.js",
-      "_InputLabel-c0d90347.js",
-      "_PrimaryButton-70e0109c.js",
-      "_TextInput-3eea1de1.js",
-      "_ActionSection-c9d29472.js",
+      "_InputError-e1e4aa28.js",
+      "_InputLabel-dd5c0a09.js",
+      "_PrimaryButton-96bd0ae2.js",
+      "_TextInput-b7a033d7.js",
+      "_ActionSection-97f4b240.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Profile/Partials/UpdatePasswordForm.vue"
   },
   "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.vue": {
-    "file": "assets/UpdateProfileInformationForm-e7ef3185.js",
+    "file": "assets/UpdateProfileInformationForm-742f5b77.js",
     "imports": [
       "resources/js/app.js",
-      "_InputError-d48c2102.js",
-      "_InputLabel-c0d90347.js",
-      "_PrimaryButton-70e0109c.js",
-      "_SecondaryButton-b0537354.js",
-      "_TextInput-3eea1de1.js",
-      "_ActionSection-c9d29472.js",
+      "_InputError-e1e4aa28.js",
+      "_InputLabel-dd5c0a09.js",
+      "_PrimaryButton-96bd0ae2.js",
+      "_SecondaryButton-788a5f27.js",
+      "_TextInput-b7a033d7.js",
+      "_ActionSection-97f4b240.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
@@ -1545,12 +1554,12 @@
     "css": [
       "assets/Chat-bfc5c0a2.css"
     ],
-    "file": "assets/Share-d3f309a2.js",
+    "file": "assets/Share-acbc6fe3.js",
     "imports": [
       "resources/js/app.js",
       "resources/js/Pages/Chat/PromptForm.vue",
       "resources/js/Pages/Chat/ChatMessage.vue",
-      "_AuthenticatedLayout-e0ef55ae.js",
+      "_AuthenticatedLayout-358b7676.js",
       "resources/js/Pages/Chat/ChatList.vue",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
@@ -1565,24 +1574,24 @@
     "css": [
       "assets/Team-90ef999d.css"
     ],
-    "file": "assets/Team-963ca805.js",
+    "file": "assets/Team-f11f8c51.js",
     "imports": [
       "resources/js/app.js",
-      "_AuthenticatedLayout-e0ef55ae.js",
+      "_AuthenticatedLayout-358b7676.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
     "src": "resources/js/Pages/Team.vue"
   },
   "resources/js/Pages/Team/InviteRegister.vue": {
-    "file": "assets/InviteRegister-23852042.js",
+    "file": "assets/InviteRegister-05660446.js",
     "imports": [
       "resources/js/app.js",
-      "_GuestLayout-4383ed78.js",
-      "_InputError-d48c2102.js",
-      "_InputLabel-c0d90347.js",
-      "_PrimaryButton-70e0109c.js",
-      "_PasswordInput-0a8e9114.js",
+      "_GuestLayout-6ee3dd71.js",
+      "_InputError-e1e4aa28.js",
+      "_InputLabel-dd5c0a09.js",
+      "_PrimaryButton-96bd0ae2.js",
+      "_PasswordInput-1523829e.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
@@ -1596,14 +1605,14 @@
     "css": [
       "assets/Ui-80601550.css"
     ],
-    "file": "assets/Ui-9d35fb4c.js",
+    "file": "assets/Ui-63ba08c1.js",
     "imports": [
-      "_AuthenticatedLayout-e0ef55ae.js",
+      "_AuthenticatedLayout-358b7676.js",
       "resources/js/app.js",
       "resources/js/Pages/Chat/PromptForm.vue",
       "resources/js/Pages/Chat/ChatMessage.vue",
       "resources/js/Pages/Chat/ChatList.vue",
-      "_Editor-76d816a6.js",
+      "_Editor-4629217f.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
@@ -1617,14 +1626,14 @@
     "css": [
       "assets/Chat-bfc5c0a2.css"
     ],
-    "file": "assets/UiEdit-a2d4e4e5.js",
+    "file": "assets/UiEdit-b868910a.js",
     "imports": [
-      "_AuthenticatedLayout-e0ef55ae.js",
+      "_AuthenticatedLayout-358b7676.js",
       "resources/js/app.js",
       "resources/js/Pages/Chat/PromptForm.vue",
       "resources/js/Pages/Chat/ChatMessage.vue",
       "resources/js/Pages/Chat/ChatList.vue",
-      "_Editor-76d816a6.js",
+      "_Editor-4629217f.js",
       "__plugin-vue_export-helper-c27b6911.js"
     ],
     "isDynamicEntry": true,
@@ -1638,7 +1647,7 @@
     "css": [
       "assets/Welcome-665689a9.css"
     ],
-    "file": "assets/Welcome-e80d22ae.js",
+    "file": "assets/Welcome-e27fbcaa.js",
     "imports": [
       "resources/js/app.js"
     ],
@@ -1646,12 +1655,12 @@
     "src": "resources/js/Pages/Welcome.vue"
   },
   "resources/js/app.css": {
-    "file": "assets/app-3ed8251b.css",
+    "file": "assets/app-5918d286.css",
     "src": "resources/js/app.css"
   },
   "resources/js/app.js": {
     "css": [
-      "assets/app-3ed8251b.css"
+      "assets/app-5918d286.css"
     ],
     "dynamicImports": [
       "resources/js/Pages/Auth/ConfirmPassword.vue",
@@ -1667,6 +1676,7 @@
       "resources/js/Pages/Chat/PromptForm.vue",
       "resources/js/Pages/ChatSession.vue",
       "resources/js/Pages/Dashboard.vue",
+      "resources/js/Pages/Email.vue",
       "resources/js/Pages/Profile/Edit.vue",
       "resources/js/Pages/Profile/Partials/DeleteUserForm.vue",
       "resources/js/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue",
@@ -1676,12 +1686,12 @@
       "resources/js/Pages/Team.vue",
       "resources/js/Pages/Team/InviteRegister.vue",
       "resources/js/Pages/Ui.vue",
-      "_Editor-76d816a6.js",
-      "_MonacoEditor-c300703b.js",
+      "_Editor-4629217f.js",
+      "_MonacoEditor-df4cb878.js",
       "resources/js/Pages/UiEdit.vue",
       "resources/js/Pages/Welcome.vue"
     ],
-    "file": "assets/app-5a04eb8f.js",
+    "file": "assets/app-18ac46a1.js",
     "isEntry": true,
     "src": "resources/js/app.js"
   }
