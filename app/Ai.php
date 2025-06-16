@@ -21,20 +21,31 @@ use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
- * Chat GPT AI object
- * Just a very simple wrapper to group the logic not trying to be fancy here.
+ * Chat GPT AI wrapper class for handling OpenAI API interactions
+ * 
+ * This class provides a simple interface for interacting with OpenAI's ChatGPT API.
+ * It handles message management, streaming responses, and API communication.
+ * 
+ * @package App
  */
 class Ai
 {
-
+	/**
+	 * Array of messages to be sent to the ChatGPT API
+	 * Each message is an array containing 'role' and 'content' keys
+	 * 
+	 * @var array
+	 */
 	public $messages = [];
 
 	/**
+	 * Adds a message to the conversation
 	 * 
-	 * @param string $role - 'system' | 'user'
-	 * @param string $content  - the prompt or content of the message
-	 * @param string|null $name - an optional user name
-	 * @return $this - a chainable method
+	 * @param string $role The role of the message sender ('system' or 'user')
+	 * @param string|array $content The message content or array of content blocks
+	 * @param string|null $name Optional name identifier for the message sender
+	 * @return $this For method chaining
+	 * @throws InvalidArgumentException If role is invalid
 	 */
 	public function addMessage(String $role, String|array $content, $name = null)
 	{
@@ -62,6 +73,12 @@ class Ai
 		return $this;
 	}
 
+	/**
+	 * Adds multiple messages to the conversation
+	 * 
+	 * @param array $messages Array of message arrays, each containing 'role', 'content', and optional 'name'
+	 * @return void
+	 */
 	public function addMessages($messages)
 	{
 		foreach ($messages as $message) {
@@ -73,13 +90,17 @@ class Ai
 	}
 
 	/**
-	 * Output specific event stream response strings.
-	 * Encodes the data of each chunk to json.
-	 * @param callable|null $callback recieves two parameters $chunk and $chunks
-	 * @param callable|null $finished recieves one parameter complete merged result
-	 * @param array $options 
-	 * @return void 
-	 * @throws InvalidArgumentException 
+	 * Creates an event stream response for real-time ChatGPT responses
+	 * 
+	 * This method sets up a server-sent events (SSE) stream that sends ChatGPT
+	 * responses in real-time to the client. Each chunk of the response is
+	 * sent as a separate event.
+	 * 
+	 * @param callable|null $callback Function to handle each chunk of the response
+	 * @param callable|null $finished Function to handle the complete merged response
+	 * @param array $options Additional options for the API request
+	 * @return void
+	 * @throws \BadFunctionCallException If no messages are set
 	 */
 	public function eventStream(callable $callback = null, callable $finished = null, array $options = [])
 	{
@@ -119,33 +140,29 @@ class Ai
 		$response->send();
 	}
 
-
 	/**
-	 * An event stream keeps the request open.
-	 * A push stream instead creates a job.  
-	 * This allows the request to complete.
-	 * It returns a uuid that the client can subscribe to via a websocket.
-	 * A job is added that makes a request to the API.
-	 * This job sends the stream data to a push event.
-	 * And calls a complete job with the finished output.
-	 * @return void 
+	 * Creates a push stream for asynchronous ChatGPT responses
+	 * 
+	 * Instead of keeping the request open, this method creates a background job
+	 * that processes the ChatGPT request and sends updates via websockets.
+	 * 
+	 * @return void
 	 */
 	public function pushStream()
 	{
 	}
 
 	/**
-	 * Responsible for making the call to OpenAI ChatGPT.
-	 * It doesn't care what you do with the data only sends it places.
-	 * Each raw streaming chunk will be sent to the handleChunk callback
-	 * The final result will be merged and returned, 
-	 * this should resemble the complete non streamed data
-	 * @param callable $handleChunk 
-	 * @param array $data 
-	 * @return array 
-	 * @throws BindingResolutionException 
-	 * @throws NotFoundExceptionInterface 
-	 * @throws ContainerExceptionInterface 
+	 * Makes the actual API request to OpenAI's ChatGPT endpoint
+	 * 
+	 * Handles the streaming response from ChatGPT and processes each chunk
+	 * through the provided callback function. Manages error handling and
+	 * response processing.
+	 * 
+	 * @param callable $handleChunk Function to process each response chunk
+	 * @param array $data Additional request parameters
+	 * @return array The merged complete response
+	 * @throws \Exception If the API request fails
 	 */
 	public function makeChatRequest(callable $handleChunk, $data = [])
 	{
@@ -214,6 +231,15 @@ class Ai
 		return $this->mergeChatChunks($chunks);
 	}
 
+	/**
+	 * Merges multiple response chunks into a single complete response
+	 * 
+	 * Combines all the streaming chunks into a single response object
+	 * that matches the format of a non-streaming response.
+	 * 
+	 * @param array $chunks Array of response chunks to merge
+	 * @return array The merged response
+	 */
 	public function mergeChatChunks($chunks)
 	{
 		// Initialize the merged array
@@ -254,6 +280,11 @@ class Ai
 		return $merged;
 	}
 
+	/**
+	 * Returns the available AI tools/functions
+	 * 
+	 * @return array Array of available AI tools and their specifications
+	 */
 	public function getAiTools()
 	{
 		return [
@@ -279,14 +310,21 @@ class Ai
 	}
 
 	/**
-	 * Get chatgpt model
-	 * @return string chatgpt model
+	 * Gets the ChatGPT model to use for requests
+	 * 
+	 * @return string The model identifier
 	 */
 	public function getChatGptModel()
 	{
 		return 'gpt-4o';
 	}
 
+	/**
+	 * Processes delta updates from streaming responses
+	 * 
+	 * @param array $chunks Array of response chunks to process
+	 * @return array The processed and combined response
+	 */
 	public static function processDeltas($chunks)
 	{
 		$combined = [];
@@ -296,6 +334,14 @@ class Ai
 		return $combined;
 	}
 
+	/**
+	 * Recursively merges two arrays, concatenating string values when appropriate
+	 * 
+	 * @param array $array1 The base array to merge into
+	 * @param array $array2 The array to merge from
+	 * @param bool $isDelta Whether this is a delta update
+	 * @return array The merged array
+	 */
 	public static function recursiveMergeWithConcat($array1, $array2, $isDelta = false)
 	{
 		foreach ($array2 as $key => $value) {

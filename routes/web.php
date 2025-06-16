@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\ChatApiController;
 use App\Http\Controllers\UiController;
 use Illuminate\Foundation\Application;
@@ -16,6 +17,7 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ChatSession;
+use App\Http\Controllers\GmailController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -69,7 +71,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::get('/team', [TeamController::class, 'team'])->name('team');
 	Route::post('/team/invite', [TeamController::class, 'invite'])->name('team.invite');
 
+	//if (env('FEATURE_EMAIL')) {
+		Route::get('/email', [EmailController::class, 'email'])->name('email');
+	//}
+
+
+
 });
+
+
+Route::get('/gmail/connect', [GmailController::class, 'connect'])->name('gmail.connect');
+Route::get('/gmail/callback', [GmailController::class, 'callback'])->name('gmail.callback');
+Route::get('/gmail/emails', [GmailController::class, 'getEmails'])->name('gmail.emails');
 
 Route::get('/team/invite/accept/{token}', [TeamController::class, 'inviteAccept'])->name('team.invite.accept');
 Route::post('/team/invite/register/{token}', [TeamController::class, 'inviteRegister'])->name('team.invite.register');

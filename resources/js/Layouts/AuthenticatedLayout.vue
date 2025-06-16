@@ -135,7 +135,8 @@ import {
 	XMarkIcon,
 	CircleStackIcon,
 	CommandLineIcon,
-	ChatBubbleLeftRightIcon
+	ChatBubbleLeftRightIcon,
+	EnvelopeIcon
 } from '@heroicons/vue/24/outline'
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 
@@ -144,9 +145,8 @@ const navigation = [
 	{ name: 'Projects', href: route('chat'), icon: ChatBubbleLeftRightIcon, current: route().current('chat*') },
 	{ name: 'Ui', href: route('ui'), icon: CommandLineIcon, current: route().current('ui*') },
 	{ name: 'Team', href: route('team'), icon: UsersIcon, current: route().current('team*') },
-	// { name: 'Database', href: '#', icon: CircleStackIcon, current: false },
-	// { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-	// { name: 'Documents', href: '#', icon: DocumentDuplicateIcon, current: false },
+	{ name: 'Database', href: '#', icon: CircleStackIcon, current: false },
+	{ name: 'Email', href: route('email'), icon: EnvelopeIcon, current: route().current('email*') },
 ]
 const userNavigation = [
 	{ name: 'Your profile', href: route('profile.edit') },
